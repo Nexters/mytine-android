@@ -24,3 +24,8 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+def teamConfig(configFile) {
+    def teamConfigDir = file('teamConfig')
+    return new File(teamConfigDir, configFile)
+}

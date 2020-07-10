@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: teamConfig('staticCodeAnalysis/ktlint.gradle')
+apply from: teamConfig('staticCodeAnalysis/detekt.gradle')
 
 android {
     compileSdkVersion 29
