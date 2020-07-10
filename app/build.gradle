@@ -5,6 +5,9 @@ apply from: '../versioning.gradle'
 apply from: teamConfig('git/git-hooks.gradle')
 apply from: teamConfig('staticCodeAnalysis/ktlint.gradle')
 apply from: teamConfig('staticCodeAnalysis/detekt.gradle')
+if (jacocoEnabled.toBoolean()) {
+    apply from: '../jacoco.gradle'
+}
 
 android {
     compileSdkVersion 29
@@ -60,6 +63,8 @@ android {
             zipAlignEnabled false
             minifyEnabled false
             multiDexEnabled true
+
+            testCoverageEnabled jacocoEnabled.toBoolean()
         }
 
         beta {
