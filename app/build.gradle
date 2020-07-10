@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: '../versioning.gradle'
 apply from: teamConfig('git/git-hooks.gradle')
 apply from: teamConfig('staticCodeAnalysis/ktlint.gradle')
 apply from: teamConfig('staticCodeAnalysis/detekt.gradle')
@@ -12,16 +13,84 @@ android {
         applicationId "com.nexters.mytine"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode buildVersionCode()
+        versionName buildVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        ignoreTestSources true
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        ide {
+            storeFile file("../keystore/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/*.version'
+        exclude 'META-INF/proguard/*'
+        exclude '/*.properties'
+        exclude 'META-INF/*.properties'
+    }
+
     buildTypes {
-        release {
+        debug {
+            signingConfig signingConfigs.ide
+            applicationIdSuffix ".debug"
+
+            debuggable true
+            zipAlignEnabled false
             minifyEnabled false
+            multiDexEnabled true
+        }
+
+        beta {
+            signingConfig signingConfigs.ide
+            applicationIdSuffix ".beta"
+
+            debuggable true
+            zipAlignEnabled true
+            minifyEnabled true
+            multiDexEnabled false
+            shrinkResources true
+            crunchPngs true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            signingConfig null
+
+            debuggable false
+            zipAlignEnabled true
+            minifyEnabled true
+            multiDexEnabled false
+            shrinkResources true
+            crunchPngs true
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs += files("$projectDir/schemas".toString())
         }
     }
 }

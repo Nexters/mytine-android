@@ -1,0 +1,43 @@
+ext {
+    def buildNumber = Integer.parseInt(System.getenv("BITRISE_BUILD_NUMBER") ?: "0")
+
+    buildVersionCode = {
+        def (major, minor, patch) = mytineVersion.toLowerCase().tokenize('.')
+
+        (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
+
+        def versionCode = (major * 100000000) + (minor * 1000000) + (patch * 10000) + buildNumber
+
+        println("versionCode = ${versionCode}")
+
+        versionCode
+    }
+
+    buildVersionName = {
+        String taskRequestString = getGradle().getStartParameter().getTaskRequests().toString().toLowerCase()
+
+        println "taskRequestString -> $taskRequestString"
+
+        def versionNameSuffix = ""
+
+        if (taskRequestString.contains("beta")) {
+            versionNameSuffix = "-beta${extraVersion}"
+        } else if (taskRequestString.contains("debug")) {
+            versionNameSuffix = "-snaphsot"
+        }
+
+        def versionName = "${mytineVersion}.${buildNumber}${versionNameSuffix}"
+
+        println("versionName = ${versionName}")
+
+        versionName
+    }
+
+    getApkName = { buildType ->
+        def apkName = "만화경-${buildVersionName()}.apk"
+
+        println("apkName = ${apkName}")
+
+        apkName
+    }
+}
