@@ -1,5 +1,5 @@
 # mytine-android
-맞지 맞지 그 느낌적인 느낌 느낌
+[![Build Status](https://app.bitrise.io/app/bf28a05ed0e15a81/status.svg?token=ULQamn8-5EagFZtcXc9RsA&branch=develop)](https://app.bitrise.io/app/bf28a05ed0e15a81)
 
 ## 시작하는 법
 ### 1. 코드스타일 적용
