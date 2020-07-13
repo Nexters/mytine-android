@@ -12,10 +12,10 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     abstract val layoutId: Int
     abstract val viewModel: VM
-    lateinit var binding : VB
+    lateinit var binding: VB
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater,layoutId, container, false)
+        binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         binding.lifecycleOwner = requireActivity()
 
         return binding.root
