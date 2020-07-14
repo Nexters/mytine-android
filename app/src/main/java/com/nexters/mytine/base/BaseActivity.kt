@@ -12,7 +12,7 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
     abstract val layoutId: Int
     abstract val viewModel: VM
 
-    protected val binding by lazy{
+    protected val binding by lazy {
         DataBindingUtil.setContentView<VB>(this, layoutId)
     }
 
