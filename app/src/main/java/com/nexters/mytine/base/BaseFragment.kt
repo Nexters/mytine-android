@@ -16,7 +16,7 @@ abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> : Fragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
-        binding.lifecycleOwner = requireActivity()
+        binding.lifecycleOwner = viewLifecycleOwner
 
         return binding.root
     }
