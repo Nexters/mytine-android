@@ -5,20 +5,29 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
+import com.nexters.mytine.BR
+import kotlin.reflect.KClass
 
-abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {
+internal abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {
 
-    abstract val layoutId: Int
-    abstract val viewModel: VM
+    protected abstract val layoutResId: Int
+    protected abstract val viewModelClass: KClass<VM>
 
-    protected val binding by lazy {
-        DataBindingUtil.setContentView<VB>(this, layoutId)
+    lateinit var binding: VB
+
+    protected val viewModel: VM by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(viewModelStore, defaultViewModelProviderFactory).get(viewModelClass.java)
     }
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding = DataBindingUtil.setContentView(this, layoutResId)
+
         binding.lifecycleOwner = this
+
+        binding.setVariable(BR.viewModel, viewModel)
     }
 }
