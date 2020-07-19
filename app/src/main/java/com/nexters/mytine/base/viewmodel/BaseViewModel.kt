@@ -1,4 +1,4 @@
-package com.nexters.mytine.base
+package com.nexters.mytine.base.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections

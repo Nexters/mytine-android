@@ -1,10 +1,30 @@
 package com.nexters.mytine.ui.write
 
-import com.nexters.mytine.base.BaseViewModel
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.nexters.mytine.base.viewmodel.BaseViewModel
+import com.nexters.mytine.data.entity.Routine
+import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.navigation.BackDirections
+import kotlinx.coroutines.launch
 
-internal class WriteViewModel : BaseViewModel() {
+internal class WriteViewModel @ViewModelInject constructor(
+    private val routineRepository: RoutineRepository
+) : BaseViewModel() {
+    val title = MutableLiveData<String>()
+    val content = MutableLiveData<String>()
+
     fun onClickWrite() {
-        navDirections.value = BackDirections()
+        val title = title.value
+        val content = content.value
+
+        if (title != null && content != null) {
+            viewModelScope.launch {
+                routineRepository.updateRoutine(Routine(title = title, content = content))
+            }
+
+            navDirections.value = BackDirections()
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.nexters.mytine.base
+package com.nexters.mytine.base.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.nexters.mytine.BR
+import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.utils.extensions.observe
 import com.nexters.mytine.utils.extensions.toast
 import com.nexters.mytine.utils.navigation.BackDirections

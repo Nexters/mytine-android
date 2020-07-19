@@ -12,14 +12,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:paddingBottomSystemWindowInsets="@{true}"
-        android:background="@color/colorAccent">
+        android:background="@color/colorAccent"
+        app:paddingBottomSystemWindowInsets="@{true}">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_title"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:background="@color/black"
+            android:text="@={viewModel.title}"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +32,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/white"
+            android:gravity="start|top"
+            android:text="@={viewModel.content}"
             app:layout_constraintBottom_toTopOf="@id/btn_write"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

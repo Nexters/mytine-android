@@ -1,4 +1,4 @@
-package com.nexters.mytine.base
+package com.nexters.mytine.base.activity
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import com.nexters.mytine.BR
+import com.nexters.mytine.base.viewmodel.BaseViewModel
 import kotlin.reflect.KClass
 
 internal abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {

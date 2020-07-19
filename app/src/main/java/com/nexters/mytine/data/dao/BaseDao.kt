@@ -9,11 +9,11 @@ internal interface BaseDao<T> {
     fun upserts(entities: List<T>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(entity: T)
+    suspend fun upsert(entity: T)
 
     @Delete
-    fun delete(entity: T)
+    suspend fun delete(entity: T)
 
     @Delete
-    fun deletes(entities: List<T>)
+    suspend fun deletes(entities: List<T>)
 }
