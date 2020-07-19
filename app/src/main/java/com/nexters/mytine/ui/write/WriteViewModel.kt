@@ -19,12 +19,14 @@ internal class WriteViewModel @ViewModelInject constructor(
         val title = title.value
         val content = content.value
 
-        if (title != null && content != null) {
-            viewModelScope.launch {
-                routineRepository.updateRoutine(Routine(title = title, content = content))
-            }
-
-            navDirections.value = BackDirections()
+        if (title.isNullOrBlank() || content.isNullOrBlank()) {
+            return
         }
+
+        viewModelScope.launch {
+            routineRepository.updateRoutine(Routine(title = title, content = content))
+        }
+
+        navDirections.value = BackDirections()
     }
 }
