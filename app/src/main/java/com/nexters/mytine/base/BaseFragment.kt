@@ -8,7 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.nexters.mytine.BR
+import com.nexters.mytine.utils.extensions.observe
+import com.nexters.mytine.utils.extensions.toast
 import kotlin.reflect.KClass
 
 internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> : Fragment() {
@@ -29,5 +32,12 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
         binding.setVariable(BR.viewModel, viewModel)
 
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observe(viewModel.navDirections) { findNavController().navigate(it) }
+        observe(viewModel.toast) { toast(it) }
     }
 }
