@@ -1,7 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+androidExtensions {
+    experimental = true
+}
 apply plugin: 'kotlin-kapt'
+kapt {
+    correctErrorTypes = true
+}
+apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
 apply from: '../versioning.gradle'
 apply from: teamConfig('git/git-hooks.gradle')
@@ -10,18 +17,27 @@ apply from: teamConfig('staticCodeAnalysis/detekt.gradle')
 if (jacocoEnabled.toBoolean()) {
     apply from: '../jacoco.gradle'
 }
-
 android {
-    compileSdkVersion 29
+    compileSdkVersion rootProject.ext.compile_sdk_version
 
     defaultConfig {
         applicationId "com.nexters.mytine"
-        minSdkVersion 23
-        targetSdkVersion 29
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
         versionCode buildVersionCode()
         versionName buildVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"
+                ]
+            }
+        }
     }
 
     lintOptions {
@@ -30,11 +46,20 @@ android {
         ignoreTestSources true
     }
 
+    buildFeatures {
+        dataBinding true
+    }
+
+    hilt {
+        enableTransformForLocalTests = true
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -79,7 +104,9 @@ android {
             multiDexEnabled false
             shrinkResources true
             crunchPngs true
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles file('../proguard').listFiles()
         }
         release {
             signingConfig null
@@ -92,6 +119,7 @@ android {
             crunchPngs true
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles file('../proguard').listFiles()
         }
     }
 
@@ -100,51 +128,80 @@ android {
             assets.srcDirs += files("$projectDir/schemas".toString())
         }
     }
+}
 
-    buildFeatures{
-        dataBinding true
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // Koin
-    implementation "org.koin:koin-core:$koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    testImplementation "org.koin:koin-test:$koin_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.fragment:fragment:$fragment_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+    implementation "androidx.annotation:annotation:$annotation_version"
+    implementation "com.google.android.material:material:$material_version"
 
-    // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    kapt "androidx.databinding:databinding-compiler:$android_gradle_version"
 
-    // Room
-    implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    testImplementation "androidx.room:room-testing:$room_version"
+    // Ktx
+    implementation "androidx.core:core-ktx:$ktx_version"
 
-    //Mockito
-    testImplementation "org.mockito:mockito-core:2.28.2"
+    // Coroutine
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
 
-    //Dagger Hilt
-    implementation "com.google.dagger:hilt-android:$dagger_hilt_verion"
-    kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt_verion"
+    // DI
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "androidx.hilt:hilt-common:$dagger_hilt_version"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$dagger_hilt_version"
+    implementation "com.google.dagger:hilt-android:$dagger_hilt_android_version"
+    testImplementation "com.google.dagger:hilt-android-testing:$dagger_hilt_android_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "androidx.hilt:hilt-compiler:$dagger_hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt_android_version"
+    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
+    kaptTest "androidx.hilt:hilt-compiler:$dagger_hilt_version"
+    kaptTest "com.google.dagger:hilt-android-compiler:$dagger_hilt_android_version"
 
-    //lifecycle
+    // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
-    // Coroutine
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.room:room-testing:$room_version"
+
+    // Date
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp_version"
+
+    // Inset
+    implementation "dev.chrisbanes:insetter-ktx:$insetter_version"
+    implementation "dev.chrisbanes:insetter-dbx:$insetter_version"
+
+    // Debug
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+    // Test
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
+    testImplementation "org.threeten:threetenbp:$threetenabp_test_version"
+    testImplementation "androidx.test.ext:junit:$test_ext_junit_version"
+    testImplementation "androidx.arch.core:core-testing:$arch_testing_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "org.hamcrest:hamcrest-all:$hamcrest_version"
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
+    testImplementation "com.google.truth:truth:$truth_version"
 }
