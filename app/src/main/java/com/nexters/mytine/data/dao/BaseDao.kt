@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 
 internal interface BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upserts(entities: List<T>)
+    suspend fun upserts(entities: List<T>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: T)
