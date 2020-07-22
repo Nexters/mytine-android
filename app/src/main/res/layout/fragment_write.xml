@@ -24,10 +24,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_marginTopSystemWindowInsets="@{true}"
                 app:menu="@menu/menu_write"
+                app:navigationIcon="@drawable/abc_vector_test"
                 app:title="Add Routine" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -55,15 +57,13 @@
             app:layout_constraintStart_toStartOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/appbar" />
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.vanniktech.emoji.EmojiEditText
             android:id="@+id/et_emoji"
             android:layout_width="60dp"
             android:layout_height="52dp"
             android:background="@color/grey"
-            android:inputType="textShortMessage"
             app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/tv_emoji_title"
-            app:layout_marginTopSystemWindowInsets="@{true}" />
+            app:layout_constraintTop_toBottomOf="@id/tv_emoji_title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_emoji_desc"
