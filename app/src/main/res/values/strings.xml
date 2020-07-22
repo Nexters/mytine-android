@@ -1,3 +1,14 @@
 <resources>
 
+    <string name="write_emoji_title">이모지*</string>
+    <string name="write_routine_title">루틴 이름*</string>
+    <string name="write_goal_title">다짐/목표</string>
+    <string name="write_week_title">수행요일*</string>
+    <string name="week_mon">Mon</string>
+    <string name="week_tue">Tue</string>
+    <string name="week_wed">Wed</string>
+    <string name="week_thu">Thu</string>
+    <string name="week_fri">Fri</string>
+    <string name="week_sat">Sat</string>
+    <string name="week_sun">Sun</string>
 </resources>
