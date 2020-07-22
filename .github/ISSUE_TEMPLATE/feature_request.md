@@ -7,16 +7,9 @@ assignees: ''
 
 ---
 
-## Description
----
-기능을 명시합니다.
+## Expected Behavior
 
 
-## Progress
----
-* [] 
+## Steps to Reproduce the Problem
 
-
-## ETC
----
-- resolved #[해당 Issue Number]
+- 
