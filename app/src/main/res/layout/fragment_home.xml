@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,12 +26,13 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:text="아빠요기야"
                 android:backgroundTint="@color/white"
                 android:textColor="@color/colorPrimary"
-                android:onClick="@{() -> viewModel.onClickWrite()}" />
-        </RelativeLayout>
+                android:onClick="@{() -> viewModel.onClickWrite()}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_routine"
