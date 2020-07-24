@@ -25,6 +25,7 @@ buildscript {
         threetenabp_version = '1.2.4'
         insetter_version = "0.3.0"
         timber_version = '4.7.1'
+        viewpager2_version = '1.1.0-alpha01'
 
         ktlint_version = '0.37.2'
         detekt_version = '1.10.0'

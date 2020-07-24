@@ -146,6 +146,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation "androidx.annotation:annotation:$annotation_version"
     implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.viewpager2:viewpager2:$viewpager2_version"
 
     kapt "androidx.databinding:databinding-compiler:$android_gradle_version"
 
@@ -204,4 +205,5 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-all:$hamcrest_version"
     testImplementation "org.robolectric:robolectric:$robolectric_version"
     testImplementation "com.google.truth:truth:$truth_version"
+
 }

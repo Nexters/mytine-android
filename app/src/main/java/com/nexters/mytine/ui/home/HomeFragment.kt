@@ -2,6 +2,7 @@ package com.nexters.mytine.ui.home
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayoutMediator
 import com.nexters.mytine.R
 import com.nexters.mytine.base.fragment.BaseFragment
 import com.nexters.mytine.databinding.FragmentHomeBinding
@@ -19,6 +20,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         super.onActivityCreated(savedInstanceState)
 
         initializeRecyclerView()
+        setViewPager()
 
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
     }
@@ -30,5 +32,19 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         }
 
         homeAdapter.setViewModel(viewModel)
+    }
+
+    private fun setViewPager() {
+
+        val homePagerAdapter = HomePagerAdapter(this)
+        val routine = listOf("루틴", "회고")
+
+        binding.viewPager.run {
+            adapter = homePagerAdapter
+        }
+
+        TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
+            tab.text = routine[position]
+        }.attach()
     }
 }
