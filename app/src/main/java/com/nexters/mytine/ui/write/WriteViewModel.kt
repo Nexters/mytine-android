@@ -8,12 +8,16 @@ import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.launch
+import org.threeten.bp.DayOfWeek
 
 internal class WriteViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
     val title = MutableLiveData<String>()
     val content = MutableLiveData<String>()
+    val weekItems = MutableLiveData<List<WeekItem>>().apply {
+        value = DayOfWeek.values().map { WeekItem(it) }
+    }
 
     fun onClickWrite() {
         val title = title.value

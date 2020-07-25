@@ -130,102 +130,14 @@
             app:layout_constraintStart_toStartOf="@+id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/et_goal" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_monday"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_week"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_mon"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toStartOf="@id/tv_tuesday"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_tuesday"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_tue"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toStartOf="@id/tv_wednesday"
-            app:layout_constraintStart_toEndOf="@id/tv_monday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_wednesday"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_wed"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toStartOf="@id/tv_thursday"
-            app:layout_constraintStart_toEndOf="@id/tv_tuesday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_thursday"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_thu"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toStartOf="@id/tv_friday"
-            app:layout_constraintStart_toEndOf="@id/tv_wednesday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_friday"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_sat"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toStartOf="@id/tv_saturday"
-            app:layout_constraintStart_toEndOf="@id/tv_thursday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_saturday"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_sat"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toStartOf="@id/tv_sunday"
-            app:layout_constraintStart_toEndOf="@id/tv_friday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_sunday"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            android:text="@string/week_sun"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toEndOf="@id/guideline_right"
-            app:layout_constraintStart_toEndOf="@id/tv_saturday"
-            app:layout_constraintTop_toBottomOf="@+id/tv_week_title" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_week_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
