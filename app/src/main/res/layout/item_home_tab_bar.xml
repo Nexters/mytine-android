@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.nexters.mytine.ui.home.HomeViewModel" />
+
+        <variable
+            name="item"
+            type="com.nexters.mytine.ui.home.HomeItems.TabBarItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_routine"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="#E91E63"
+            android:onClick="@{() -> viewModel.onClickRoutine()}"
+            android:padding="8dp"
+            android:text="루틴"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:background="#3F51B5"
+            android:onClick="@{() -> viewModel.onClickRetrospect()}"
+            android:padding="8dp"
+            android:text="오늘의 회고"
+            app:layout_constraintStart_toEndOf="@+id/tv_routine"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

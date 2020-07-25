@@ -54,6 +54,6 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
             }
             adapter = weekAdapter
         }
-        weekAdapter.setViewModel(viewModel)
+        weekAdapter.setViewHolderViewModel(viewModel)
     }
 }

@@ -16,7 +16,7 @@ internal abstract class BaseListAdapter<T : BaseItem>(
 
 ) : ListAdapter<T, BaseViewHolder<T>>(diffCallback) {
 
-    private var viewModel: BaseViewModel? = null
+    var viewModel: BaseViewModel? = null
     private var itemClickListener: ((View, T) -> Unit)? = null
 
     abstract fun getItemViewTypeByItem(item: T): Int
@@ -73,7 +73,7 @@ internal abstract class BaseListAdapter<T : BaseItem>(
         holder.bind(getItem(position))
     }
 
-    fun setViewModel(viewModel: BaseViewModel) {
+    fun setViewHolderViewModel(viewModel: BaseViewModel) {
         this.viewModel = viewModel
     }
 
