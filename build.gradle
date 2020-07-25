@@ -23,7 +23,9 @@ buildscript {
         dagger_hilt_android_version = '2.28.3-alpha'
         dagger_hilt_version = '1.0.0-alpha01'
         threetenabp_version = '1.2.4'
+        emoji_version = '0.7.0-SNAPSHOT'
         insetter_version = "0.3.0"
+        flexbox_version = "2.0.1"
         timber_version = '4.7.1'
 
         ktlint_version = '0.37.2'
@@ -62,6 +64,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
 

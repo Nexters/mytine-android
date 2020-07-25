@@ -189,6 +189,12 @@ dependencies {
     implementation "dev.chrisbanes:insetter-ktx:$insetter_version"
     implementation "dev.chrisbanes:insetter-dbx:$insetter_version"
 
+    // Emoji
+    implementation "com.vanniktech:emoji-ios:$emoji_version"
+
+    // FlexBox
+    implementation "com.google.android:flexbox:$flexbox_version"
+
     // Debug
     implementation "com.jakewharton.timber:timber:$timber_version"
 

@@ -29,6 +29,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             adapter = homeAdapter
         }
 
-        homeAdapter.setViewModel(viewModel)
+        homeAdapter.setViewHolderViewModel(viewModel)
     }
 }
