@@ -3,13 +3,16 @@ package com.nexters.mytine.ui.write
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.nexters.mytine.R
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.repository.RoutineRepository
+import com.nexters.mytine.utils.ResourcesProvider
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
 internal class WriteViewModel @ViewModelInject constructor(
+    private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
 
@@ -27,7 +30,7 @@ internal class WriteViewModel @ViewModelInject constructor(
         val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
 
         if (emoji.isNullOrBlank() || name.isNullOrBlank() || goal.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
-            toast.value = "모든것을 다 채워넣어야함"
+            toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
             return
         }
 
