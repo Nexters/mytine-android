@@ -8,7 +8,7 @@ import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.launch
-import org.threeten.bp.DayOfWeek
+import java.time.DayOfWeek
 
 internal class WriteViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository

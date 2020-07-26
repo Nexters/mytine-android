@@ -11,7 +11,7 @@ import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.WeekItem
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.threeten.bp.DayOfWeek
+import java.time.DayOfWeek
 
 internal class HomeViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository
