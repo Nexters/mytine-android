@@ -38,6 +38,7 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
                 when (it.itemId) {
                     R.id.action_write -> {
                         viewModel.onClickWrite()
+                        hideKeyboard()
                         true
                     }
                     else -> super.onOptionsItemSelected(it)
