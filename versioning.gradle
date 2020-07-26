@@ -32,12 +32,4 @@ ext {
 
         versionName
     }
-
-    getApkName = { buildType ->
-        def apkName = "만화경-${buildVersionName()}.apk"
-
-        println("apkName = ${apkName}")
-
-        apkName
-    }
 }
