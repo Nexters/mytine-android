@@ -68,8 +68,8 @@ internal class WriteViewModelTest {
     @Test
     fun `요일을 클릭 할 시 해당 요일 선택 처리`() {
         val defaultWeekItems = DayOfWeek.values().map { WeekItem(it) }
-        val mondayItem = WeekItem(DayOfWeek.MONDAY, false)
-        val thursdayItem = WeekItem(DayOfWeek.THURSDAY, false)
+        val mondayItem = WeekItem(DayOfWeek.MONDAY, true)
+        val thursdayItem = WeekItem(DayOfWeek.THURSDAY, true)
         val mondaySelectedWeekItems = defaultWeekItems.map {
             if (it.dayOfWeek == mondayItem.dayOfWeek) {
                 mondayItem
@@ -94,7 +94,7 @@ internal class WriteViewModelTest {
         verify(weekItems).onChanged(mondayAndThursdaySelectedWeekItems)
 
         viewModel.onClickWeekItem(thursdayItem)
-        verify(weekItems).onChanged(mondayAndThursdaySelectedWeekItems)
+        verify(weekItems, times(2)).onChanged(mondaySelectedWeekItems)
 
         viewModel.onClickWeekItem(mondayItem)
         verify(weekItems, times(2)).onChanged(defaultWeekItems)
