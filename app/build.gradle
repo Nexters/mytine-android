@@ -38,6 +38,8 @@ android {
                 ]
             }
         }
+
+        multiDexEnabled true
     }
 
     lintOptions {
@@ -61,6 +63,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -89,7 +92,6 @@ android {
             debuggable true
             zipAlignEnabled false
             minifyEnabled false
-            multiDexEnabled true
 
             testCoverageEnabled jacocoEnabled.toBoolean()
         }
@@ -101,7 +103,6 @@ android {
             debuggable true
             zipAlignEnabled true
             minifyEnabled true
-            multiDexEnabled false
             shrinkResources true
             crunchPngs true
 
@@ -114,7 +115,6 @@ android {
             debuggable false
             zipAlignEnabled true
             minifyEnabled true
-            multiDexEnabled false
             shrinkResources true
             crunchPngs true
 
@@ -137,8 +137,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.fragment:fragment:$fragment_version"

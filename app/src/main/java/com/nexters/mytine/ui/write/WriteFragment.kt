@@ -38,7 +38,7 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
     private fun initializeEmoji() {
         val emojiPopup = EmojiPopup.Builder.fromRootView(binding.root)
             .setKeyboardAnimationStyle(R.style.emoji_fade_animation_style)
-            .setOnEmojiClickListener { _, emoji ->
+            .setOnEmojiClickListener { _, _ ->
                 binding.root.hideKeyboard()
             }
             .build(binding.etEmoji)
