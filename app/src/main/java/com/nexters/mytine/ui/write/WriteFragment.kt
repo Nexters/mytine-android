@@ -33,6 +33,17 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
 
     private fun initializeToolbar() {
         binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.run {
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_write -> {
+                        viewModel.onClickWrite()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
     }
 
     private fun initializeEmoji() {

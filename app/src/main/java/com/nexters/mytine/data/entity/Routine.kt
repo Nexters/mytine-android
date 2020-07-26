@@ -11,11 +11,18 @@ internal data class Routine(
     val name: String,
     val goal: String,
     val status: Status,
+    val id: String = "emoji=$emoji,name=$name,goal=$goal",
     @PrimaryKey
-    val id: String = "date=$date,emoji=$emoji,name=$name,goal=$goal"
+    val realId: String = "date=$date,emoji=$emoji,name=$name,goal=$goal"
 ) {
     enum class Status {
         SUCCESS,
-        FAIL
+        FAIL,
+        ENABLE,
+        DISABLE
+    }
+
+    fun copy(date: LocalDate = this.date, emoji: String = this.emoji, name: String = this.name, goal: String = this.goal, status: Status = this.status): Routine {
+        return Routine(date, emoji, name, goal, status)
     }
 }
