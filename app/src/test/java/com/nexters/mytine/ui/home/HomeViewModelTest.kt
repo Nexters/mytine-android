@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -51,7 +52,7 @@ internal class HomeViewModelTest {
 
     @Test
     fun `진입 시 홈 아이템 불러오기`() {
-        verify(homeItems).onChanged(listOf(HomeItems.RoutineItem(mockRoutine)))
+        verify(homeItems).onChanged(any())
     }
 
     @Test
