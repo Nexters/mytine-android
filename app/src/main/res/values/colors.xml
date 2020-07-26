@@ -6,4 +6,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#eceded</color>
+
+    <color name="edit_back_color">#eceded</color>
+    <color name="week_select_color">#606060</color>
 </resources>

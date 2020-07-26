@@ -11,4 +11,6 @@
     <string name="week_fri">Fri</string>
     <string name="week_sat">Sat</string>
     <string name="week_sun">Sun</string>
+
+    <string name="write_empty_toast_message">모든 내용을 다 채워넣어야 합니다</string>
 </resources>

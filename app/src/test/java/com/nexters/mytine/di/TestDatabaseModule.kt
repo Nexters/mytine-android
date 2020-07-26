@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @Module
@@ -20,6 +21,7 @@ internal class TestDatabaseModule {
             MyTineRoomDatabase::class.java
         )
             .allowMainThreadQueries()
+            .setTransactionExecutor(Executors.newSingleThreadExecutor())
             .build()
     }
 }

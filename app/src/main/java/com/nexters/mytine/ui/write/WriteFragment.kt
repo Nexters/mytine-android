@@ -33,12 +33,24 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
 
     private fun initializeToolbar() {
         binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.run {
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_write -> {
+                        viewModel.onClickWrite()
+                        hideKeyboard()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
     }
 
     private fun initializeEmoji() {
         val emojiPopup = EmojiPopup.Builder.fromRootView(binding.root)
             .setKeyboardAnimationStyle(R.style.emoji_fade_animation_style)
-            .setOnEmojiClickListener { _, emoji ->
+            .setOnEmojiClickListener { _, _ ->
                 binding.root.hideKeyboard()
             }
             .build(binding.etEmoji)

@@ -15,5 +15,5 @@ internal sealed class HomeItems(override val itemId: String) : BaseItem {
 
     class Retrospect : HomeItems("retrospect")
 
-    data class RoutineItem(val routine: Routine) : HomeItems(routine.id.toString())
+    data class RoutineItem(val routine: Routine) : HomeItems(routine.id)
 }
