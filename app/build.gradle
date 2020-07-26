@@ -137,7 +137,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_jdk_libs_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
@@ -195,6 +195,7 @@ dependencies {
 
     // Debug
     implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation "com.facebook.stetho:stetho:$stetho_version"
 
     // Test
     testImplementation "junit:junit:$junit_version"
