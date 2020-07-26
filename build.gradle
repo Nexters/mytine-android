@@ -22,7 +22,6 @@ buildscript {
         dagger_version = '2.28.3'
         dagger_hilt_android_version = '2.28.3-alpha'
         dagger_hilt_version = '1.0.0-alpha01'
-        threetenabp_version = '1.2.4'
         emoji_version = '0.7.0-SNAPSHOT'
         insetter_version = "0.3.0"
         flexbox_version = "2.0.1"
@@ -39,7 +38,6 @@ buildscript {
         robolectric_version = '4.3.1'
         espresso_version = '3.2.0'
         truth_version = '1.0.1'
-        threetenabp_test_version = '1.4.2'
         runner_version = '1.2.0'
 
         jacocoEnabled = (System.properties.getProperty("jacocoEnabled") ?: "false")

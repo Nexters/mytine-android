@@ -182,9 +182,6 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
 
-    // Date
-    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp_version"
-
     // Inset
     implementation "dev.chrisbanes:insetter-ktx:$insetter_version"
     implementation "dev.chrisbanes:insetter-dbx:$insetter_version"
@@ -202,7 +199,6 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
-    testImplementation "org.threeten:threetenbp:$threetenabp_test_version"
     testImplementation "androidx.test.ext:junit:$test_ext_junit_version"
     testImplementation "androidx.arch.core:core-testing:$arch_testing_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
