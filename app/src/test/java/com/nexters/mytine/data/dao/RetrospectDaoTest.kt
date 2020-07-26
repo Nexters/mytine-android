@@ -9,6 +9,7 @@ import com.nexters.mytine.di.DatabaseModule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -59,5 +60,13 @@ internal class RetrospectDaoTest {
         val retrospect = retrospect
         dao.upsert(retrospect)
         assertThat(dao.get(LocalDate.now())).isEqualTo(retrospect)
+    }
+
+    @Test
+    fun `getFlow 테스트`() = runBlocking {
+        assertThat(dao.getFlow(LocalDate.now()).first()).isNull()
+        val retrospect = retrospect
+        dao.upsert(retrospect)
+        assertThat(dao.getFlow(LocalDate.now()).first()).isEqualTo(retrospect)
     }
 }
