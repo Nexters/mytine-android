@@ -1,22 +1,27 @@
 package com.nexters.mytine.ui.home
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.entity.Routine
+import com.nexters.mytine.data.repository.RetrospectRepository
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.WeekItem
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
 internal class HomeViewModel @ViewModelInject constructor(
-    private val routineRepository: RoutineRepository
+    private val routineRepository: RoutineRepository,
+    private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
+    val content = MutableLiveData<String>()
 
     init {
         viewModelScope.launch {
@@ -74,5 +79,13 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private fun iconItems(): List<IconItem> {
         return listOf("a", "b", "c", "d", "e", "f", "g").map { IconItem(it) }
+    }
+
+    fun onClickWriteRetrospect() {
+//        TODO("변경된 내용이 있는지 확인")
+        viewModelScope.launch {
+            retrospectRepository.updateRetrospect(content.value!!)
+            Log.e("test", "잘 들어갔나~${retrospectRepository.getRetrospect().first()}")
+        }
     }
 }
