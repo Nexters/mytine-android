@@ -1,5 +1,7 @@
 package com.nexters.mytine.di
 
+import com.nexters.mytine.data.repository.RetrospectRepository
+import com.nexters.mytine.data.repository.RetrospectRepositoryImpl
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.data.repository.RoutineRepositoryImpl
 import dagger.Binds
@@ -14,4 +16,8 @@ internal interface RepositoryModule {
     @Binds
     @ActivityRetainedScoped
     fun bindRoutineRepository(routineRepositoryImpl: RoutineRepositoryImpl): RoutineRepository
+
+    @Binds
+    @ActivityRetainedScoped
+    fun bindRetrospectRepository(retrospectRepositoryImpl: RetrospectRepositoryImpl): RetrospectRepository
 }
