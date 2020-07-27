@@ -6,5 +6,5 @@ import java.time.DayOfWeek
 
 internal interface RoutineRepository {
     fun getRoutines(): Flow<List<Routine>>
-    suspend fun addRoutine(emoji: String, name: String, goal: String, selectedDayOfWeeks: List<DayOfWeek>)
+    suspend fun updateRoutine(emoji: String, name: String, goal: String, selectedDayOfWeeks: List<DayOfWeek>, id: String = "")
 }

@@ -5,29 +5,28 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.nexters.mytine.data.entity.Routine
 import kotlinx.coroutines.flow.Flow
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Dao
 internal abstract class RoutineDao : BaseDao<Routine> {
     @Query("SELECT * FROM routine ORDER BY date ASC")
-    abstract fun gets(): Flow<List<Routine>>
+    abstract fun flowRoutines(): Flow<List<Routine>>
 
     @Query("SELECT * FROM routine ORDER BY date ASC")
-    abstract suspend fun getsSync(): List<Routine>
+    abstract suspend fun gets(): List<Routine>
 
-    @Query("DELETE FROM routine WHERE date BETWEEN :from AND :to")
-    abstract suspend fun deletes(from: LocalDate, to: LocalDate)
+    @Query("SELECT * FROM routine WHERE id = :id")
+    abstract fun getsById(id: String): List<Routine>
+
+    @Query("SELECT * FROM routine WHERE date BETWEEN :from AND :to")
+    abstract suspend fun getWeekRoutines(from: LocalDate, to: LocalDate): List<Routine>
+
+    @Query("DELETE FROM routine WHERE id = :id")
+    abstract suspend fun deletes(id: String)
 
     @Transaction
-    open suspend fun deleteAndUpdate(entities: List<Routine>) {
-        if (entities.isNotEmpty()) {
-            val date = entities.first().date
-            val from = date.with(DayOfWeek.MONDAY)
-            val to = date.with(DayOfWeek.SUNDAY)
-
-            deletes(from, to)
-        }
+    open suspend fun deleteAndUpdate(id: String, entities: List<Routine>) {
+        deletes(id)
         upserts(entities)
     }
 }
