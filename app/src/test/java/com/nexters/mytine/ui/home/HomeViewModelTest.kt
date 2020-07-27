@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
 import com.nexters.mytine.MainCoroutinesRule
+import com.nexters.mytine.anyObj
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,7 +44,7 @@ internal class HomeViewModelTest {
 
     @Before
     fun setup() {
-        `when`(mockRoutineRepository.getRoutines()).thenReturn(flow { emit(listOf(mockRoutine)) })
+        `when`(mockRoutineRepository.flowRoutines(anyObj())).thenReturn(flow { emit(listOf(mockRoutine)) })
 
         viewModel = HomeViewModel(mockRoutineRepository)
         viewModel.navDirections.observeForever(navDirections)

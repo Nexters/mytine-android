@@ -29,7 +29,7 @@ internal class RoutineDaoTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val couroutinesRule = MainCoroutinesRule()
+    val coroutinesRule = MainCoroutinesRule()
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -57,10 +57,9 @@ internal class RoutineDaoTest {
 
     @Test
     fun `flowRoutines 테스트`() = runBlocking {
-        assertThat(dao.flowRoutines().first()).isEmpty()
-        val routine = routine
+        assertThat(dao.flowRoutines(routine.date).first()).isEmpty()
         dao.upsert(routine)
-        assertThat(dao.flowRoutines().first()).isEqualTo(listOf(routine))
+        assertThat(dao.flowRoutines(routine.date).first()).isEqualTo(listOf(routine))
     }
 
     @Test
@@ -89,7 +88,7 @@ internal class RoutineDaoTest {
     }
 
     @Test
-    fun `getWeekRoutines 테스트`() = runBlocking {
+    fun `getsByDate 테스트`() = runBlocking {
         val routineMon = routine.copy(date = routine.date.with(DayOfWeek.MONDAY))
         val routineTue = routine.copy(date = routine.date.with(DayOfWeek.TUESDAY))
         val routineWed = routine.copy(date = routine.date.with(DayOfWeek.WEDNESDAY))
@@ -101,10 +100,10 @@ internal class RoutineDaoTest {
         val routines = listOf(routineMon, routineTue, routineWed, routineThu, routineFri, routineSat, routineSun)
         dao.upserts(routines)
 
-        assertThat(dao.getWeekRoutines(routine.date.with(DayOfWeek.MONDAY), routine.date.with(DayOfWeek.SUNDAY))).isEqualTo(listOf(routineMon, routineTue, routineWed, routineThu, routineFri, routineSat, routineSun))
-        assertThat(dao.getWeekRoutines(routine.date.with(DayOfWeek.MONDAY), routine.date.with(DayOfWeek.WEDNESDAY))).isEqualTo(listOf(routineMon, routineTue, routineWed))
-        assertThat(dao.getWeekRoutines(routine.date.with(DayOfWeek.TUESDAY), routine.date.with(DayOfWeek.THURSDAY))).isEqualTo(listOf(routineTue, routineWed, routineThu))
-        assertThat(dao.getWeekRoutines(routine.date.with(DayOfWeek.FRIDAY), routine.date.with(DayOfWeek.SUNDAY))).isEqualTo(listOf(routineFri, routineSat, routineSun))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.MONDAY), routine.date.with(DayOfWeek.SUNDAY))).isEqualTo(listOf(routineMon, routineTue, routineWed, routineThu, routineFri, routineSat, routineSun))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.MONDAY), routine.date.with(DayOfWeek.WEDNESDAY))).isEqualTo(listOf(routineMon, routineTue, routineWed))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.TUESDAY), routine.date.with(DayOfWeek.THURSDAY))).isEqualTo(listOf(routineTue, routineWed, routineThu))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.FRIDAY), routine.date.with(DayOfWeek.SUNDAY))).isEqualTo(listOf(routineFri, routineSat, routineSun))
     }
 
     @Test

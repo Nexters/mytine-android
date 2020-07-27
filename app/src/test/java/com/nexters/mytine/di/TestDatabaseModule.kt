@@ -3,6 +3,7 @@ package com.nexters.mytine.di
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.nexters.mytine.data.MyTineRoomDatabase
+import com.nexters.mytine.data.dao.RoutineDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,4 +25,8 @@ internal class TestDatabaseModule {
             .setTransactionExecutor(Executors.newSingleThreadExecutor())
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideRoutineDao(roomDatabase: MyTineRoomDatabase): RoutineDao = roomDatabase.routineDao()
 }

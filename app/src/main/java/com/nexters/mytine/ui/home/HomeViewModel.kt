@@ -12,6 +12,7 @@ import com.nexters.mytine.ui.home.week.WeekItem
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 internal class HomeViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository
@@ -20,7 +21,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            routineRepository.getRoutines()
+            routineRepository.flowRoutines(LocalDate.now())
                 .collect { homeItems.value = createHomeItems(it) }
         }
     }

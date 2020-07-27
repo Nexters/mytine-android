@@ -1,6 +1,6 @@
 package com.nexters.mytine.data.repository
 
-import com.nexters.mytine.data.MyTineRoomDatabase
+import com.nexters.mytine.data.dao.RoutineDao
 import com.nexters.mytine.data.entity.Routine
 import kotlinx.coroutines.flow.Flow
 import java.time.DayOfWeek
@@ -8,13 +8,12 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 internal class RoutineRepositoryImpl @Inject constructor(
-    roomDatabase: MyTineRoomDatabase
+    private val routineDao: RoutineDao
+
 ) : RoutineRepository {
 
-    private val routineDao = roomDatabase.routineDao()
-
-    override fun getRoutines(): Flow<List<Routine>> {
-        return routineDao.flowRoutines()
+    override fun flowRoutines(date: LocalDate): Flow<List<Routine>> {
+        return routineDao.flowRoutines(date)
     }
 
     override suspend fun updateRoutine(
@@ -30,7 +29,7 @@ internal class RoutineRepositoryImpl @Inject constructor(
         val order = if (isUpdate) {
             routineDao.getsById(id).first().order
         } else {
-            routineDao.getWeekRoutines(now.with(DayOfWeek.MONDAY), now.with(DayOfWeek.SUNDAY)).distinctBy { it.id }.size
+            routineDao.getsByDate(now.with(DayOfWeek.MONDAY), now.with(DayOfWeek.SUNDAY)).distinctBy { it.id }.size
         }
 
         val routines = DayOfWeek.values().map {
