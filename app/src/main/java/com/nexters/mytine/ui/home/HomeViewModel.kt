@@ -15,14 +15,14 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 
 internal class HomeViewModel @ViewModelInject constructor(
-    private val routineRepository: RoutineRepository
+        private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
 
     init {
         viewModelScope.launch {
             routineRepository.flowRoutines(LocalDate.now())
-                .collect { homeItems.value = createHomeItems(it) }
+                    .collect { homeItems.value = createHomeItems(it) }
         }
     }
 
@@ -31,21 +31,25 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickRoutine() {
-        homeItems.value = mutableListOf<HomeItems>().apply {
-            add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
-            add(HomeItems.TabBarItem())
+        viewModelScope.launch {
+            homeItems.value = mutableListOf<HomeItems>().apply {
+                add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
+                add(HomeItems.TabBarItem())
+            }
         }
     }
 
     fun onClickRetrospect() {
-        homeItems.value = mutableListOf<HomeItems>().apply {
-            add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
-            add(HomeItems.TabBarItem())
-            add(HomeItems.Retrospect())
+        viewModelScope.launch {
+            homeItems.value = mutableListOf<HomeItems>().apply {
+                add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
+                add(HomeItems.TabBarItem())
+                add(HomeItems.Retrospect())
+            }
         }
     }
 
-    private fun createHomeItems(routines: List<Routine>): List<HomeItems> {
+    private suspend fun createHomeItems(routines: List<Routine>): List<HomeItems> {
         return mutableListOf<HomeItems>().apply {
             add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
             add(HomeItems.TabBarItem())
@@ -57,23 +61,16 @@ internal class HomeViewModel @ViewModelInject constructor(
         return DayOfWeek.values().map { WeekItem(it) }
     }
 
-    private fun iconGroupItems(): List<IconGroupItem> {
-        return listOf(
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems())
-        )
+    private suspend fun iconGroupItems(): List<IconGroupItem> {
+        return iconItems().map { IconGroupItem(it) }
     }
 
-    private fun iconItems(): List<IconItem> {
-        return listOf("a", "b", "c", "d", "e", "f", "g").map { IconItem(it) }
+    private suspend fun iconItems(): List<List<IconItem>> {
+        val now = LocalDate.now()
+        return routineRepository.getsByDate(now.with(DayOfWeek.MONDAY), now.with(DayOfWeek.SUNDAY))
+                .groupBy { it.id }
+                .map { routineMap ->
+                    routineMap.value.map { r -> IconItem(r) }
+                }
     }
 }
