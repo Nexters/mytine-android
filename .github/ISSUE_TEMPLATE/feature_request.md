@@ -7,9 +7,6 @@ assignees: ''
 
 ---
 
-## Expected Behavior
-
-
 ## Description
 
 - 
