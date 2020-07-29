@@ -9,20 +9,28 @@ import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.WeekItem
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@ExperimentalCoroutinesApi
 internal class HomeViewModel @ViewModelInject constructor(
         private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
+    private val weekRoutinesBroadcastChannel = ConflatedBroadcastChannel<List<Routine>>()
+    private val tabBarStatusBroadcastChannel = ConflatedBroadcastChannel<TabBarStatus>()
 
     init {
         viewModelScope.launch {
-            routineRepository.flowRoutines(LocalDate.now())
-                    .collect { homeItems.value = createHomeItems(it) }
+            loadWeekRoutines(LocalDate.now())
+            onClickRoutine()
+            initBroadcastChannelEvent()
         }
     }
 
@@ -31,46 +39,51 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickRoutine() {
-        viewModelScope.launch {
-            homeItems.value = mutableListOf<HomeItems>().apply {
-                add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
-                add(HomeItems.TabBarItem())
-            }
-        }
+        viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab) }
     }
 
     fun onClickRetrospect() {
+        viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RetrospectTab) }
+    }
+
+    fun loadWeekRoutines(selectedDay: LocalDate) {
         viewModelScope.launch {
-            homeItems.value = mutableListOf<HomeItems>().apply {
-                add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
-                add(HomeItems.TabBarItem())
-                add(HomeItems.Retrospect())
-            }
+            val from = selectedDay.with(DayOfWeek.MONDAY)
+            val to = selectedDay.with(DayOfWeek.SUNDAY)
+            weekRoutinesBroadcastChannel.send(routineRepository.getsByDate(from, to))
+            tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab)
         }
     }
 
-    private suspend fun createHomeItems(routines: List<Routine>): List<HomeItems> {
-        return mutableListOf<HomeItems>().apply {
-            add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
-            add(HomeItems.TabBarItem())
-            addAll(routines.map { HomeItems.RoutineItem(it) })
+    private suspend fun initBroadcastChannelEvent() {
+        combine(weekRoutinesBroadcastChannel.asFlow(), tabBarStatusBroadcastChannel.asFlow()) { routineList, tabBarStatus ->
+            mutableListOf<HomeItems>().apply {
+                add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
+                add(HomeItems.TabBarItem())
+                when (tabBarStatus) {
+                    TabBarStatus.RoutineTab -> addAll(routineList.map { HomeItems.RoutineItem(it) })
+                    TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
+                }
+            }
+        }.collect {
+            homeItems.value = it
         }
     }
 
     private fun weekItems(): List<WeekItem> {
-        return DayOfWeek.values().map { WeekItem(it) }
-    }
-
-    private suspend fun iconGroupItems(): List<IconGroupItem> {
-        return iconItems().map { IconGroupItem(it) }
-    }
-
-    private suspend fun iconItems(): List<List<IconItem>> {
         val now = LocalDate.now()
-        return routineRepository.getsByDate(now.with(DayOfWeek.MONDAY), now.with(DayOfWeek.SUNDAY))
-                .groupBy { it.id }
+        return DayOfWeek.values().map { day -> WeekItem(now.with(day), { loadWeekRoutines(selectedDay = it) }) }
+    }
+
+    private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
+        return list.groupBy { it.id }
                 .map { routineMap ->
-                    routineMap.value.map { r -> IconItem(r) }
+                    IconGroupItem(routineMap.value.map { r -> IconItem(r) })
                 }
+    }
+
+    enum class TabBarStatus {
+        RoutineTab,
+        RetrospectTab
     }
 }
