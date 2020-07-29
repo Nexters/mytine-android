@@ -11,9 +11,10 @@ internal data class Routine(
     val name: String,
     val goal: String,
     val status: Status,
-    val id: String = "emoji=$emoji,name=$name,goal=$goal",
+    val order: Int,
+    val id: String = "emoji=$emoji,name=$name,goal=$goal,order=$order",
     @PrimaryKey
-    val realId: String = "date=$date,emoji=$emoji,name=$name,goal=$goal"
+    val realId: String = "date=$date,emoji=$emoji,name=$name,goal=$goal,order=$order"
 ) {
     enum class Status {
         SUCCESS,
@@ -22,7 +23,15 @@ internal data class Routine(
         DISABLE
     }
 
-    fun copy(date: LocalDate = this.date, emoji: String = this.emoji, name: String = this.name, goal: String = this.goal, status: Status = this.status): Routine {
-        return Routine(date, emoji, name, goal, status)
+    @SuppressWarnings("LongParameterList")
+    fun copy(
+        date: LocalDate = this.date,
+        emoji: String = this.emoji,
+        name: String = this.name,
+        goal: String = this.goal,
+        status: Status = this.status,
+        order: Int = this.order
+    ): Routine {
+        return Routine(date, emoji, name, goal, status, order)
     }
 }

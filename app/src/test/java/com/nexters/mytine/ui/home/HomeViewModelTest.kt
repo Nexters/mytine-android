@@ -55,7 +55,7 @@ internal class HomeViewModelTest {
 
     @Before
     fun setup() {
-        `when`(mockRoutineRepository.getRoutines()).thenReturn(flow { emit(listOf(mockRoutine)) })
+        `when`(mockRoutineRepository.flowRoutines(anyObj())).thenReturn(flow { emit(listOf(mockRoutine)) })
 
         viewModel = HomeViewModel(resourcesProvider, mockRoutineRepository, mockRetrospectRepository)
         viewModel.navDirections.observeForever(navDirections)

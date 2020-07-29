@@ -35,7 +35,7 @@ internal class WriteViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            routineRepository.addRoutine(
+            routineRepository.updateRoutine(
                 emoji = emoji,
                 name = name,
                 goal = goal,

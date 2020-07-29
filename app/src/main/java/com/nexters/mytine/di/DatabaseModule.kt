@@ -3,6 +3,7 @@ package com.nexters.mytine.di
 import android.content.Context
 import androidx.room.Room
 import com.nexters.mytine.data.MyTineRoomDatabase
+import com.nexters.mytine.data.dao.RoutineDao
 import com.nexters.mytine.data.migration.MIGRAITONS
 import dagger.Module
 import dagger.Provides
@@ -26,4 +27,8 @@ internal class DatabaseModule {
             .addMigrations(*MIGRAITONS)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideRoutineDao(roomDatabase: MyTineRoomDatabase): RoutineDao = roomDatabase.routineDao()
 }

@@ -29,7 +29,7 @@ internal class RoutineDaoTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val couroutinesRule = MainCoroutinesRule()
+    val coroutinesRule = MainCoroutinesRule()
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -47,7 +47,7 @@ internal class RoutineDaoTest {
 
         dao = database.routineDao()
 
-        routine = Routine(date = LocalDate.now(), emoji = "emoji", name = "name", goal = "goal", status = Routine.Status.ENABLE)
+        routine = Routine(date = LocalDate.now(), emoji = "emoji", name = "name", goal = "goal", status = Routine.Status.ENABLE, order = 0)
     }
 
     @After
@@ -56,19 +56,54 @@ internal class RoutineDaoTest {
     }
 
     @Test
-    fun `gets 테스트`() = runBlocking {
-        assertThat(dao.gets().first()).isEmpty()
-        val routine = routine
+    fun `flowRoutines 테스트`() = runBlocking {
+        assertThat(dao.flowRoutines(routine.date).first()).isEmpty()
         dao.upsert(routine)
-        assertThat(dao.gets().first()).isEqualTo(listOf(routine))
+        assertThat(dao.flowRoutines(routine.date).first()).isEqualTo(listOf(routine))
     }
 
     @Test
-    fun `getsSync 테스트`() = runBlocking {
-        assertThat(dao.getsSync()).isEmpty()
+    fun `gets 테스트`() = runBlocking {
+        assertThat(dao.gets()).isEmpty()
         val routine = routine
         dao.upsert(routine)
-        assertThat(dao.getsSync()).isEqualTo(listOf(routine))
+        assertThat(dao.gets()).isEqualTo(listOf(routine))
+    }
+
+    @Test
+    fun `getsById 테스트`() = runBlocking {
+        val routineAMon = routine.copy(name = "A", date = routine.date.with(DayOfWeek.MONDAY))
+        val routineATue = routine.copy(name = "A", date = routine.date.with(DayOfWeek.TUESDAY))
+
+        val routineBMon = routine.copy(name = "B", date = routine.date.with(DayOfWeek.MONDAY))
+        val routineBTue = routine.copy(name = "B", date = routine.date.with(DayOfWeek.TUESDAY))
+
+        dao.upserts(listOf(routineAMon, routineATue, routineBMon, routineBTue))
+
+        assertThat(dao.getsById(routineAMon.id)).isEqualTo(listOf(routineAMon, routineATue))
+        assertThat(dao.getsById(routineATue.id)).isEqualTo(listOf(routineAMon, routineATue))
+
+        assertThat(dao.getsById(routineBMon.id)).isEqualTo(listOf(routineBMon, routineBTue))
+        assertThat(dao.getsById(routineBTue.id)).isEqualTo(listOf(routineBMon, routineBTue))
+    }
+
+    @Test
+    fun `getsByDate 테스트`() = runBlocking {
+        val routineMon = routine.copy(date = routine.date.with(DayOfWeek.MONDAY))
+        val routineTue = routine.copy(date = routine.date.with(DayOfWeek.TUESDAY))
+        val routineWed = routine.copy(date = routine.date.with(DayOfWeek.WEDNESDAY))
+        val routineThu = routine.copy(date = routine.date.with(DayOfWeek.THURSDAY))
+        val routineFri = routine.copy(date = routine.date.with(DayOfWeek.FRIDAY))
+        val routineSat = routine.copy(date = routine.date.with(DayOfWeek.SATURDAY))
+        val routineSun = routine.copy(date = routine.date.with(DayOfWeek.SUNDAY))
+
+        val routines = listOf(routineMon, routineTue, routineWed, routineThu, routineFri, routineSat, routineSun)
+        dao.upserts(routines)
+
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.MONDAY), routine.date.with(DayOfWeek.SUNDAY))).isEqualTo(listOf(routineMon, routineTue, routineWed, routineThu, routineFri, routineSat, routineSun))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.MONDAY), routine.date.with(DayOfWeek.WEDNESDAY))).isEqualTo(listOf(routineMon, routineTue, routineWed))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.TUESDAY), routine.date.with(DayOfWeek.THURSDAY))).isEqualTo(listOf(routineTue, routineWed, routineThu))
+        assertThat(dao.getsByDate(routine.date.with(DayOfWeek.FRIDAY), routine.date.with(DayOfWeek.SUNDAY))).isEqualTo(listOf(routineFri, routineSat, routineSun))
     }
 
     @Test
@@ -84,13 +119,14 @@ internal class RoutineDaoTest {
         val routines = listOf(routineMon, routineTue, routineWed, routineThu, routineFri, routineSat, routineSun)
 
         dao.upserts(routines)
-        assertThat(dao.getsSync()).isEqualTo(routines)
+
+        assertThat(dao.gets()).isEqualTo(routines)
 
         val newRoutines = routines.mapIndexed { index, routine ->
             routine.copy(status = Routine.Status.values()[index % Routine.Status.values().size])
         }
 
-        dao.deleteAndUpdate(newRoutines)
-        assertThat(dao.getsSync()).isEqualTo(newRoutines)
+        dao.deleteAndUpdate(routine.id, newRoutines)
+        assertThat(dao.gets()).isEqualTo(newRoutines)
     }
 }
