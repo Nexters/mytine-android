@@ -4,17 +4,20 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
 import com.nexters.mytine.MainCoroutinesRule
+import com.nexters.mytine.data.entity.Retrospect
 import com.nexters.mytine.data.entity.Routine
+import com.nexters.mytine.data.repository.RetrospectRepository
 import com.nexters.mytine.data.repository.RoutineRepository
+import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -39,13 +42,22 @@ internal class HomeViewModelTest {
     @Mock
     private lateinit var mockRoutine: Routine
 
+    @Mock
+    private lateinit var mockRetrospectRepository: RetrospectRepository
+
+    @Mock
+    private lateinit var mockRetrospect: Retrospect
+
+    @Mock
+    private lateinit var resourcesProvider: ResourcesProvider
+
     private lateinit var viewModel: HomeViewModel
 
     @Before
     fun setup() {
         `when`(mockRoutineRepository.getRoutines()).thenReturn(flow { emit(listOf(mockRoutine)) })
 
-        viewModel = HomeViewModel(mockRoutineRepository)
+        viewModel = HomeViewModel(resourcesProvider, mockRoutineRepository, mockRetrospectRepository)
         viewModel.navDirections.observeForever(navDirections)
         viewModel.homeItems.observeForever(homeItems)
     }
@@ -60,5 +72,25 @@ internal class HomeViewModelTest {
         viewModel.onClickWrite()
 
         verify(navDirections).onChanged(HomeFragmentDirections.actionHomeFragmentToWriteFragment())
+    }
+
+    @Test
+    fun `(Given) 해당 날짜에 작성한 회고가 있을 경우 (When) 회고 버튼 클릭 시 (Then) 내용 불러오기`() {
+    }
+
+    @Test
+    fun `(Given) 변경된 내용이 없을 때 (When) 회고 작성 버튼 클릭 시 (Then) 토스트`() {
+    }
+
+    @Test
+    fun `(Given) 회고를 작성하지 않은 채 (When) 회고 작성 버튼 클릭 시 (Then) 토스트`() {
+    }
+
+    @Test
+    fun `(Given) 회고 작성 후 (When) 회고 작성 버튼 클릭 시 (Then) 회고 저장`() {
+    }
+
+    @Test
+    fun `(Given) 회고 작성 중 (When) 루틴 탭으로 이동 할 경우 (Then) 토스트`() {
     }
 }
