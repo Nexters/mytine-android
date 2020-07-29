@@ -72,7 +72,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private fun weekItems(): List<WeekItem> {
         val now = LocalDate.now()
-        return DayOfWeek.values().map { day -> WeekItem(now.with(day), { loadWeekRoutines(selectedDay = it) }) }
+        return DayOfWeek.values().map { day -> WeekItem(now.with(day)) }
     }
 
     private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
