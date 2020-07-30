@@ -29,9 +29,8 @@ internal class HomeViewModel @ViewModelInject constructor(
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
-    val content = MutableLiveData<String>().apply { value = "" }
-
-    private var storedContent: String = ""
+    val retrospectContent = MutableLiveData<String>().apply { value = "" }
+    val retrospect = MutableLiveData<Retrospect>()
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
@@ -48,7 +47,10 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { retrospectRepository.getRetrospect(now) }
                 .filterIsInstance<Retrospect>()
-                .collect { storedContent = it.contents }
+                .collect {
+                    retrospect.value = it
+                    retrospectContent.value = it.contents
+                }
         }
 
         viewModelScope.launch {
@@ -111,26 +113,25 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWriteRetrospect() {
-        val contentValue = content.value
+        val contentValue = retrospectContent.value
 
         if (contentValue.isNullOrBlank()) {
             toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
             return
         }
 
-        if (contentValue == storedContent) {
+        if (contentValue == retrospect.value?.contents) {
             toast.value = resourcesProvider.getString(R.string.not_change_toast_message)
             return
         }
 
         viewModelScope.launch {
             retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, contentValue))
-            storedContent = contentValue
         }
     }
 
     private fun checkDataSaved(): Boolean {
-        if (content.value != storedContent) {
+        if (retrospectContent.value != retrospect.value?.contents) {
             toast.value = "변경된 내용이 있습니다. 회고 저장 후 이동 해 주세요. 다이얼로그로 바꾸기ㅣ!!!"
             return false
         }
