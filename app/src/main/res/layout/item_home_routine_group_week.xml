@@ -15,12 +15,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewModel.sendWeekRoutines(item.date)}">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="100dp"
             android:layout_height="60dp"
-            android:text="@{item.dayOfWeek.name()}"
+            android:text="@{item.date.dayOfWeek.name()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
