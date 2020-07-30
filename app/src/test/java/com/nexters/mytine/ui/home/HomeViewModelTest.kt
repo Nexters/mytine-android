@@ -2,29 +2,27 @@ package com.nexters.mytine.ui.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
+import com.google.common.truth.Truth.assertThat
 import com.nexters.mytine.MainCoroutinesRule
 import com.nexters.mytine.anyObj
 import com.nexters.mytine.data.entity.Retrospect
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RetrospectRepository
 import com.nexters.mytine.data.repository.RoutineRepository
+import com.nexters.mytine.getValue
 import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
-import java.time.DayOfWeek
-import java.time.LocalDate
 
 @RunWith(MockitoJUnitRunner::class)
 internal class HomeViewModelTest {
@@ -59,9 +57,13 @@ internal class HomeViewModelTest {
     private lateinit var viewModel: HomeViewModel
 
     @Before
-    fun setup() {
-        `when`(mockRoutineRepository.flowRoutines(anyObj())).thenReturn(flow { emit(listOf(mockRoutine)) })
+    fun setup() = runBlocking {
+        `when`(mockRoutineRepository.getsByDate(anyObj(), anyObj())).thenReturn(listOf(mockRoutine))
 
+        `when`(mockRoutine.id).thenReturn("id")
+        `when`(mockRoutine.realId).thenReturn("realId")
+        `when`(mockRetrospect.contents).thenReturn("")
+        `when`(mockRetrospectRepository.getRetrospect(anyObj())).thenReturn(flow { emit(mockRetrospect) })
         viewModel = HomeViewModel(resourcesProvider, mockRoutineRepository, mockRetrospectRepository)
         viewModel.navDirections.observeForever(navDirections)
         viewModel.homeItems.observeForever(homeItems)
@@ -96,37 +98,19 @@ internal class HomeViewModelTest {
 
     @Test
     fun `루틴 탭 터치 시 루틴 탭으로 이동`() {
-        viewModel.viewModelScope.launch {
-            viewModel.onClickRoutine()
-            assert(viewModel.homeItems.value?.contains(HomeItems.RoutineItem(any())) == true)
-        }
+        viewModel.onClickRoutine()
+
+        assertThat(getValue(viewModel.homeItems).contains(HomeItems.RoutineItem(mockRoutine)))
     }
 
     @Test
     fun `회고 탭 터치 시 회고 탭으로 이동`() {
-        viewModel.viewModelScope.launch {
-            viewModel.onClickRetrospect()
-            assert(viewModel.homeItems.value?.contains(HomeItems.Retrospect()) == true)
-        }
-    }
+        viewModel.onClickRetrospect()
 
-    @Test
-    fun `주간 루틴 리스트 변경 시, 홈 변경`() {
-        viewModel.viewModelScope.launch {
-            val now = LocalDate.now()
-            viewModel.sendWeekRoutines(now)
-            verify(viewModel).loadWeekRoutines(now)
-        }
+        assertThat(getValue(viewModel.homeItems).contains(HomeItems.Retrospect))
     }
 
     @Test
     fun `날짜에 해당하는 주간날짜 리스트 로드`() {
-        viewModel.viewModelScope.launch {
-            val now = LocalDate.now()
-            val from = now.with(DayOfWeek.MONDAY)
-            val to = now.with(DayOfWeek.FRIDAY)
-            `when`(mockRoutineRepository.getsByDate(from, to))
-                .thenReturn(viewModel.loadWeekRoutines(LocalDate.now()))
-        }
     }
 }

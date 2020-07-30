@@ -17,7 +17,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -31,23 +31,38 @@ internal class HomeViewModel @ViewModelInject constructor(
     val content = MutableLiveData<String>()
 
     var date: LocalDate = LocalDate.now()
-    private var isInRetrospect = false
-    private var storedContent: String
+    private var storedContent: String = ""
 
     private val weekRoutinesBroadcastChannel = ConflatedBroadcastChannel<List<Routine>>()
     private val tabBarStatusBroadcastChannel = ConflatedBroadcastChannel<TabBarStatus>()
 
     init {
-        storedContent = ""
         content.value = ""
 
         viewModelScope.launch {
-            retrospectRepository.getRetrospect(date).firstOrNull()?.let {
-                storedContent = it.contents
+            weekRoutinesBroadcastChannel.send(loadWeekRoutines(LocalDate.now()))
+            tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab)
+        }
+
+        viewModelScope.launch {
+            weekRoutinesBroadcastChannel.asFlow()
+                .flatMapLatest { retrospectRepository.getRetrospect(date) }
+                .collect { storedContent = it.contents }
+        }
+
+        viewModelScope.launch {
+            combine(weekRoutinesBroadcastChannel.asFlow(), tabBarStatusBroadcastChannel.asFlow()) { routineList, tabBarStatus ->
+                mutableListOf<HomeItems>().apply {
+                    add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
+                    add(HomeItems.TabBarItem())
+                    when (tabBarStatus) {
+                        TabBarStatus.RoutineTab -> addAll(routineList.map { HomeItems.RoutineItem(it) })
+                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect)
+                    }
+                }
+            }.collect {
+                homeItems.value = it
             }
-            sendWeekRoutines(LocalDate.now())
-            onClickRoutine()
-            initBroadcastChannelEvent()
         }
     }
 
@@ -58,7 +73,6 @@ internal class HomeViewModel @ViewModelInject constructor(
     fun onClickRoutine() {
         if (checkDataSaved()) {
             viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab) }
-            isInRetrospect = false
         }
     }
 
@@ -75,21 +89,6 @@ internal class HomeViewModel @ViewModelInject constructor(
     fun sendWeekRoutines(selectedDay: LocalDate) {
         viewModelScope.launch {
             weekRoutinesBroadcastChannel.send(loadWeekRoutines(selectedDay))
-        }
-    }
-
-    private suspend fun initBroadcastChannelEvent() {
-        combine(weekRoutinesBroadcastChannel.asFlow(), tabBarStatusBroadcastChannel.asFlow()) { routineList, tabBarStatus ->
-            mutableListOf<HomeItems>().apply {
-                add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
-                add(HomeItems.TabBarItem())
-                when (tabBarStatus) {
-                    TabBarStatus.RoutineTab -> addAll(routineList.map { HomeItems.RoutineItem(it) })
-                    TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
-                }
-            }
-        }.collect {
-            homeItems.value = it
         }
     }
 
