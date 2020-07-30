@@ -6,8 +6,8 @@ import com.nexters.mytine.databinding.ItemHomeRoutineGroupIconGroupIconBinding
 import com.nexters.mytine.ui.home.HomeViewModel
 
 internal class IconViewHolder(
-        val binding: ItemHomeRoutineGroupIconGroupIconBinding,
-        val viewModel: HomeViewModel
+    val binding: ItemHomeRoutineGroupIconGroupIconBinding,
+    val viewModel: HomeViewModel
 ) : BaseViewHolder<IconItem>(binding) {
 
     override fun bind(item: IconItem) {
