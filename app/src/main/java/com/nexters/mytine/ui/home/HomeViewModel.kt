@@ -13,12 +13,11 @@ import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.WeekItem
 import com.nexters.mytine.utils.ResourcesProvider
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -34,7 +33,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     var date: LocalDate = LocalDate.now()
     private var isInRetrospect = false
     private var storedContent: String
-  
+
     private val weekRoutinesBroadcastChannel = ConflatedBroadcastChannel<List<Routine>>()
     private val tabBarStatusBroadcastChannel = ConflatedBroadcastChannel<TabBarStatus>()
 
@@ -61,16 +60,16 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickRoutine() {
-      if (checkDataSaved()) {
-        viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab) }
-        isInRetrospect = false
-      }
+        if (checkDataSaved()) {
+            viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab) }
+            isInRetrospect = false
+        }
     }
 
     fun onClickRetrospect() {
         viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RetrospectTab) }
     }
-  
+
     suspend fun loadWeekRoutines(selectedDay: LocalDate): List<Routine> {
         val from = selectedDay.with(DayOfWeek.MONDAY)
         val to = selectedDay.with(DayOfWeek.SUNDAY)

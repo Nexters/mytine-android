@@ -92,38 +92,39 @@ internal class HomeViewModelTest {
 
     @Test
     fun `(Given) 회고 작성 중 (When) 루틴 탭으로 이동 할 경우 (Then) 토스트`() {
-    fun `루틴 탭 터치 시 루틴 탭으로 이동`() {
-        viewModel.viewModelScope.launch {
-            viewModel.onClickRoutine()
-            assert(viewModel.homeItems.value?.contains(HomeItems.RoutineItem(any())) == true)
+        fun `루틴 탭 터치 시 루틴 탭으로 이동`() {
+            viewModel.viewModelScope.launch {
+                viewModel.onClickRoutine()
+                assert(viewModel.homeItems.value?.contains(HomeItems.RoutineItem(any())) == true)
+            }
         }
-    }
 
-    @Test
-    fun `회고 탭 터치 시 회고 탭으로 이동`() {
-        viewModel.viewModelScope.launch {
-            viewModel.onClickRetrospect()
-            assert(viewModel.homeItems.value?.contains(HomeItems.Retrospect()) == true)
+        @Test
+        fun `회고 탭 터치 시 회고 탭으로 이동`() {
+            viewModel.viewModelScope.launch {
+                viewModel.onClickRetrospect()
+                assert(viewModel.homeItems.value?.contains(HomeItems.Retrospect()) == true)
+            }
         }
-    }
 
-    @Test
-    fun `주간 루틴 리스트 변경 시, 홈 변경`() {
-        viewModel.viewModelScope.launch {
-            val now = LocalDate.now()
-            viewModel.sendWeekRoutines(now)
-            verify(viewModel).loadWeekRoutines(now)
+        @Test
+        fun `주간 루틴 리스트 변경 시, 홈 변경`() {
+            viewModel.viewModelScope.launch {
+                val now = LocalDate.now()
+                viewModel.sendWeekRoutines(now)
+                verify(viewModel).loadWeekRoutines(now)
+            }
         }
-    }
 
-    @Test
-    fun `날짜에 해당하는 주간날짜 리스트 로드`() {
-        viewModel.viewModelScope.launch {
-            val now = LocalDate.now()
-            val from = now.with(DayOfWeek.MONDAY)
-            val to = now.with(DayOfWeek.FRIDAY)
-            `when`(mockRoutineRepository.getsByDate(from, to))
-                .thenReturn(viewModel.loadWeekRoutines(LocalDate.now()))
+        @Test
+        fun `날짜에 해당하는 주간날짜 리스트 로드`() {
+            viewModel.viewModelScope.launch {
+                val now = LocalDate.now()
+                val from = now.with(DayOfWeek.MONDAY)
+                val to = now.with(DayOfWeek.FRIDAY)
+                `when`(mockRoutineRepository.getsByDate(from, to))
+                    .thenReturn(viewModel.loadWeekRoutines(LocalDate.now()))
+            }
         }
     }
 }
