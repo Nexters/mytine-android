@@ -9,7 +9,6 @@ import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.WeekItem
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-@ExperimentalCoroutinesApi
 internal class HomeViewModel @ViewModelInject constructor(
         private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
@@ -28,7 +26,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            loadWeekRoutines(LocalDate.now())
+            sendWeekRoutines(LocalDate.now())
             onClickRoutine()
             initBroadcastChannelEvent()
         }
@@ -46,12 +44,15 @@ internal class HomeViewModel @ViewModelInject constructor(
         viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RetrospectTab) }
     }
 
-    fun loadWeekRoutines(selectedDay: LocalDate) {
+    suspend fun loadWeekRoutines(selectedDay: LocalDate): List<Routine> {
+        val from = selectedDay.with(DayOfWeek.MONDAY)
+        val to = selectedDay.with(DayOfWeek.SUNDAY)
+        return routineRepository.getsByDate(from, to)
+    }
+
+    fun sendWeekRoutines(selectedDay: LocalDate) {
         viewModelScope.launch {
-            val from = selectedDay.with(DayOfWeek.MONDAY)
-            val to = selectedDay.with(DayOfWeek.SUNDAY)
-            weekRoutinesBroadcastChannel.send(routineRepository.getsByDate(from, to))
-            tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab)
+            weekRoutinesBroadcastChannel.send(loadWeekRoutines(selectedDay))
         }
     }
 

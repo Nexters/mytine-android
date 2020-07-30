@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> viewModel.loadWeekRoutines(item.date)}">
+        android:onClick="@{() -> viewModel.sendWeekRoutines(item.date)}">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="100dp"
