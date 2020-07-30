@@ -8,8 +8,6 @@ import com.nexters.mytine.MainCoroutinesRule
 import com.nexters.mytine.anyObj
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
-import com.nexters.mytine.ui.home.icongroup.IconGroupItem
-import com.nexters.mytine.ui.home.week.WeekItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
