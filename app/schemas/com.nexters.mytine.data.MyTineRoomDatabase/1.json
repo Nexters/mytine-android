@@ -6,7 +6,7 @@
     "entities": [
       {
         "tableName": "routine",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `emoji` TEXT NOT NULL, `name` TEXT NOT NULL, `goal` TEXT NOT NULL, `status` TEXT NOT NULL, `id` TEXT NOT NULL, `realId` TEXT NOT NULL, PRIMARY KEY(`realId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `emoji` TEXT NOT NULL, `name` TEXT NOT NULL, `goal` TEXT NOT NULL, `status` TEXT NOT NULL, `order` INTEGER NOT NULL, `id` TEXT NOT NULL, `realId` TEXT NOT NULL, PRIMARY KEY(`realId`))",
         "fields": [
           {
             "fieldPath": "date",
@@ -36,6 +36,12 @@
             "fieldPath": "status",
             "columnName": "status",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {

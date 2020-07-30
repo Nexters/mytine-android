@@ -1,6 +1,6 @@
 package com.nexters.mytine.data.repository
 
-import com.nexters.mytine.data.MyTineRoomDatabase
+import com.nexters.mytine.data.dao.RoutineDao
 import com.nexters.mytine.data.entity.Routine
 import kotlinx.coroutines.flow.Flow
 import java.time.DayOfWeek
@@ -8,14 +8,29 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 internal class RoutineRepositoryImpl @Inject constructor(
-    private val roomDatabase: MyTineRoomDatabase
+    private val routineDao: RoutineDao
+
 ) : RoutineRepository {
-    override fun getRoutines(): Flow<List<Routine>> {
-        return roomDatabase.routineDao().gets()
+
+    override fun flowRoutines(date: LocalDate): Flow<List<Routine>> {
+        return routineDao.flowRoutines(date)
     }
 
-    override suspend fun addRoutine(emoji: String, name: String, goal: String, selectedDayOfWeeks: List<DayOfWeek>) {
+    override suspend fun updateRoutine(
+        emoji: String,
+        name: String,
+        goal: String,
+        selectedDayOfWeeks: List<DayOfWeek>,
+        id: String
+    ) {
+        val isUpdate = id.isNotBlank()
         val now = LocalDate.now()
+
+        val order = if (isUpdate) {
+            routineDao.getsById(id).first().order
+        } else {
+            routineDao.getsByDate(now.with(DayOfWeek.MONDAY), now.with(DayOfWeek.SUNDAY)).distinctBy { it.id }.size
+        }
 
         val routines = DayOfWeek.values().map {
             val status = if (selectedDayOfWeeks.contains(it)) {
@@ -29,10 +44,15 @@ internal class RoutineRepositoryImpl @Inject constructor(
                 emoji = emoji,
                 name = name,
                 goal = goal,
-                status = status
+                status = status,
+                order = order
             )
         }
 
-        roomDatabase.routineDao().deleteAndUpdate(routines)
+        if (isUpdate) {
+            routineDao.deleteAndUpdate(id, routines)
+        } else {
+            routineDao.upserts(routines)
+        }
     }
 }

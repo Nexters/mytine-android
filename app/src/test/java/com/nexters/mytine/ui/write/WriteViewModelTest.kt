@@ -114,7 +114,7 @@ internal class WriteViewModelTest {
 
         viewModel.onClickWrite()
 
-        verify(mockRoutineRepository).addRoutine(emoji, name, goal, selectedDayOfWeeks)
+        verify(mockRoutineRepository).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections).onChanged(BackDirections())
     }
 
@@ -132,7 +132,7 @@ internal class WriteViewModelTest {
 
         viewModel.onClickWrite()
 
-        verify(mockRoutineRepository, never()).addRoutine(emoji, name, goal, selectedDayOfWeeks)
+        verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
         verify(toast).onChanged(emptyToastMessage)
     }
@@ -151,7 +151,7 @@ internal class WriteViewModelTest {
 
         viewModel.onClickWrite()
 
-        verify(mockRoutineRepository, never()).addRoutine(emoji, name, goal, selectedDayOfWeeks)
+        verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
         verify(toast).onChanged(emptyToastMessage)
     }
@@ -170,7 +170,7 @@ internal class WriteViewModelTest {
 
         viewModel.onClickWrite()
 
-        verify(mockRoutineRepository, never()).addRoutine(emoji, name, goal, selectedDayOfWeeks)
+        verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
         verify(toast).onChanged(emptyToastMessage)
     }
@@ -189,7 +189,7 @@ internal class WriteViewModelTest {
 
         viewModel.onClickWrite()
 
-        verify(mockRoutineRepository, never()).addRoutine(emoji, name, goal, selectedDayOfWeeks)
+        verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
         verify(toast).onChanged(emptyToastMessage)
     }

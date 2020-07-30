@@ -37,7 +37,7 @@ internal class HomeViewModel @ViewModelInject constructor(
         content.value = ""
 
         viewModelScope.launch {
-            routineRepository.getRoutines()
+            routineRepository.flowRoutines(LocalDate.now())
                 .collect { homeItems.value = createHomeItems(it) }
 
             retrospectRepository.getRetrospect(date).firstOrNull()?.let {
