@@ -18,7 +18,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 
 internal class HomeViewModel @ViewModelInject constructor(
-        private val routineRepository: RoutineRepository
+    private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
     private val weekRoutinesBroadcastChannel = ConflatedBroadcastChannel<List<Routine>>()
@@ -78,9 +78,9 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
         return list.groupBy { it.id }
-                .map { routineMap ->
-                    IconGroupItem(routineMap.value.map { r -> IconItem(r) })
-                }
+            .map { routineMap ->
+                IconGroupItem(routineMap.value.map { r -> IconItem(r) })
+            }
     }
 
     enum class TabBarStatus {
