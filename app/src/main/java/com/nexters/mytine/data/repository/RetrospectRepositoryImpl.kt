@@ -9,7 +9,7 @@ import javax.inject.Inject
 internal class RetrospectRepositoryImpl @Inject constructor(
     private val roomDatabase: MyTineRoomDatabase
 ) : RetrospectRepository {
-    override fun getRetrospect(date: LocalDate): Flow<Retrospect> {
+    override fun getRetrospect(date: LocalDate): Flow<Retrospect?> {
         return roomDatabase.retrospectDao().getFlow(date = date)
     }
 

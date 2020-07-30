@@ -9,8 +9,8 @@ import java.time.LocalDate
 @Dao
 internal abstract class RetrospectDao : BaseDao<Retrospect> {
     @Query("SELECT * FROM retrospect WHERE date=:date")
-    abstract suspend fun get(date: LocalDate): Retrospect
+    abstract suspend fun get(date: LocalDate): Retrospect?
 
     @Query("SELECT * FROM retrospect WHERE date=:date")
-    abstract fun getFlow(date: LocalDate): Flow<Retrospect>
+    abstract fun getFlow(date: LocalDate): Flow<Retrospect?>
 }

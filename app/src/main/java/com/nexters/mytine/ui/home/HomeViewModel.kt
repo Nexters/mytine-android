@@ -17,6 +17,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -28,30 +29,36 @@ internal class HomeViewModel @ViewModelInject constructor(
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
-    val content = MutableLiveData<String>()
+    val content = MutableLiveData<String>().apply { value = "" }
 
-    var date: LocalDate = LocalDate.now()
     private var storedContent: String = ""
 
-    private val weekRoutinesBroadcastChannel = ConflatedBroadcastChannel<List<Routine>>()
-    private val tabBarStatusBroadcastChannel = ConflatedBroadcastChannel<TabBarStatus>()
+    private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
+    private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
 
     init {
-        content.value = ""
+        val now = LocalDate.now()
 
         viewModelScope.launch {
-            weekRoutinesBroadcastChannel.send(loadWeekRoutines(LocalDate.now()))
-            tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab)
+            dayChannel.send(now)
+            tabBarStatusChannel.send(TabBarStatus.RoutineTab)
         }
 
         viewModelScope.launch {
-            weekRoutinesBroadcastChannel.asFlow()
-                .flatMapLatest { retrospectRepository.getRetrospect(date) }
+            dayChannel.asFlow()
+                .flatMapLatest { retrospectRepository.getRetrospect(now) }
+                .filterIsInstance<Retrospect>()
                 .collect { storedContent = it.contents }
         }
 
         viewModelScope.launch {
-            combine(weekRoutinesBroadcastChannel.asFlow(), tabBarStatusBroadcastChannel.asFlow()) { routineList, tabBarStatus ->
+            combine(
+                dayChannel.asFlow()
+                    .flatMapLatest {
+                        routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
+                    },
+                tabBarStatusChannel.asFlow()
+            ) { routineList, tabBarStatus ->
                 mutableListOf<HomeItems>().apply {
                     add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
                     add(HomeItems.TabBarItem())
@@ -72,23 +79,17 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun onClickRoutine() {
         if (checkDataSaved()) {
-            viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RoutineTab) }
+            viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
         }
     }
 
     fun onClickRetrospect() {
-        viewModelScope.launch { tabBarStatusBroadcastChannel.send(TabBarStatus.RetrospectTab) }
-    }
-
-    suspend fun loadWeekRoutines(selectedDay: LocalDate): List<Routine> {
-        val from = selectedDay.with(DayOfWeek.MONDAY)
-        val to = selectedDay.with(DayOfWeek.SUNDAY)
-        return routineRepository.getsByDate(from, to)
+        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RetrospectTab) }
     }
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
         viewModelScope.launch {
-            weekRoutinesBroadcastChannel.send(loadWeekRoutines(selectedDay))
+            dayChannel.send(selectedDay)
         }
     }
 
@@ -110,35 +111,30 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWriteRetrospect() {
+        val contentValue = content.value
 
-        if (content.value.isNullOrBlank()) {
+        if (contentValue.isNullOrBlank()) {
             toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
             return
         }
 
-        if (content.value.toString() == storedContent) {
+        if (contentValue == storedContent) {
             toast.value = resourcesProvider.getString(R.string.not_change_toast_message)
             return
         }
 
         viewModelScope.launch {
-            retrospectRepository.updateRetrospect(Retrospect(date, content.value!!))
-            storedContent = content.value!!
+            retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, contentValue))
+            storedContent = contentValue
         }
     }
 
     private fun checkDataSaved(): Boolean {
-
         if (content.value != storedContent) {
             toast.value = "변경된 내용이 있습니다. 회고 저장 후 이동 해 주세요. 다이얼로그로 바꾸기ㅣ!!!"
             return false
         }
 
         return true
-    }
-
-    private fun setDay() {
-        // TODO("탐색 날자 설정. 유진이 코드 연결하기")
-        date = LocalDate.now()
     }
 }

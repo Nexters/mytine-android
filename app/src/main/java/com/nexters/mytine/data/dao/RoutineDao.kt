@@ -12,6 +12,9 @@ internal abstract class RoutineDao : BaseDao<Routine> {
     @Query("SELECT * FROM routine WHERE date = :date")
     abstract fun flowRoutines(date: LocalDate): Flow<List<Routine>>
 
+    @Query("SELECT * FROM routine WHERE date BETWEEN :from AND :to ORDER BY date")
+    abstract fun flowRoutineByDate(from: LocalDate, to: LocalDate): Flow<List<Routine>>
+
     @Query("SELECT * FROM routine ORDER BY date ASC")
     abstract suspend fun gets(): List<Routine>
 

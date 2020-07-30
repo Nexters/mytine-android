@@ -58,7 +58,7 @@ internal class HomeViewModelTest {
 
     @Before
     fun setup() = runBlocking {
-        `when`(mockRoutineRepository.getsByDate(anyObj(), anyObj())).thenReturn(listOf(mockRoutine))
+        `when`(mockRoutineRepository.flowRoutinesByDate(anyObj(), anyObj())).thenReturn(flow { emit(listOf(mockRoutine)) })
 
         `when`(mockRoutine.id).thenReturn("id")
         `when`(mockRoutine.realId).thenReturn("realId")

@@ -7,6 +7,7 @@ import java.time.LocalDate
 
 internal interface RoutineRepository {
     fun flowRoutines(date: LocalDate): Flow<List<Routine>>
+    fun flowRoutinesByDate(from: LocalDate, to: LocalDate): Flow<List<Routine>>
     suspend fun updateRoutine(emoji: String, name: String, goal: String, selectedDayOfWeeks: List<DayOfWeek>, id: String = "")
     suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
 }
