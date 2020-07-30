@@ -42,10 +42,6 @@ internal class HomeViewModel @ViewModelInject constructor(
         content.value = ""
 
         viewModelScope.launch {
-            routineRepository.flowRoutines(LocalDate.now())
-                .collect { homeItems.value = createHomeItems(it) }
-
-            // 앱 진입시 처리 => 유진이에게 state 넘겨받기
             retrospectRepository.getRetrospect(date).firstOrNull()?.let {
                 storedContent = it.contents
             }
