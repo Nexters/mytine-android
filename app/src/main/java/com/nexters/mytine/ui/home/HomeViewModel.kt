@@ -16,14 +16,13 @@ import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 
 internal class HomeViewModel @ViewModelInject constructor(
-    private val resourcesProvider: ResourcesProvider,
-    private val routineRepository: RoutineRepository,
-    private val retrospectRepository: RetrospectRepository
+        private val resourcesProvider: ResourcesProvider,
+        private val routineRepository: RoutineRepository,
+        private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
     val homeItems = MutableLiveData<List<HomeItems>>()
     val content = MutableLiveData<String>()
@@ -38,8 +37,9 @@ internal class HomeViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             routineRepository.flowRoutines(LocalDate.now())
-                .collect { homeItems.value = createHomeItems(it) }
+                    .collect { homeItems.value = createHomeItems(it) }
 
+            //앱 진입시 처리 => 유진이에게 state 넘겨받기
             retrospectRepository.getRetrospect(date).firstOrNull()?.let {
                 storedContent = it.contents
             }
@@ -72,8 +72,6 @@ internal class HomeViewModel @ViewModelInject constructor(
             add(HomeItems.Retrospect())
         }
         isInRetrospect = true
-
-        getRetrospect()
     }
 
     private fun createHomeItems(routines: List<Routine>): List<HomeItems> {
@@ -90,31 +88,22 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private fun iconGroupItems(): List<IconGroupItem> {
         return listOf(
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems()),
-            IconGroupItem(iconItems())
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems()),
+                IconGroupItem(iconItems())
         )
     }
 
     private fun iconItems(): List<IconItem> {
         return listOf("a", "b", "c", "d", "e", "f", "g").map { IconItem(it) }
-    }
-
-    private fun getRetrospect() = runBlocking {
-        setDay()
-
-        retrospectRepository.getRetrospect(date).firstOrNull()?.let {
-            content.value = it.contents
-            storedContent = it.contents
-        }
     }
 
     fun onClickWriteRetrospect() {
