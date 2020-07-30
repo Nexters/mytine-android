@@ -29,14 +29,20 @@ internal class HomeViewModel @ViewModelInject constructor(
     val content = MutableLiveData<String>()
 
     var date: LocalDate = LocalDate.now()
-    private var isFirst = false
     private var isInRetrospect = false
-    private lateinit var storedContent: String
+    private var storedContent: String
 
     init {
+        storedContent = ""
+        content.value = ""
+
         viewModelScope.launch {
             routineRepository.getRoutines()
                 .collect { homeItems.value = createHomeItems(it) }
+
+            retrospectRepository.getRetrospect(date).firstOrNull()?.let {
+                storedContent = it.contents
+            }
         }
     }
 
@@ -46,7 +52,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun onClickRoutine() {
 
-        if (!isFirst || checkDataSaved()) {
+        if (checkDataSaved()) {
             homeItems.value = mutableListOf<HomeItems>().apply {
                 add(HomeItems.RoutineGroupItem(weekItems(), iconGroupItems()))
                 add(HomeItems.TabBarItem())
@@ -65,8 +71,6 @@ internal class HomeViewModel @ViewModelInject constructor(
             add(HomeItems.TabBarItem())
             add(HomeItems.Retrospect())
         }
-
-        isFirst = true
         isInRetrospect = true
 
         getRetrospect()
@@ -106,9 +110,6 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private fun getRetrospect() = runBlocking {
         setDay()
-
-        content.value = ""
-        storedContent = ""
 
         retrospectRepository.getRetrospect(date).firstOrNull()?.let {
             content.value = it.contents
