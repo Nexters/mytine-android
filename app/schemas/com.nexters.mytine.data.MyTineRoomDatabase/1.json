@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ffc0432f7ff83adc232f622dc502421c",
+    "identityHash": "2bea6562ad949e15d2cadac11b9ec8fe",
     "entities": [
       {
         "tableName": "routine",
@@ -65,12 +65,38 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "retrospect",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `contents` TEXT NOT NULL, PRIMARY KEY(`date`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contents",
+            "columnName": "contents",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ffc0432f7ff83adc232f622dc502421c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2bea6562ad949e15d2cadac11b9ec8fe')"
     ]
   }
 }

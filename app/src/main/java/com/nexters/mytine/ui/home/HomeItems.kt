@@ -13,7 +13,7 @@ internal sealed class HomeItems(override val itemId: String) : BaseItem {
 
     class TabBarItem : HomeItems("tabBar")
 
-    class Retrospect : HomeItems("retrospect")
+    object Retrospect : HomeItems("retrospect")
 
     data class RoutineItem(val routine: Routine) : HomeItems(routine.id)
 }

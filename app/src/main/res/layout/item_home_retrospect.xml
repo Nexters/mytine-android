@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.nexters.mytine.ui.home.HomeViewModel" />
@@ -18,13 +19,32 @@
         android:background="@color/white">
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_write"
             android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:background="#000000"
-            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="20dp"
+            android:background="@color/edit_back_color"
+            android:padding="16dp"
+            android:text="@={viewModel.content}"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/week_select_color"
+            android:onClick="@{()-> viewModel.onClickWriteRetrospect()}"
+            android:padding="10dp"
+            android:text="저장"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_write" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
