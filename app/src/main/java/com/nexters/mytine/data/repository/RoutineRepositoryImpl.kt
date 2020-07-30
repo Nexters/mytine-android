@@ -55,4 +55,8 @@ internal class RoutineRepositoryImpl @Inject constructor(
             routineDao.upserts(routines)
         }
     }
+
+    override suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine> {
+        return routineDao.getsByDate(from, to)
+    }
 }
