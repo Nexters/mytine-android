@@ -9,4 +9,8 @@
 
     <color name="edit_back_color">#eceded</color>
     <color name="week_select_color">#606060</color>
+
+    <color name="routine_item_complete_color">#e0e0e0</color>
+    <color name="routine_item_bar_color">#6e6e6e</color>
+    <color name="routine_item_complete_text_color">#bebebe</color>
 </resources>

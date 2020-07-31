@@ -65,7 +65,11 @@ internal class HomeViewModel @ViewModelInject constructor(
                     add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
                     add(HomeItems.TabBarItem())
                     when (tabBarStatus) {
-                        TabBarStatus.RoutineTab -> addAll(routineList.map { HomeItems.RoutineItem(it) })
+                        TabBarStatus.RoutineTab -> addAll(
+                            routineList.filter {
+                                it.date == dayChannel.value && it.status == Routine.Status.ENABLE
+                            }.map { HomeItems.RoutineItem(it) }
+                        )
                         TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect)
                     }
                 }
