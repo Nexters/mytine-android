@@ -4,6 +4,7 @@ import androidx.databinding.ViewDataBinding
 import com.nexters.mytine.R
 import com.nexters.mytine.base.recyclerview.BaseListAdapter
 import com.nexters.mytine.base.recyclerview.BaseViewHolder
+import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.databinding.ItemHomeRoutineGroupBinding
 
 internal class HomeAdapter : BaseListAdapter<HomeItems>() {
@@ -11,7 +12,12 @@ internal class HomeAdapter : BaseListAdapter<HomeItems>() {
         return when (item) {
             is HomeItems.RoutineGroupItem -> R.layout.item_home_routine_group
             is HomeItems.TabBarItem -> R.layout.item_home_tab_bar
-            is HomeItems.RoutineItem -> R.layout.item_home_routine
+            is HomeItems.RoutineItem -> {
+                if (item.routine.status == Routine.Status.ENABLE)
+                    R.layout.item_home_routine
+                else
+                    R.layout.item_home_routine_completed
+            }
             is HomeItems.Retrospect -> R.layout.item_home_retrospect
         }
     }

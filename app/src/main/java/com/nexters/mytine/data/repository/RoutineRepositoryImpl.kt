@@ -60,6 +60,10 @@ internal class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateStatus(id: String, status: Routine.Status) {
+        return routineDao.updateStatus(id, status)
+    }
+
     override suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine> {
         return routineDao.getsByDate(from, to)
     }

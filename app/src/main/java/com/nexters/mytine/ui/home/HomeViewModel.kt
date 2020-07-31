@@ -67,8 +67,13 @@ internal class HomeViewModel @ViewModelInject constructor(
                     when (tabBarStatus) {
                         TabBarStatus.RoutineTab -> addAll(
                             routineList.filter {
-                                it.date == dayChannel.value && it.status == Routine.Status.ENABLE
-                            }.map { HomeItems.RoutineItem(it) }
+                                it.date == dayChannel.value
+                            }.map {
+                                if (it.status == Routine.Status.ENABLE)
+                                    HomeItems.RoutineItem(it)
+                                else
+                                    HomeItems.RoutineItem(it)
+                            }
                         )
                         TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect)
                     }
@@ -141,5 +146,16 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
 
         return true
+    }
+
+    fun setStatus(id: String, status: Routine.Status) {
+        viewModelScope.launch {
+            if (status == Routine.Status.ENABLE)
+                routineRepository.updateStatus(id, Routine.Status.SUCCESS)
+            else
+                routineRepository.updateStatus(id, Routine.Status.ENABLE)
+
+            tabBarStatusChannel.send(TabBarStatus.RoutineTab)
+        }
     }
 }

@@ -5,14 +5,23 @@
     <data>
 
         <variable
+            name="viewModel"
+            type="com.nexters.mytine.ui.home.HomeViewModel" />
+
+        <variable
             name="item"
             type="com.nexters.mytine.ui.home.HomeItems.RoutineItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:background="@drawable/bg_routine_completed_item">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="4dp"
+        android:background="@drawable/bg_routine_completed_item"
+        android:onClick="@{()->viewModel.setStatus(item.routine.realId, item.routine.status)}"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="12dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
