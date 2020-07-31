@@ -9,7 +9,7 @@ internal data class Routine(
     val date: LocalDate,
     val emoji: String,
     val name: String,
-    val goal: String,
+    val goal: String?,
     val status: Status,
     val order: Int,
     val id: String = "emoji=$emoji,name=$name,goal=$goal,order=$order",
@@ -28,7 +28,7 @@ internal data class Routine(
         date: LocalDate = this.date,
         emoji: String = this.emoji,
         name: String = this.name,
-        goal: String = this.goal,
+        goal: String? = this.goal,
         status: Status = this.status,
         order: Int = this.order
     ): Routine {

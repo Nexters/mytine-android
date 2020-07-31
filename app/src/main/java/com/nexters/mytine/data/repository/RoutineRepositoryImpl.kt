@@ -23,7 +23,7 @@ internal class RoutineRepositoryImpl @Inject constructor(
     override suspend fun updateRoutine(
         emoji: String,
         name: String,
-        goal: String,
+        goal: String?,
         selectedDayOfWeeks: List<DayOfWeek>,
         id: String
     ) {
