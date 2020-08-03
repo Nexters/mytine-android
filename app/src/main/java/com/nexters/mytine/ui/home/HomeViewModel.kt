@@ -17,7 +17,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -45,11 +44,18 @@ internal class HomeViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             dayChannel.asFlow()
-                .flatMapLatest { retrospectRepository.getRetrospect(now) }
-                .filterIsInstance<Retrospect>()
+                .flatMapLatest {
+                    retrospectRepository.getRetrospect(it)
+                }
                 .collect {
-                    retrospect.value = it
-                    retrospectContent.value = it.contents
+                    retrospect.value = Retrospect(now, "")
+                    retrospectContent.value = ""
+
+                    it?.let {
+                        retrospect.value = it
+                        retrospectContent.value = it.contents
+                    }
+                    toast.value = "${retrospectContent.value}"
                 }
         }
 
@@ -68,6 +74,8 @@ internal class HomeViewModel @ViewModelInject constructor(
                         TabBarStatus.RoutineTab -> addAll(
                             routineList.filter {
                                 it.date == dayChannel.value
+                            }.filter {
+                                it.status == Routine.Status.SUCCESS || it.status == Routine.Status.ENABLE
                             }.map {
                                 if (it.status == Routine.Status.ENABLE)
                                     HomeItems.RoutineItem(it)
@@ -75,7 +83,7 @@ internal class HomeViewModel @ViewModelInject constructor(
                                     HomeItems.RoutineItem(it)
                             }
                         )
-                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect)
+                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
                     }
                 }
             }.collect {
@@ -154,8 +162,6 @@ internal class HomeViewModel @ViewModelInject constructor(
                 routineRepository.updateStatus(id, Routine.Status.SUCCESS)
             else
                 routineRepository.updateStatus(id, Routine.Status.ENABLE)
-
-            tabBarStatusChannel.send(TabBarStatus.RoutineTab)
         }
     }
 }
