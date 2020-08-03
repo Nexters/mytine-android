@@ -1,6 +1,9 @@
 package com.nexters.mytine.ui.home.icongroup
 
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.nexters.mytine.base.recyclerview.BaseViewHolder
 import com.nexters.mytine.databinding.ItemHomeRoutineGroupIconGroupBinding
 import com.nexters.mytine.ui.home.HomeViewModel
@@ -15,7 +18,9 @@ internal class IconGroupViewHolder(
 
     init {
         binding.rvIcon.run {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.NOWRAP).apply {
+                justifyContent = JustifyContent.SPACE_BETWEEN
+            }
             adapter = iconAdapter
         }
         iconAdapter.setViewHolderViewModel(viewModel)

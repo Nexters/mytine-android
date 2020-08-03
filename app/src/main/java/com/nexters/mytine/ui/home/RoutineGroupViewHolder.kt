@@ -1,7 +1,10 @@
 package com.nexters.mytine.ui.home
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.nexters.mytine.base.recyclerview.BaseViewHolder
 import com.nexters.mytine.databinding.ItemHomeRoutineGroupBinding
 import com.nexters.mytine.ui.home.icongroup.IconGroupAdapter
@@ -17,13 +20,15 @@ internal class RoutineGroupViewHolder(
 
     init {
         binding.rvWeek.run {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.NOWRAP).apply {
+                justifyContent = JustifyContent.SPACE_BETWEEN
+            }
             adapter = weekAdapter
         }
         weekAdapter.setViewHolderViewModel(viewModel)
 
         binding.rvIconGroup.run {
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(context)
             adapter = iconGroupAdapter
         }
         iconGroupAdapter.setViewHolderViewModel(viewModel)
