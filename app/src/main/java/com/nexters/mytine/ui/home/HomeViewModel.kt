@@ -1,5 +1,6 @@
 package com.nexters.mytine.ui.home
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -60,29 +61,47 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
+            Log.e("day, tabbar state change", "ccchcc")
             combine(
+                dayChannel.asFlow()
+                    .flatMapLatest {
+                        routineRepository.flowRoutines(it)
+                    },
                 dayChannel.asFlow()
                     .flatMapLatest {
                         routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
                     },
                 tabBarStatusChannel.asFlow()
-            ) { routineList, tabBarStatus ->
+            ) { dateRoutines, routineList, tabBarStatus ->
                 mutableListOf<HomeItems>().apply {
                     add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
                     add(HomeItems.TabBarItem())
+
                     when (tabBarStatus) {
-                        TabBarStatus.RoutineTab -> addAll(
-                            routineList.filter {
-                                it.date == dayChannel.value
-                            }.filter {
-                                it.status == Routine.Status.SUCCESS || it.status == Routine.Status.ENABLE
-                            }.map {
-                                if (it.status == Routine.Status.ENABLE)
-                                    HomeItems.RoutineItem(it)
-                                else
-                                    HomeItems.RoutineItem(it)
+                        TabBarStatus.RoutineTab -> {
+
+                            val enableList = mutableListOf<Routine>()
+                            val completedList = mutableListOf<Routine>()
+
+                            dateRoutines.forEach {
+                                if (it.status == Routine.Status.SUCCESS) {
+                                    completedList.add(it)
+                                } else if (it.status == Routine.Status.ENABLE) {
+                                    enableList.add(it)
+                                }
                             }
-                        )
+
+                            addAll(
+                                enableList.map {
+                                    HomeItems.RoutineItem.EnabledRoutineItem(it)
+                                }
+                            )
+                            addAll(
+                                completedList.map {
+                                    HomeItems.RoutineItem.CompletedRoutineItem(it)
+                                }
+                            )
+                        }
                         TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
                     }
                 }
