@@ -1,6 +1,5 @@
 package com.nexters.mytine.ui.home
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -61,7 +60,6 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            Log.e("day, tabbar state change", "ccchcc")
             combine(
                 dayChannel.asFlow()
                     .flatMapLatest {
