@@ -30,7 +30,13 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             adapter = homeAdapter
         }
 
-        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(homeAdapter))
+        val itemTouchHelper = ItemTouchHelper(
+            ItemTouchHelperCallback(object : ItemTouchHelperListener {
+                override fun onItemSwipe(position: Int) {
+                    viewModel.successRoutine(position)
+                }
+            })
+        )
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
 
         homeAdapter.setViewHolderViewModel(viewModel)

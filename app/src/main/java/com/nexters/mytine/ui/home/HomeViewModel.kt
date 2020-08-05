@@ -181,4 +181,8 @@ internal class HomeViewModel @ViewModelInject constructor(
                 routineRepository.updateStatus(id, Routine.Status.ENABLE)
         }
     }
+
+    fun successRoutine(position: Int) {
+        toast.value = "성공! position : $position"
+    }
 }

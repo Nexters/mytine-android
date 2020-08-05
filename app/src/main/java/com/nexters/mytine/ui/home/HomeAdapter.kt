@@ -6,7 +6,7 @@ import com.nexters.mytine.base.recyclerview.BaseListAdapter
 import com.nexters.mytine.base.recyclerview.BaseViewHolder
 import com.nexters.mytine.databinding.ItemHomeRoutineGroupBinding
 
-internal class HomeAdapter : BaseListAdapter<HomeItems>(), ItemTouchHelperListener {
+internal class HomeAdapter : BaseListAdapter<HomeItems>() {
     override fun getItemViewTypeByItem(item: HomeItems): Int {
         return when (item) {
             is HomeItems.RoutineGroupItem -> R.layout.item_home_routine_group
@@ -25,9 +25,5 @@ internal class HomeAdapter : BaseListAdapter<HomeItems>(), ItemTouchHelperListen
             )
             else -> super.createViewHolder(binding, viewType)
         }
-    }
-
-    override fun onItemSwipe(position: Int) {
-        notifyItemRemoved(position)
     }
 }
