@@ -1,6 +1,7 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nexters.mytine.R
 import com.nexters.mytine.base.fragment.BaseFragment
@@ -28,6 +29,9 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             layoutManager = LinearLayoutManager(context)
             adapter = homeAdapter
         }
+
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(homeAdapter))
+        itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
 
         homeAdapter.setViewHolderViewModel(viewModel)
     }
