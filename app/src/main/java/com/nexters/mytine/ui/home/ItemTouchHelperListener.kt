@@ -1,5 +1,5 @@
 package com.nexters.mytine.ui.home
 
-interface ItemTouchHelperListener {
+internal interface ItemTouchHelperListener {
     fun onItemSwipe(position: Int)
 }
