@@ -3,7 +3,6 @@ package com.nexters.mytine.ui.home
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
-import com.google.common.truth.Truth.assertThat
 import com.nexters.mytine.MainCoroutinesRule
 import com.nexters.mytine.anyObj
 import com.nexters.mytine.data.entity.Retrospect
