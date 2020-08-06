@@ -17,27 +17,28 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:paddingBottomSystemWindowInsets="@{true}"
             app:paddingTopSystemWindowInsets="@{true}">
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="아빠요기야"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/colorPrimary"
                 android:onClick="@{() -> viewModel.onClickWrite()}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:text="아빠요기야"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_routine"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:paddingBottomSystemWindowInsets="@{true}"
             android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

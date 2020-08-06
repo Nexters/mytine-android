@@ -119,6 +119,24 @@ internal class WriteViewModelTest {
     }
 
     @Test
+    fun `목표가 채워지지 않은 채 루틴 쓰기를 누를 시 루틴 저장 및 뒤로가기`() = runBlocking {
+        val emoji = "emoji"
+        val name = "name"
+        val goal = ""
+        val selectedDayOfWeeks = listOf(DayOfWeek.MONDAY)
+
+        viewModel.emoji.value = emoji
+        viewModel.name.value = name
+        viewModel.goal.value = goal
+        viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
+
+        viewModel.onClickWrite()
+
+        verify(mockRoutineRepository).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
+        verify(navDirections).onChanged(BackDirections())
+    }
+
+    @Test
     fun `이모지가 채워지지 않은 채 루틴 쓰기를 누를 시 토스트`() = runBlocking {
         val emoji = ""
         val name = "name"
@@ -142,25 +160,6 @@ internal class WriteViewModelTest {
         val emoji = "emoji"
         val name = ""
         val goal = "goal"
-        val selectedDayOfWeeks = listOf(DayOfWeek.MONDAY)
-
-        viewModel.emoji.value = emoji
-        viewModel.name.value = name
-        viewModel.goal.value = goal
-        viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
-
-        viewModel.onClickWrite()
-
-        verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
-        verify(navDirections, never()).onChanged(BackDirections())
-        verify(toast).onChanged(emptyToastMessage)
-    }
-
-    @Test
-    fun `목표가 채워지지 않은 채 루틴 쓰기를 누를 시 토스트`() = runBlocking {
-        val emoji = "emoji"
-        val name = "name"
-        val goal = ""
         val selectedDayOfWeeks = listOf(DayOfWeek.MONDAY)
 
         viewModel.emoji.value = emoji

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2bea6562ad949e15d2cadac11b9ec8fe",
+    "identityHash": "05f1d40209b8cbf00fdc6955f85367ba",
     "entities": [
       {
         "tableName": "routine",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `emoji` TEXT NOT NULL, `name` TEXT NOT NULL, `goal` TEXT NOT NULL, `status` TEXT NOT NULL, `order` INTEGER NOT NULL, `id` TEXT NOT NULL, `realId` TEXT NOT NULL, PRIMARY KEY(`realId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `emoji` TEXT NOT NULL, `name` TEXT NOT NULL, `goal` TEXT, `status` TEXT NOT NULL, `order` INTEGER NOT NULL, `id` TEXT NOT NULL, `realId` TEXT NOT NULL, PRIMARY KEY(`realId`))",
         "fields": [
           {
             "fieldPath": "date",
@@ -30,7 +30,7 @@
             "fieldPath": "goal",
             "columnName": "goal",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "status",
@@ -96,7 +96,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2bea6562ad949e15d2cadac11b9ec8fe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '05f1d40209b8cbf00fdc6955f85367ba')"
     ]
   }
 }

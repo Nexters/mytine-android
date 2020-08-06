@@ -29,7 +29,7 @@ internal class WriteViewModel @ViewModelInject constructor(
         val goal = goal.value
         val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
 
-        if (emoji.isNullOrBlank() || name.isNullOrBlank() || goal.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
+        if (emoji.isNullOrBlank() || name.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
             toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
             return
         }

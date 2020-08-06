@@ -21,6 +21,16 @@ internal abstract class BaseListAdapter<T : BaseItem>(
 
     abstract fun getItemViewTypeByItem(item: T): Int
 
+    override fun onViewAttachedToWindow(holder: BaseViewHolder<T>) {
+        super.onViewAttachedToWindow(holder)
+        holder.attach()
+    }
+
+    override fun onViewDetachedFromWindow(holder: BaseViewHolder<T>) {
+        holder.detach()
+        super.onViewDetachedFromWindow(holder)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
         val inflater = LayoutInflater.from(parent.context)
 
@@ -28,6 +38,7 @@ internal abstract class BaseListAdapter<T : BaseItem>(
 
         val viewHolder = createViewHolder(binding, viewType)
 
+        binding.lifecycleOwner = viewHolder
         binding.setVariable(
             BR.clickListener,
             View.OnClickListener {
