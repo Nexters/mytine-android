@@ -12,6 +12,10 @@ internal class RoutineRepositoryImpl @Inject constructor(
 
 ) : RoutineRepository {
 
+    override fun flowRoutinesById(id: String): Flow<List<Routine>> {
+        return routineDao.flowRoutinesById(id)
+    }
+
     override fun flowRoutines(date: LocalDate): Flow<List<Routine>> {
         return routineDao.flowRoutines(date)
     }
@@ -58,6 +62,10 @@ internal class RoutineRepositoryImpl @Inject constructor(
         } else {
             routineDao.upserts(routines)
         }
+    }
+
+    override suspend fun updateStatus(realId: String, status: Routine.Status) {
+        return routineDao.updateStatus(realId, status)
     }
 
     override suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine> {

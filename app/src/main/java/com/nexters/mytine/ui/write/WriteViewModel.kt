@@ -5,9 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nexters.mytine.R
 import com.nexters.mytine.base.viewmodel.BaseViewModel
+import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.ResourcesProvider
 import com.nexters.mytine.utils.navigation.BackDirections
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
@@ -23,27 +30,57 @@ internal class WriteViewModel @ViewModelInject constructor(
         value = DayOfWeek.values().map { WeekItem(it) }
     }
 
-    fun onClickWrite() {
-        val emoji = emoji.value
-        val name = name.value
-        val goal = goal.value
-        val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
+    private val writeClicked = BroadcastChannel<Unit>(1)
 
-        if (emoji.isNullOrBlank() || name.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
-            toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
-            return
+    init {
+        viewModelScope.launch {
+            navArgs<WriteFragmentArgs>()
+                .map { it.routineId }
+                .filter { it.isNotEmpty() }
+                .flatMapLatest { routineRepository.flowRoutinesById(it) }
+                .filter { it.isNotEmpty() }
+                .collect { routines ->
+                    routines.first().let {
+                        emoji.value = it.emoji
+                        name.value = it.name
+                        goal.value = it.goal
+                    }
+
+                    weekItems.value = routines.map { WeekItem(it.date.dayOfWeek, it.status != Routine.Status.DISABLE) }
+                }
         }
 
         viewModelScope.launch {
-            routineRepository.updateRoutine(
-                emoji = emoji,
-                name = name,
-                goal = goal,
-                selectedDayOfWeeks = selectedDayOfWeeks
-            )
-        }
+            writeClicked.asFlow()
+                .flatMapLatest { navArgsChannel.asFlow() }
+                .collect { navArgs ->
+                    val emoji = emoji.value
+                    val name = name.value
+                    val goal = goal.value
+                    val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
 
-        navDirections.value = BackDirections()
+                    if (emoji.isNullOrBlank() || name.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
+                        toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
+                        return@collect
+                    }
+
+                    viewModelScope.launch {
+                        routineRepository.updateRoutine(
+                            emoji = emoji,
+                            name = name,
+                            goal = goal,
+                            selectedDayOfWeeks = selectedDayOfWeeks,
+                            id = (navArgs as? WriteFragmentArgs)?.routineId ?: ""
+                        )
+                    }
+
+                    navDirections.value = BackDirections()
+                }
+        }
+    }
+
+    fun onClickWrite() {
+        viewModelScope.launch { writeClicked.send(Unit) }
     }
 
     fun onClickWeekItem(weekItem: WeekItem) {

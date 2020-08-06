@@ -17,14 +17,6 @@ internal open class BaseViewHolder<T : BaseItem>(
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
     }
 
-    fun attach() {
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-    }
-
-    fun detach() {
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-    }
-
     override fun getLifecycle(): Lifecycle {
         return lifecycleRegistry
     }
@@ -32,5 +24,13 @@ internal open class BaseViewHolder<T : BaseItem>(
     open fun bind(item: T) {
         viewDataBinding.setVariable(BR.item, item)
         viewDataBinding.executePendingBindings()
+    }
+
+    fun attach() {
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+    }
+
+    fun detach() {
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
     }
 }

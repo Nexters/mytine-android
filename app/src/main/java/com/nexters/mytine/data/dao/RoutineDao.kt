@@ -9,6 +9,9 @@ import java.time.LocalDate
 
 @Dao
 internal abstract class RoutineDao : BaseDao<Routine> {
+    @Query("SELECT * FROM routine WHERE id = :id")
+    abstract fun flowRoutinesById(id: String): Flow<List<Routine>>
+
     @Query("SELECT * FROM routine WHERE date = :date")
     abstract fun flowRoutines(date: LocalDate): Flow<List<Routine>>
 
@@ -19,13 +22,16 @@ internal abstract class RoutineDao : BaseDao<Routine> {
     abstract suspend fun gets(): List<Routine>
 
     @Query("SELECT * FROM routine WHERE id = :id")
-    abstract fun getsById(id: String): List<Routine>
+    abstract suspend fun getsById(id: String): List<Routine>
 
     @Query("SELECT * FROM routine WHERE date BETWEEN :from AND :to ORDER BY date")
     abstract suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
 
     @Query("DELETE FROM routine WHERE id = :id")
     abstract suspend fun deletes(id: String)
+
+    @Query("UPDATE routine SET status = :status WHERE realId = :id")
+    abstract suspend fun updateStatus(id: String, status: Routine.Status)
 
     @Transaction
     open suspend fun deleteAndUpdate(id: String, entities: List<Routine>) {
