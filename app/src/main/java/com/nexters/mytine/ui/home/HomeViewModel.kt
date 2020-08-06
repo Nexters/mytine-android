@@ -173,8 +173,8 @@ internal class HomeViewModel @ViewModelInject constructor(
         return true
     }
 
-    fun modifyRoutine() {
-        return
+    fun onClickRoutineItem(item: HomeItems.RoutineItem) {
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
     }
 
     fun setStatus(id: String, status: Routine.Status) {
