@@ -4,6 +4,7 @@
     <string name="write_routine_title">루틴 이름*</string>
     <string name="write_goal_title">다짐/목표</string>
     <string name="write_week_title">수행요일*</string>
+    <string name="write_delete_button_text">지우기</string>
     <string name="week_mon">Mon</string>
     <string name="week_tue">Tue</string>
     <string name="week_wed">Wed</string>
