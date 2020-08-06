@@ -173,6 +173,10 @@ internal class HomeViewModel @ViewModelInject constructor(
         return true
     }
 
+    fun modifyRoutine() {
+        return
+    }
+
     fun setStatus(id: String, status: Routine.Status) {
         viewModelScope.launch {
             if (status == Routine.Status.ENABLE)

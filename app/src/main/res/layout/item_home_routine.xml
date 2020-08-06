@@ -19,7 +19,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
         android:background="@drawable/bg_routine_item"
-        android:onClick="@{() -> viewModel.setStatus(item.routine.realId, item.routine.status)}"
+        android:onClick="@{() -> viewModel.modifyRoutine()}"
         android:paddingHorizontal="8dp"
         android:paddingVertical="12dp">
 
