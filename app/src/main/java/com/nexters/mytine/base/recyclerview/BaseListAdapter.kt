@@ -28,6 +28,7 @@ internal abstract class BaseListAdapter<T : BaseItem>(
 
         val viewHolder = createViewHolder(binding, viewType)
 
+        binding.lifecycleOwner = viewHolder
         binding.setVariable(
             BR.clickListener,
             View.OnClickListener {
