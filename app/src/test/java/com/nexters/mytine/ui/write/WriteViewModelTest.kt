@@ -5,10 +5,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
 import com.nexters.mytine.MainCoroutinesRule
 import com.nexters.mytine.R
+import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.ResourcesProvider
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -21,6 +23,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 @RunWith(MockitoJUnitRunner::class)
 internal class WriteViewModelTest {
@@ -30,6 +33,15 @@ internal class WriteViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
+
+    @Mock
+    private lateinit var emoji: Observer<String>
+
+    @Mock
+    private lateinit var name: Observer<String>
+
+    @Mock
+    private lateinit var goal: Observer<String>
 
     @Mock
     private lateinit var weekItems: Observer<List<WeekItem>>
@@ -45,7 +57,6 @@ internal class WriteViewModelTest {
 
     @Mock
     private lateinit var mockRoutineRepository: RoutineRepository
-
     private lateinit var viewModel: WriteViewModel
 
     private val emptyToastMessage = "emptyToastMessage"
@@ -54,15 +65,45 @@ internal class WriteViewModelTest {
     fun setup() {
         `when`(resourcesProvider.getString(R.string.write_empty_toast_message)).thenReturn(emptyToastMessage)
         viewModel = WriteViewModel(resourcesProvider, mockRoutineRepository)
+        viewModel.emoji.observeForever(emoji)
+        viewModel.name.observeForever(name)
+        viewModel.goal.observeForever(goal)
         viewModel.weekItems.observeForever(weekItems)
         viewModel.navDirections.observeForever(navDirections)
         viewModel.toast.observeForever(toast)
     }
 
     @Test
-    fun `진입 시 요일들을 선택안된채로 불러오기`() {
+    fun `쓰기 상태로 진입 시 요일들을 선택안된채로 불러오기`() {
         val defaultWeekItems = DayOfWeek.values().map { WeekItem(it) }
         verify(weekItems).onChanged(defaultWeekItems)
+    }
+
+    @Test
+    fun `편집 상태로 진입 시 루틴 불러오기`() {
+        val fakeEmoji = "emoji"
+        val fakeName = "name"
+        val fakeGoal = "goal"
+
+        val routineMon = Routine(date = LocalDate.now().with(DayOfWeek.MONDAY), status = Routine.Status.ENABLE, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+        val routineTues = Routine(date = LocalDate.now().with(DayOfWeek.TUESDAY), status = Routine.Status.DISABLE, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+        val routineWed = Routine(date = LocalDate.now().with(DayOfWeek.WEDNESDAY), status = Routine.Status.SUCCESS, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+        val routineThur = Routine(date = LocalDate.now().with(DayOfWeek.THURSDAY), status = Routine.Status.FAIL, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+        val routineFri = Routine(date = LocalDate.now().with(DayOfWeek.FRIDAY), status = Routine.Status.DISABLE, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+        val routineSat = Routine(date = LocalDate.now().with(DayOfWeek.SATURDAY), status = Routine.Status.DISABLE, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+        val routineSun = Routine(date = LocalDate.now().with(DayOfWeek.SUNDAY), status = Routine.Status.ENABLE, emoji = fakeEmoji, name = fakeName, goal = fakeGoal, order = 0)
+
+        val weekRoutines = listOf(routineMon, routineTues, routineWed, routineThur, routineFri, routineSat, routineSun)
+        val routineId = routineMon.id
+
+        `when`(mockRoutineRepository.flowRoutinesById(routineId)).thenReturn(flow { emit(weekRoutines) })
+
+        viewModel.navArgs(WriteFragmentArgs(routineId))
+
+        verify(emoji).onChanged(fakeEmoji)
+        verify(name).onChanged(fakeName)
+        verify(goal).onChanged(fakeGoal)
+        verify(weekItems).onChanged(weekRoutines.map { WeekItem(it.date.dayOfWeek, it.status != Routine.Status.DISABLE) })
     }
 
     @Test

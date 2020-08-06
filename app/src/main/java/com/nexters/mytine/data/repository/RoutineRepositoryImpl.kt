@@ -12,6 +12,10 @@ internal class RoutineRepositoryImpl @Inject constructor(
 
 ) : RoutineRepository {
 
+    override fun flowRoutinesById(id: String): Flow<List<Routine>> {
+        return routineDao.flowRoutinesById(id)
+    }
+
     override fun flowRoutines(date: LocalDate): Flow<List<Routine>> {
         return routineDao.flowRoutines(date)
     }
