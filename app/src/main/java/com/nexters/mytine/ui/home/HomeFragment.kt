@@ -1,6 +1,7 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.flexbox.FlexDirection
@@ -17,6 +18,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
+    companion object {
+        const val SPAN_SIZE = 7
+    }
+
     override val layoutResId = R.layout.fragment_home
     override val viewModelClass = HomeViewModel::class
 
@@ -44,7 +49,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         weekAdapter.setViewHolderViewModel(viewModel)
 
         binding.rvIconGroup.run {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = GridLayoutManager(context, SPAN_SIZE)
             adapter = iconGroupAdapter
         }
         iconGroupAdapter.setViewHolderViewModel(viewModel)

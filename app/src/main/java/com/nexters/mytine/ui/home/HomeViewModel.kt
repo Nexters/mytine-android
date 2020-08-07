@@ -152,7 +152,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
-        return list.groupBy { it.id }
+        return list.groupBy { it.date }
             .map { routineMap ->
                 IconGroupItem(routineMap.value.map { routine -> IconItem(routine) })
             }
