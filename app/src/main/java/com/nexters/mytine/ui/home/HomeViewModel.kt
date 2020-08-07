@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -27,9 +28,12 @@ internal class HomeViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository,
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
+
+    val weekItems = MutableLiveData<List<WeekItem>>()
+    val iconGroupItems = MutableLiveData<List<IconGroupItem>>()
     val homeItems = MutableLiveData<List<HomeItems>>()
-    val retrospectContent = MutableLiveData<String>().apply { value = "" }
     val retrospect = MutableLiveData<Retrospect>()
+    val retrospectContent = MutableLiveData<String>().apply { value = "" }
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
@@ -60,19 +64,33 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
+            dayChannel.asFlow()
+                .map { weekItems(it) }
+                .collect {
+                    weekItems.value = it
+                }
+        }
+
+        viewModelScope.launch {
+            dayChannel.asFlow()
+                .flatMapLatest {
+                    routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
+                }
+                .map { convertRoutineItems(it) }
+                .collect {
+                    iconGroupItems.value = it
+                }
+        }
+
+        viewModelScope.launch {
             combine(
                 dayChannel.asFlow()
                     .flatMapLatest {
                         routineRepository.flowRoutines(it)
                     },
-                dayChannel.asFlow()
-                    .flatMapLatest {
-                        routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
-                    },
                 tabBarStatusChannel.asFlow()
-            ) { dateRoutines, routineList, tabBarStatus ->
+            ) { dateRoutines, tabBarStatus ->
                 mutableListOf<HomeItems>().apply {
-                    add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
                     add(HomeItems.TabBarItem())
 
                     when (tabBarStatus) {
@@ -129,15 +147,14 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun weekItems(): List<WeekItem> {
-        val now = LocalDate.now()
-        return DayOfWeek.values().map { day -> WeekItem(now.with(day)) }
+    private fun weekItems(date: LocalDate): List<WeekItem> {
+        return DayOfWeek.values().map { day -> WeekItem(date.with(day)) }
     }
 
     private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
         return list.groupBy { it.id }
             .map { routineMap ->
-                IconGroupItem(routineMap.value.map { r -> IconItem(r) })
+                IconGroupItem(routineMap.value.map { routine -> IconItem(routine) })
             }
     }
 

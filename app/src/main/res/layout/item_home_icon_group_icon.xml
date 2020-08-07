@@ -10,18 +10,21 @@
 
         <variable
             name="item"
-            type="com.nexters.mytine.ui.home.week.WeekItem" />
+            type="com.nexters.mytine.ui.home.icongroup.icon.IconItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> viewModel.sendWeekRoutines(item.date)}">
+        android:background="@color/white">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:text="@{item.date.dayOfWeek.name()}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@{item.routine.emoji}"
+            android:visibility="@{item.visibility}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
