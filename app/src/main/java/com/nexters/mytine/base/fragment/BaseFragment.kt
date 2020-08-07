@@ -8,10 +8,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavArgs
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.nexters.mytine.BR
 import com.nexters.mytine.base.viewmodel.BaseViewModel
+import com.nexters.mytine.ui.EmptyNavArgs
 import com.nexters.mytine.utils.extensions.observe
 import com.nexters.mytine.utils.extensions.toast
 import com.nexters.mytine.utils.navigation.BackDirections
@@ -28,6 +30,8 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
         ViewModelProvider(viewModelStore, defaultViewModelProviderFactory).get(viewModelClass.java)
     }
 
+    protected open val navArgs: NavArgs = EmptyNavArgs
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
 
@@ -42,6 +46,8 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
 
         observe(viewModel.navDirections) { navigate(it) }
         observe(viewModel.toast) { toast(it) }
+
+        viewModel.navArgs(navArgs)
     }
 
     private fun navigate(navDirections: NavDirections) {

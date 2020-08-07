@@ -17,7 +17,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -45,11 +44,18 @@ internal class HomeViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             dayChannel.asFlow()
-                .flatMapLatest { retrospectRepository.getRetrospect(now) }
-                .filterIsInstance<Retrospect>()
+                .flatMapLatest {
+                    retrospectRepository.getRetrospect(it)
+                }
                 .collect {
-                    retrospect.value = it
-                    retrospectContent.value = it.contents
+                    retrospect.value = Retrospect(now, "")
+                    retrospectContent.value = ""
+
+                    it?.let {
+                        retrospect.value = it
+                        retrospectContent.value = it.contents
+                    }
+                    toast.value = "${retrospectContent.value}"
                 }
         }
 
@@ -57,16 +63,44 @@ internal class HomeViewModel @ViewModelInject constructor(
             combine(
                 dayChannel.asFlow()
                     .flatMapLatest {
+                        routineRepository.flowRoutines(it)
+                    },
+                dayChannel.asFlow()
+                    .flatMapLatest {
                         routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
                     },
                 tabBarStatusChannel.asFlow()
-            ) { routineList, tabBarStatus ->
+            ) { dateRoutines, routineList, tabBarStatus ->
                 mutableListOf<HomeItems>().apply {
                     add(HomeItems.RoutineGroupItem(weekItems(), convertRoutineItems(routineList)))
                     add(HomeItems.TabBarItem())
+
                     when (tabBarStatus) {
-                        TabBarStatus.RoutineTab -> addAll(routineList.map { HomeItems.RoutineItem(it) })
-                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect)
+                        TabBarStatus.RoutineTab -> {
+
+                            val enableList = mutableListOf<Routine>()
+                            val completedList = mutableListOf<Routine>()
+
+                            dateRoutines.forEach {
+                                if (it.status == Routine.Status.SUCCESS) {
+                                    completedList.add(it)
+                                } else if (it.status == Routine.Status.ENABLE) {
+                                    enableList.add(it)
+                                }
+                            }
+
+                            addAll(
+                                enableList.map {
+                                    HomeItems.RoutineItem.EnabledRoutineItem(it)
+                                }
+                            )
+                            addAll(
+                                completedList.map {
+                                    HomeItems.RoutineItem.CompletedRoutineItem(it)
+                                }
+                            )
+                        }
+                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
                     }
                 }
             }.collect {
@@ -137,5 +171,22 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
 
         return true
+    }
+
+    fun onClickRoutineItem(item: HomeItems.RoutineItem) {
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
+    }
+
+    fun setStatus(id: String, status: Routine.Status) {
+        viewModelScope.launch {
+            if (status == Routine.Status.ENABLE)
+                routineRepository.updateStatus(id, Routine.Status.SUCCESS)
+            else
+                routineRepository.updateStatus(id, Routine.Status.ENABLE)
+        }
+    }
+
+    fun successRoutine(position: Int) {
+        toast.value = "성공! position : $position"
     }
 }

@@ -10,6 +10,7 @@
         android:name="com.nexters.mytine.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
+
         <action
             android:id="@+id/action_homeFragment_to_writeFragment"
             app:destination="@id/writeFragment"
@@ -23,6 +24,12 @@
         android:id="@+id/writeFragment"
         android:name="com.nexters.mytine.ui.write.WriteFragment"
         android:label="WriteFragment"
-        tools:layout="@layout/fragment_write" />
+        tools:layout="@layout/fragment_write">
+
+        <argument
+            android:name="routineId"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 
 </navigation>

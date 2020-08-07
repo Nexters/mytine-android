@@ -2,6 +2,7 @@ package com.nexters.mytine.ui.write
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -16,8 +17,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel>() {
+
     override val layoutResId = R.layout.fragment_write
     override val viewModelClass = WriteViewModel::class
+    override val navArgs by navArgs<WriteFragmentArgs>()
 
     private val weekAdapter = WeekAdapter()
 
@@ -37,7 +40,7 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_write -> {
-                        viewModel.onClickWrite()
+                        viewModel.onClickSave()
                         hideKeyboard()
                         true
                     }
