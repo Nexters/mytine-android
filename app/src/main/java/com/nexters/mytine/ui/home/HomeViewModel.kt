@@ -178,7 +178,7 @@ internal class HomeViewModel @ViewModelInject constructor(
         navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
     }
 
-    fun setStatus(id: String, status: Routine.Status) {
+    private fun setStatus(id: String, status: Routine.Status) {
         viewModelScope.launch {
             routineRepository.updateStatus(id, status)
         }
