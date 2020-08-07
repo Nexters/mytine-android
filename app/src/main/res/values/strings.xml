@@ -14,4 +14,6 @@
 
     <string name="write_empty_toast_message">모든 내용을 다 채워넣어야 합니다</string>
     <string name="not_change_toast_message">변경사항이 없습니다</string>
+
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 </resources>
