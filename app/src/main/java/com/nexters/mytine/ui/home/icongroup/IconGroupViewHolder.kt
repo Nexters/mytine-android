@@ -1,9 +1,6 @@
 package com.nexters.mytine.ui.home.icongroup
 
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
+import androidx.recyclerview.widget.GridLayoutManager
 import com.nexters.mytine.base.recyclerview.BaseViewHolder
 import com.nexters.mytine.databinding.ItemHomeRoutineGroupIconGroupBinding
 import com.nexters.mytine.ui.home.HomeViewModel
@@ -13,14 +10,15 @@ internal class IconGroupViewHolder(
     val binding: ItemHomeRoutineGroupIconGroupBinding,
     val viewModel: HomeViewModel
 ) : BaseViewHolder<IconGroupItem>(binding) {
+    companion object {
+        const val SPAN_SIZE = 7
+    }
 
     private val iconAdapter = IconAdapter()
 
     init {
         binding.rvIcon.run {
-            layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.NOWRAP).apply {
-                justifyContent = JustifyContent.SPACE_BETWEEN
-            }
+            layoutManager = GridLayoutManager(context, SPAN_SIZE)
             adapter = iconAdapter
         }
         iconAdapter.setViewHolderViewModel(viewModel)
