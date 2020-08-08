@@ -1,8 +1,10 @@
 package com.nexters.mytine.ui.home
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Paint
+import android.graphics.RectF
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +12,7 @@ import com.nexters.mytine.R
 
 internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : ItemTouchHelper.Callback() {
 
-    private val background = ColorDrawable(Color.RED)
+    private val background = Paint()
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         var swipeFlags = 0
@@ -49,30 +51,36 @@ internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : 
 
         val itemView: View = viewHolder.itemView
         val resources = itemView.resources
+        lateinit var icon: Bitmap
 
         when {
             dX > 0 -> { // 오른쪽으로
-                background.color = Color.parseColor("#ff4775")
-                background.setBounds(
-                    itemView.left, itemView.top,
-                    itemView.left + dX.toInt() + resources.getInteger(R.integer.background_color_offset),
-                    itemView.bottom
+                icon = BitmapFactory.decodeResource(resources, R.drawable.card_check_back)
+                val dest = RectF(
+                    itemView.left.toFloat() + startOffset,
+                    itemView.top.toFloat() + verticalOffset.toFloat(),
+                    itemView.left.toFloat() + endOffset,
+                    itemView.bottom.toFloat() - verticalOffset.toFloat()
                 )
-
-                background.draw(c)
+                c.drawBitmap(icon, null, dest, background)
             }
             dX < 0 -> { // 왼쪽으로
-                background.color = Color.parseColor("#00ed75")
-                background.setBounds(
-                    itemView.right + dX.toInt() - resources.getInteger(R.integer.background_color_offset),
-                    itemView.top, itemView.right, itemView.bottom
+                icon = BitmapFactory.decodeResource(resources, R.drawable.card_check)
+                val dest = RectF(
+                    itemView.right.toFloat() - endOffset,
+                    itemView.top.toFloat() + verticalOffset.toFloat(),
+                    itemView.right.toFloat() - startOffset,
+                    itemView.bottom.toFloat() - verticalOffset.toFloat()
                 )
 
-                background.draw(c)
-            }
-            else -> { // 스와이프 X
-                background.setBounds(0, 0, 0, 0)
+                c.drawBitmap(icon, null, dest, background)
             }
         }
+    }
+
+    companion object {
+        const val verticalOffset = 50
+        const val startOffset = 100
+        const val endOffset = 170
     }
 }
