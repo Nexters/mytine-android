@@ -13,4 +13,9 @@
     <color name="routine_item_complete_color">#e0e0e0</color>
     <color name="routine_item_bar_color">#6e6e6e</color>
     <color name="routine_item_complete_text_color">#bebebe</color>
+
+
+    <color name="minty_green">#00ed75</color>
+    <color name="warm_pink">#ff4775</color>
+
 </resources>
