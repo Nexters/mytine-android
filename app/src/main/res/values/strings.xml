@@ -12,6 +12,8 @@
     <string name="week_sat">Sat</string>
     <string name="week_sun">Sun</string>
 
+    <integer name="background_color_offset">20</integer>
+
     <string name="write_empty_toast_message">모든 내용을 다 채워넣어야 합니다</string>
     <string name="not_change_toast_message">변경사항이 없습니다</string>
 </resources>
