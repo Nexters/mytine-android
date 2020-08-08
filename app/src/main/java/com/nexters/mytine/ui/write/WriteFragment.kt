@@ -1,6 +1,7 @@
 package com.nexters.mytine.ui.write
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.flexbox.FlexDirection
@@ -23,6 +24,9 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
     override val navArgs by navArgs<WriteFragmentArgs>()
 
     private val weekAdapter = WeekAdapter()
+
+    private val menuWrite: MenuItem
+        get() = binding.toolbar.menu.findItem(R.id.action_write)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -56,10 +60,10 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
             .setOnEmojiClickListener { _, _ ->
                 binding.root.hideKeyboard()
             }
-            .build(binding.etEmoji)
+            .build(binding.layoutEmoji.editEmoji)
 
-        binding.etEmoji.disableKeyboardInput(emojiPopup)
-        binding.etEmoji.forceSingleEmoji()
+        binding.layoutEmoji.editEmoji.disableKeyboardInput(emojiPopup)
+        binding.layoutEmoji.editEmoji.forceSingleEmoji()
     }
 
     private fun initializeRecyclerView() {

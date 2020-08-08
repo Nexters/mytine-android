@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="showError"
+            type="boolean" />
+
+        <variable
+            name="errorMessage"
+            type="String" />
+
+        <variable
+            name="text"
+            type="androidx.lifecycle.MutableLiveData&lt;String&gt;" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="#f4f4f8">
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/NotoBlueMedium14LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@{title}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="루틴 이모지" />
+
+        <TextView
+            style="@style/NotoYellowMedium14LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/star"
+            app:layout_constraintStart_toEndOf="@+id/tv_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+        <EditText
+            android:id="@+id/edit_write"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/bg_write_edit"
+            android:gravity="center_vertical|start"
+            android:paddingStart="16dp"
+            android:selected="@{showError}"
+            android:paddingEnd="16dp"
+            android:text="@={text}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            tools:ignore="Autofill,LabelFor,TextFields" />
+
+        <TextView
+            style="@style/NotoYellowMedium12LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="1dp"
+            android:text="@{errorMessage}"
+            android:visibility="@{showError}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_write"
+            tools:text="루틴의 이름을 등록해주세요." />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
