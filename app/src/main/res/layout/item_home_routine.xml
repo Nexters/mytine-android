@@ -37,7 +37,7 @@
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="7dp"
-            android:background="@color/routine_item_bar_color"
+            android:background="@color/light_grey_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_emoji"
             app:layout_constraintTop_toTopOf="parent" />

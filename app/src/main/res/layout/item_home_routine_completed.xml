@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="46dp"
             android:text="@{item.routine.name}"
-            android:textColor="@color/routine_item_complete_text_color"
+            android:textColor="@color/dusk"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

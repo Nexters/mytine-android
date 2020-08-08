@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="grey">#eceded</color>
+    <color name="colorPrimary">#3b76ef</color>
+    <color name="colorPrimaryDark">#93b0c8</color>
+    <color name="colorAccent">#c4d0e8</color>
 
-    <color name="edit_back_color">#eceded</color>
-    <color name="week_select_color">#606060</color>
-
-    <color name="routine_item_complete_color">#e0e0e0</color>
-    <color name="routine_item_bar_color">#6e6e6e</color>
-    <color name="routine_item_complete_text_color">#bebebe</color>
-
-
+    <color name="light_grey_blue">#93b0c8</color>
+    <color name="color_point_blue">#3b76ef</color>
+    <color name="white">#ffffff</color>
+    <color name="dusk">#455981</color>
+    <color name="powder_blue">#c4d0e8</color>
+    <color name="color_point_skyblue">#ecf1fc</color>
+    <color name="color_08_scrim">#51000000</color>
+    <color name="macaroni_and_cheese">#ffbd2c</color>
     <color name="minty_green">#00ed75</color>
     <color name="warm_pink">#ff4775</color>
+
+    <color name="routine_item_complete_text_color">#bebebe</color>
 
 </resources>
