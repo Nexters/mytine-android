@@ -67,5 +67,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             })
         )
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
+        homeAdapter.setViewHolderViewModel(viewModel)
     }
 }
