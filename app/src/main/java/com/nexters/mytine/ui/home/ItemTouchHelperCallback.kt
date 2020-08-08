@@ -79,7 +79,7 @@ internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : 
     }
 
     companion object {
-        const val verticalOffset = 50
+        const val verticalOffset = 60
         const val startOffset = 100
         const val endOffset = 170
     }

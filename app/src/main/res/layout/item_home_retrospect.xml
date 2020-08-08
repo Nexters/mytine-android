@@ -16,7 +16,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:backgroundTint="@color/color_point_skyblue">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_write"
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginVertical="20dp"
+            android:background="@drawable/bg_retrospect_contents"
             android:padding="16dp"
             android:text="@={viewModel.retrospectContent}"
             app:layout_constraintEnd_toEndOf="parent"
