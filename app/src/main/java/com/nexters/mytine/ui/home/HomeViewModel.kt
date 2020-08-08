@@ -11,6 +11,7 @@ import com.nexters.mytine.data.repository.RetrospectRepository
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
+import com.nexters.mytine.ui.home.week.DayItem
 import com.nexters.mytine.ui.home.week.WeekItem
 import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -65,7 +66,11 @@ internal class HomeViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             dayChannel.asFlow()
-                .map { weekItems(it) }
+                .flatMapLatest { date ->
+                    retrospectRepository
+                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
+                        .map { weekItems(date, it) }
+                }
                 .collect {
                     weekItems.value = it
                 }
@@ -73,13 +78,9 @@ internal class HomeViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             dayChannel.asFlow()
-                .flatMapLatest {
-                    routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
-                }
+                .flatMapLatest { routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY)) }
                 .map { convertRoutineItems(it) }
-                .collect {
-                    iconGroupItems.value = it
-                }
+                .collect { iconGroupItems.value = it }
         }
 
         viewModelScope.launch {
@@ -147,8 +148,12 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun weekItems(date: LocalDate): List<WeekItem> {
-        return DayOfWeek.values().map { day -> WeekItem(date.with(day)) }
+    private fun weekItems(date: LocalDate, retrospectSet: List<LocalDate>): List<WeekItem> {
+        return DayOfWeek.values()
+            .map {
+                val day = date.with(it)
+                WeekItem(DayItem(day, retrospectSet.contains(day)))
+            }
     }
 
     private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
