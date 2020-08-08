@@ -62,7 +62,15 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         val itemTouchHelper = ItemTouchHelper(
             ItemTouchHelperCallback(object : ItemTouchHelperListener {
                 override fun onItemSwipe(position: Int, direction: Int) {
-                    viewModel.successRoutine(homeAdapter.getItemByPosition(position) as HomeItems.RoutineItem, direction)
+                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), direction)
+                }
+
+                override fun isRightSwipeable(position: Int): Boolean {
+                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.CompletedRoutineItem
+                }
+
+                override fun isLeftSwipeable(position: Int): Boolean {
+                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.EnabledRoutineItem
                 }
             })
         )

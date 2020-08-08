@@ -31,6 +31,11 @@ internal class HomeViewModel @ViewModelInject constructor(
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
 
+    enum class TabBarStatus {
+        RoutineTab,
+        RetrospectTab
+    }
+
     val weekItems = MutableLiveData<List<WeekItem>>()
     val iconGroupItems = MutableLiveData<List<IconGroupItem>>()
     val homeItems = MutableLiveData<List<HomeItems>>()
@@ -149,26 +154,6 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun weekItems(date: LocalDate, retrospectSet: List<LocalDate>): List<WeekItem> {
-        return DayOfWeek.values()
-            .map {
-                val day = date.with(it)
-                WeekItem(DayItem(day, retrospectSet.contains(day)))
-            }
-    }
-
-    private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
-        return list.groupBy { it.date }
-            .map { routineMap ->
-                IconGroupItem(routineMap.value.map { routine -> IconItem(routine) })
-            }
-    }
-
-    enum class TabBarStatus {
-        RoutineTab,
-        RetrospectTab
-    }
-
     fun onClickWriteRetrospect() {
         val contentValue = retrospectContent.value
 
@@ -187,6 +172,36 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
     }
 
+    fun onClickRoutineItem(item: HomeItems.RoutineItem) {
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
+    }
+
+    fun swipeRoutine(item: HomeItems, direction: Int) {
+        if (item !is HomeItems.RoutineItem) {
+            return
+        }
+
+        when {
+            item is HomeItems.RoutineItem.EnabledRoutineItem && direction == ItemTouchHelper.START -> setStatus(item.routine.realId, Routine.Status.SUCCESS)
+            item is HomeItems.RoutineItem.CompletedRoutineItem && direction == ItemTouchHelper.END -> setStatus(item.routine.realId, Routine.Status.ENABLE)
+        }
+    }
+
+    private fun weekItems(date: LocalDate, retrospectSet: List<LocalDate>): List<WeekItem> {
+        return DayOfWeek.values()
+            .map {
+                val day = date.with(it)
+                WeekItem(DayItem(day, retrospectSet.contains(day)))
+            }
+    }
+
+    private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
+        return list.groupBy { it.date }
+            .map { routineMap ->
+                IconGroupItem(routineMap.value.map { routine -> IconItem(routine) })
+            }
+    }
+
     private fun checkDataSaved(): Boolean {
         if (retrospectContent.value != retrospect.value?.contents) {
             toast.value = "변경된 내용이 있습니다. 회고 저장 후 이동 해 주세요. 다이얼로그로 바꾸기ㅣ!!!"
@@ -196,21 +211,9 @@ internal class HomeViewModel @ViewModelInject constructor(
         return true
     }
 
-    fun onClickRoutineItem(item: HomeItems.RoutineItem) {
-        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
-    }
-
     private fun setStatus(id: String, status: Routine.Status) {
         viewModelScope.launch {
             routineRepository.updateStatus(id, status)
-        }
-    }
-
-    fun successRoutine(item: HomeItems.RoutineItem, direction: Int) {
-        if (direction == ItemTouchHelper.START) {
-            setStatus(item.routine.realId, Routine.Status.SUCCESS)
-        } else if (direction == ItemTouchHelper.END) {
-            setStatus(item.routine.realId, Routine.Status.ENABLE)
         }
     }
 }
