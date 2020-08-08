@@ -3,5 +3,5 @@
     <corners
         android:radius="10dp"/>
     <solid
-        android:color="@color/week_select_color"/>
+        android:color="@color/white"/>
 </shape>

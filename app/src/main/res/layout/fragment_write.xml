@@ -61,7 +61,6 @@
             android:id="@+id/et_emoji"
             android:layout_width="60dp"
             android:layout_height="52dp"
-            android:background="@color/grey"
             android:text="@={viewModel.emoji}"
             app:layout_constraintStart_toStartOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/tv_emoji_title" />
@@ -87,7 +86,6 @@
             android:id="@+id/et_routine"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            android:background="@color/grey"
             android:inputType="text"
             android:maxLines="1"
             android:text="@={viewModel.name}"
@@ -118,7 +116,6 @@
             android:id="@+id/et_goal"
             android:layout_width="0dp"
             android:layout_height="52dp"
-            android:background="@color/grey"
             android:text="@={viewModel.goal}"
             app:layout_constraintEnd_toEndOf="@id/guideline_right"
             app:layout_constraintStart_toStartOf="@id/guideline_left"
