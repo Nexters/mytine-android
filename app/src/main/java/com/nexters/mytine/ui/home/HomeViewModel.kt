@@ -150,10 +150,10 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private fun weekItems(date: LocalDate, retrospectSet: List<LocalDate>): List<WeekItem> {
         return DayOfWeek.values()
-                .map {
-                    val day = date.with(it)
-                    WeekItem(DayItem(day, retrospectSet.contains(day)))
-                }
+            .map {
+                val day = date.with(it)
+                WeekItem(DayItem(day, retrospectSet.contains(day)))
+            }
     }
 
     private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
