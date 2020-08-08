@@ -28,14 +28,14 @@ internal abstract class RoutineDao : BaseDao<Routine> {
     abstract suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
 
     @Query("DELETE FROM routine WHERE id = :id")
-    abstract suspend fun deletes(id: String)
+    abstract suspend fun deleteRoutinesById(id: String)
 
     @Query("UPDATE routine SET status = :status WHERE realId = :id")
     abstract suspend fun updateStatus(id: String, status: Routine.Status)
 
     @Transaction
     open suspend fun deleteAndUpdate(id: String, entities: List<Routine>) {
-        deletes(id)
+        deleteRoutinesById(id)
         upserts(entities)
     }
 }

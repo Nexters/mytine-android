@@ -14,14 +14,17 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="@{item.icon.emoji}"
+        
+        <com.vanniktech.emoji.EmojiTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@{item.routine.emoji}"
+            android:visibility="@{item.visibility}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

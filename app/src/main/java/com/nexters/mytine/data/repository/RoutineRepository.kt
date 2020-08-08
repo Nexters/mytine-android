@@ -12,4 +12,5 @@ internal interface RoutineRepository {
     suspend fun updateRoutine(emoji: String, name: String, goal: String?, selectedDayOfWeeks: List<DayOfWeek>, id: String = "")
     suspend fun updateStatus(realId: String, status: Routine.Status)
     suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
+    suspend fun deleteRoutinesById(id: String)
 }

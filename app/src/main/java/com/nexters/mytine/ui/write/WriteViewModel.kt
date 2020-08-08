@@ -23,6 +23,7 @@ internal class WriteViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
 
+    val isEditMode = MutableLiveData<Boolean>().apply { value = false }
     val emoji = MutableLiveData<String>()
     val name = MutableLiveData<String>()
     val goal = MutableLiveData<String>()
@@ -30,7 +31,8 @@ internal class WriteViewModel @ViewModelInject constructor(
         value = DayOfWeek.values().map { WeekItem(it) }
     }
 
-    private val writeClicked = BroadcastChannel<Unit>(1)
+    private val saveClickChannel = BroadcastChannel<Unit>(1)
+    private val deleteClickChannel = BroadcastChannel<Unit>(1)
 
     init {
         viewModelScope.launch {
@@ -40,6 +42,8 @@ internal class WriteViewModel @ViewModelInject constructor(
                 .flatMapLatest { routineRepository.flowRoutinesById(it) }
                 .filter { it.isNotEmpty() }
                 .collect { routines ->
+                    isEditMode.value = true
+
                     routines.first().let {
                         emoji.value = it.emoji
                         name.value = it.name
@@ -51,7 +55,7 @@ internal class WriteViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            writeClicked.asFlow()
+            saveClickChannel.asFlow()
                 .flatMapLatest { navArgsChannel.asFlow() }
                 .collect { navArgs ->
                     val emoji = emoji.value
@@ -64,23 +68,28 @@ internal class WriteViewModel @ViewModelInject constructor(
                         return@collect
                     }
 
-                    viewModelScope.launch {
-                        routineRepository.updateRoutine(
-                            emoji = emoji,
-                            name = name,
-                            goal = goal,
-                            selectedDayOfWeeks = selectedDayOfWeeks,
-                            id = (navArgs as? WriteFragmentArgs)?.routineId ?: ""
-                        )
-                    }
+                    routineRepository.updateRoutine(
+                        emoji = emoji,
+                        name = name,
+                        goal = goal,
+                        selectedDayOfWeeks = selectedDayOfWeeks,
+                        id = (navArgs as? WriteFragmentArgs)?.routineId ?: ""
+                    )
 
                     navDirections.value = BackDirections()
                 }
         }
-    }
 
-    fun onClickWrite() {
-        viewModelScope.launch { writeClicked.send(Unit) }
+        viewModelScope.launch {
+            deleteClickChannel.asFlow()
+                .flatMapLatest { navArgs<WriteFragmentArgs>() }
+                .map { it.routineId }
+                .collect {
+                    routineRepository.deleteRoutinesById(it)
+
+                    navDirections.value = BackDirections()
+                }
+        }
     }
 
     fun onClickWeekItem(weekItem: WeekItem) {
@@ -94,5 +103,13 @@ internal class WriteViewModel @ViewModelInject constructor(
                 }
             }
         }
+    }
+
+    fun onClickSave() {
+        viewModelScope.launch { saveClickChannel.send(Unit) }
+    }
+
+    fun onClickDelete() {
+        viewModelScope.launch { deleteClickChannel.send(Unit) }
     }
 }
