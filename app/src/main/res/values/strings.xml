@@ -10,6 +10,9 @@
     <string name="week_sat">Sat</string>
     <string name="week_sun">Sun</string>
 
+    <string name="write_create_toolbar_title">루틴 생성하기</string>
+    <string name="write_modify_toolbar_title">루틴 수정하기</string>
+    <string name="save">저장</string>
 
     <string name="write_emoji_title">루틴 이모지</string>
     <string name="write_name_title">루틴 이름</string>
