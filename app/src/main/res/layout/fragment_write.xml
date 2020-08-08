@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -10,143 +9,115 @@
             type="com.nexters.mytine.ui.write.WriteViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:background="@color/pale_grey">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_marginTopSystemWindowInsets="@{true}"
-                app:menu="@menu/menu_write"
-                app:navigationIcon="@drawable/abc_vector_test"
-                app:title="Add Routine" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </com.google.android.material.appbar.AppBarLayout>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_marginTopSystemWindowInsets="@{true}"
+                    app:menu="@menu/menu_write"
+                    app:navigationIcon="@drawable/abc_vector_test"
+                    app:title="Add Routine" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="24dp" />
+            </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="24dp" />
+            <LinearLayout
+                android:id="@+id/ll_write"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appbar">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_emoji_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/write_emoji_title"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/appbar" />
+                <include
+                    android:id="@+id/layout_emoji"
+                    layout="@layout/view_write_emoji"
+                    app:errorMessage="@{@string/write_emoji_error}"
+                    app:text="@={viewModel.emoji}"
+                    app:title="@{@string/write_emoji_title}" />
 
-        <com.vanniktech.emoji.EmojiEditText
-            android:id="@+id/et_emoji"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:text="@={viewModel.emoji}"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/tv_emoji_title" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="24dp" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_emoji_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/et_emoji"
-            tools:text="루틴의 이모지가 등록되지 않았습니다." />
+                <include
+                    layout="@layout/view_write_edit"
+                    app:errorMessage="@{@string/write_name_error}"
+                    app:text="@={viewModel.name}"
+                    app:title="@{@string/write_name_title}" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_routine_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/write_routine_title"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/tv_emoji_desc" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="24dp" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_routine"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:inputType="text"
-            android:maxLines="1"
-            android:text="@={viewModel.name}"
-            app:layout_constraintEnd_toEndOf="@id/guideline_right"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/tv_routine_title" />
+                <include
+                    layout="@layout/view_write_edit"
+                    app:text="@={viewModel.goal}"
+                    app:title="@{@string/write_goal_title}" />
+            </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_routine_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:maxLines="2"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/et_routine"
-            tools:text="루틴의 이름이 등록되지 않았습니다." />
+            <TextView
+                android:id="@+id/tv_week_title"
+                style="@style/NotoBlueMedium14LeftStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="28dp"
+                android:text="@string/write_week_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_write" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_goal_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/write_goal_title"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/tv_routine_desc" />
+            <TextView
+                style="@style/NotoYellowMedium14LeftStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/star"
+                app:layout_constraintStart_toEndOf="@+id/tv_week_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_week_title" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_goal"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:text="@={viewModel.goal}"
-            app:layout_constraintEnd_toEndOf="@id/guideline_right"
-            app:layout_constraintStart_toStartOf="@id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/tv_goal_title" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="9dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_week_title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_week_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="@string/write_week_title"
-            app:layout_constraintStart_toStartOf="@+id/guideline_left"
-            app:layout_constraintTop_toBottomOf="@id/et_goal" />
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/NotoBlueMedium16Center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="104dp"
+                android:layout_marginBottom="100dp"
+                android:onClick="@{() -> viewModel.onClickDelete()}"
+                android:text="@string/write_delete_button_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rv_week" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_week"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_week_title" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/write_delete_button_text"
-            android:onClick="@{() -> viewModel.onClickDelete()}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_week" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -56,10 +56,10 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
             .setOnEmojiClickListener { _, _ ->
                 binding.root.hideKeyboard()
             }
-            .build(binding.etEmoji)
+            .build(binding.layoutEmoji.editEmoji)
 
-        binding.etEmoji.disableKeyboardInput(emojiPopup)
-        binding.etEmoji.forceSingleEmoji()
+        binding.layoutEmoji.editEmoji.disableKeyboardInput(emojiPopup)
+        binding.layoutEmoji.editEmoji.forceSingleEmoji()
     }
 
     private fun initializeRecyclerView() {

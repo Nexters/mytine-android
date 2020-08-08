@@ -89,6 +89,14 @@
         <item name="android:textColor">@color/powder_blue</item>
     </style>
 
+    <style name="NotoYellowMedium14LeftStyle">
+        <item name="android:fontFamily">@font/noto_sans_medium_font</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">4.6sp</item>
+        <item name="android:textColor">@color/macaroni_and_cheese</item>
+    </style>
+
     <style name="NotoPointblueMedium14Left">
         <item name="android:fontFamily">@font/noto_sans_medium_font</item>
         <item name="android:includeFontPadding">false</item>
@@ -121,6 +129,14 @@
         <item name="android:textSize">14sp</item>
         <item name="android:lineSpacingExtra">4.6sp</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="NotoYellowMedium12LeftStyle">
+        <item name="android:fontFamily">@font/noto_sans_medium_font</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+        <item name="android:textColor">@color/macaroni_and_cheese</item>
     </style>
 
     <style name="NotoSkyblueRegular12LeftStyle">
