@@ -69,4 +69,13 @@ internal class RetrospectDaoTest {
         dao.upsert(retrospect)
         assertThat(dao.getFlow(LocalDate.now()).first()).isEqualTo(retrospect)
     }
+
+    @Test
+    fun `getRetrospectDatesByDate 테스트`() = runBlocking {
+        val now = LocalDate.now()
+        assertThat(dao.getRetrospectDatesByDate(now, now).first()).isEmpty()
+        val retrospect = retrospect
+        dao.upsert(retrospect)
+        assert(dao.getRetrospectDatesByDate(now, now).first().contains(retrospect.date))
+    }
 }
