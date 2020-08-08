@@ -36,7 +36,7 @@ internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : 
 
         when {
             dX > 0 -> { // 오른쪽으로
-                background.color = Color.parseColor(R.color.warm_pink.toString())
+                background.color = Color.parseColor("#ff4775")
                 background.setBounds(
                     itemView.left, itemView.top,
                     itemView.left + dX.toInt() + R.integer.background_color_offset,
@@ -46,7 +46,7 @@ internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : 
                 background.draw(c)
             }
             dX < 0 -> { // 왼쪽으로
-                background.color = Color.parseColor(R.color.minty_green.toString())
+                background.color = Color.parseColor("#00ed75")
                 background.setBounds(
                     itemView.right + dX.toInt() - R.integer.background_color_offset,
                     itemView.top, itemView.right, itemView.bottom

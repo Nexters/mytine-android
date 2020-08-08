@@ -40,7 +40,7 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_write -> {
-                        viewModel.onClickWrite()
+                        viewModel.onClickSave()
                         hideKeyboard()
                         true
                     }
