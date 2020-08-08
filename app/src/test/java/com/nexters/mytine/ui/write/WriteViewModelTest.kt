@@ -18,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
@@ -153,7 +154,7 @@ internal class WriteViewModelTest {
         viewModel.goal.value = goal
         viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
 
-        viewModel.onClickWrite()
+        viewModel.onClickSave()
 
         verify(mockRoutineRepository).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections).onChanged(BackDirections())
@@ -171,9 +172,19 @@ internal class WriteViewModelTest {
         viewModel.goal.value = goal
         viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
 
-        viewModel.onClickWrite()
+        viewModel.onClickSave()
 
         verify(mockRoutineRepository).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
+        verify(navDirections).onChanged(BackDirections())
+    }
+
+    @Test
+    fun `삭제 클릭 시 루틴 삭제 및 뒤로가기`() = runBlocking {
+        `편집 상태로 진입 시 루틴 불러오기`()
+
+        viewModel.onClickDelete()
+
+        verify(mockRoutineRepository).deleteRoutinesById(anyString())
         verify(navDirections).onChanged(BackDirections())
     }
 
@@ -189,7 +200,7 @@ internal class WriteViewModelTest {
         viewModel.goal.value = goal
         viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
 
-        viewModel.onClickWrite()
+        viewModel.onClickSave()
 
         verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
@@ -208,7 +219,7 @@ internal class WriteViewModelTest {
         viewModel.goal.value = goal
         viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
 
-        viewModel.onClickWrite()
+        viewModel.onClickSave()
 
         verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
@@ -227,7 +238,7 @@ internal class WriteViewModelTest {
         viewModel.goal.value = goal
         viewModel.weekItems.value = DayOfWeek.values().map { WeekItem(dayOfWeek = it, selected = selectedDayOfWeeks.contains(it)) }
 
-        viewModel.onClickWrite()
+        viewModel.onClickSave()
 
         verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())

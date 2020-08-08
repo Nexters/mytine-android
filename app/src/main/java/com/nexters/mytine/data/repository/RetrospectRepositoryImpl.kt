@@ -13,6 +13,10 @@ internal class RetrospectRepositoryImpl @Inject constructor(
         return roomDatabase.retrospectDao().getFlow(date = date)
     }
 
+    override fun getRetrospectDatesByDate(from: LocalDate, to: LocalDate): Flow<List<LocalDate>> {
+        return roomDatabase.retrospectDao().getRetrospectDatesByDate(from, to)
+    }
+
     override suspend fun updateRetrospect(retrospect: Retrospect) {
         roomDatabase.retrospectDao().upsert(retrospect)
     }

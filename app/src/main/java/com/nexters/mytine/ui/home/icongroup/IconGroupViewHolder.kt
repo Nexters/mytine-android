@@ -2,12 +2,12 @@ package com.nexters.mytine.ui.home.icongroup
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nexters.mytine.base.recyclerview.BaseViewHolder
-import com.nexters.mytine.databinding.ItemHomeRoutineGroupIconGroupBinding
+import com.nexters.mytine.databinding.ItemHomeIconGroupBinding
 import com.nexters.mytine.ui.home.HomeViewModel
 import com.nexters.mytine.ui.home.icongroup.icon.IconAdapter
 
 internal class IconGroupViewHolder(
-    val binding: ItemHomeRoutineGroupIconGroupBinding,
+    val binding: ItemHomeIconGroupBinding,
     val viewModel: HomeViewModel
 ) : BaseViewHolder<IconGroupItem>(binding) {
 

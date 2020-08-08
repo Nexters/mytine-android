@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.nexters.mytine.ui.home.HomeViewModel" />
+
+        <variable
+            name="item"
+            type="com.nexters.mytine.ui.home.week.WeekItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewModel.sendWeekRoutines(item.day.date)}">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/day_of_week_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@{item.day.date.dayOfWeek.name()}"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/retrospect_check_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{String.valueOf(item.day.retrospectWrite)}"
+            android:textSize="6sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/day_of_week_tv" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/day_of_month_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="@{String.valueOf(item.day.date.dayOfMonth)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/retrospect_check_tv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
