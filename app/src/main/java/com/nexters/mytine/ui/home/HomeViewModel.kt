@@ -211,7 +211,7 @@ internal class HomeViewModel @ViewModelInject constructor(
         return true
     }
 
-    private fun setStatus(id: String, status: Routine.Status) {
+    fun setStatus(id: String, status: Routine.Status) {
         viewModelScope.launch {
             routineRepository.updateStatus(id, status)
         }

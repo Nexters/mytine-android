@@ -8,8 +8,10 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.snackbar.Snackbar
 import com.nexters.mytine.R
 import com.nexters.mytine.base.fragment.BaseFragment
+import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.databinding.FragmentHomeBinding
 import com.nexters.mytine.ui.home.icongroup.IconGroupAdapter
 import com.nexters.mytine.ui.home.week.WeekAdapter
@@ -62,6 +64,16 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         val itemTouchHelper = ItemTouchHelper(
             ItemTouchHelperCallback(object : ItemTouchHelperListener {
                 override fun onItemSwipe(position: Int, direction: Int) {
+
+                    val item = homeAdapter.getItemByPosition(position) as HomeItems.RoutineItem
+
+                    if (isLeftSwipeable(position)) {
+                        Snackbar.make(view!!, "1개의 루틴을 완료했습니다.", Snackbar.LENGTH_INDEFINITE)
+                            .setAction("되돌리기") {
+                                viewModel.setStatus(item.routine.realId, Routine.Status.ENABLE)
+                            }.show()
+                    }
+
                     viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), direction)
                 }
 
