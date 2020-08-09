@@ -193,6 +193,9 @@ dependencies {
     // FlexBox
     implementation "com.google.android:flexbox:$flexbox_version"
 
+    // Dialog
+    implementation "com.afollestad.material-dialogs:core:$material_dialog_version"
+
     // Debug
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "com.facebook.stetho:stetho:$stetho_version"

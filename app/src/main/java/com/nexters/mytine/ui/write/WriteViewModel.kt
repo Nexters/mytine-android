@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
+import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -35,12 +36,15 @@ internal class WriteViewModel @ViewModelInject constructor(
     val showErrorName = createErrorCheckLiveData(name) { !it.isNullOrBlank() }
     val showErrorWeek = createErrorCheckLiveData(weekItems) { !it.isNullOrEmpty() }
 
-    val enableMenuWrite = combineLatest(
+    val enableWrite = combineLatest(
         showErrorEmoji,
         showErrorName,
         showErrorWeek
     ) { errorEmoji, errorName, errorWeek -> !errorEmoji && !errorName && !errorWeek }
 
+    val showBackDialog = LiveEvent<Unit>()
+
+    private val backPressedChannel = BroadcastChannel<Unit>(1)
     private val saveClickChannel = BroadcastChannel<Unit>(1)
     private val deleteClickChannel = BroadcastChannel<Unit>(1)
 
@@ -102,6 +106,22 @@ internal class WriteViewModel @ViewModelInject constructor(
                     navDirections.value = BackDirections()
                 }
         }
+
+        viewModelScope.launch {
+            backPressedChannel.asFlow()
+                .flatMapLatest { navArgs<WriteFragmentArgs>().map { it.routineId } }
+                .collect { routineId ->
+                    if (routineId.isBlank()) {
+                        showBackDialog.value = Unit
+                    } else {
+                        navDirections.value = BackDirections()
+                    }
+                }
+        }
+    }
+
+    fun onBackPressed() {
+        viewModelScope.launch { backPressedChannel.send(Unit) }
     }
 
     fun onClickWeekItem(weekItem: WeekItem) {
@@ -123,6 +143,10 @@ internal class WriteViewModel @ViewModelInject constructor(
 
     fun onClickDelete() {
         viewModelScope.launch { deleteClickChannel.send(Unit) }
+    }
+
+    fun onClickLeave() {
+        navDirections.value = BackDirections()
     }
 
     private fun <T> createErrorCheckLiveData(source: LiveData<T>, check: (T) -> Boolean): MediatorLiveData<Boolean> {
