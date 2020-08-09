@@ -21,6 +21,7 @@
     <string name="write_delete_button_text">삭제하기</string>
     <string name="write_emoji_error">루틴에 사용될 이모지를 등록해주세요.</string>
     <string name="write_name_error">루틴의 이름을 등록해주세요.</string>
+    <string name="write_week_error">1개 이상의 요일을 선택해주세요.</string>
     <string name="write_empty_toast_message">모든 내용을 다 채워넣어야 합니다</string>
 
     <string name="not_change_toast_message">변경사항이 없습니다</string>

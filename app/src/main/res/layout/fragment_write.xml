@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -41,12 +42,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@string/write_create_toolbar_title" />
+                        android:text="@{viewModel.isEditMode ? @string/write_modify_toolbar_title : @string/write_create_toolbar_title}" />
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_write"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -83,7 +84,7 @@
                     layout="@layout/view_write_edit"
                     app:text="@={viewModel.goal}"
                     app:title="@{@string/write_goal_title}" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <TextView
                 android:id="@+id/tv_week_title"
@@ -113,7 +114,25 @@
                 android:layout_marginTop="9dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_week_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_week_title"
+                tools:itemCount="7"
+                tools:layoutManager="GridLayoutManager "
+                tools:listitem="@layout/item_write_week"
+                tools:spanCount="7" />
+
+            <TextView
+                android:id="@+id/tv_week_error"
+                style="@style/NotoYellowMedium12LeftStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="1dp"
+                android:text="@string/write_week_error"
+                app:isVisible="@{viewModel.showErrorWeek}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rv_week" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/NotoBlueMedium16Center"
@@ -127,7 +146,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_week" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_week_error" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
