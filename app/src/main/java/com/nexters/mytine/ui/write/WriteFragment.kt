@@ -36,6 +36,7 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
         initializeRecyclerView()
 
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
+        observe(viewModel.enableMenuWrite) { menuWrite.isEnabled = it }
     }
 
     private fun initializeToolbar() {

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -20,12 +22,10 @@
             type="androidx.lifecycle.MutableLiveData&lt;String&gt;" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:background="#f4f4f8">
+        android:animateLayoutChanges="true">
 
         <TextView
             android:id="@+id/tv_title"
@@ -55,8 +55,8 @@
             android:layout_marginTop="9dp"
             android:background="@drawable/bg_write_edit"
             android:gravity="center"
-            android:selected="@{showError}"
             android:text="@={text}"
+            app:activated="@{!showError}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
@@ -67,7 +67,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="1dp"
             android:text="@{errorMessage}"
-            android:visibility="@{showError}"
+            app:isVisible="@{showError}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"

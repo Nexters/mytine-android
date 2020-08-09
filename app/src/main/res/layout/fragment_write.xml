@@ -60,6 +60,7 @@
                     android:id="@+id/layout_emoji"
                     layout="@layout/view_write_emoji"
                     app:errorMessage="@{@string/write_emoji_error}"
+                    app:showError="@{viewModel.showErrorEmoji}"
                     app:text="@={viewModel.emoji}"
                     app:title="@{@string/write_emoji_title}" />
 
@@ -70,6 +71,7 @@
                 <include
                     layout="@layout/view_write_edit"
                     app:errorMessage="@{@string/write_name_error}"
+                    app:showError="@{viewModel.showErrorName}"
                     app:text="@={viewModel.name}"
                     app:title="@{@string/write_name_title}" />
 
@@ -121,6 +123,7 @@
                 android:layout_marginBottom="100dp"
                 android:onClick="@{() -> viewModel.onClickDelete()}"
                 android:text="@string/write_delete_button_text"
+                app:isVisible="@{viewModel.isEditMode}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

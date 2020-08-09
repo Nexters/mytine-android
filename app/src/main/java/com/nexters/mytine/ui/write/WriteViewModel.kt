@@ -1,13 +1,14 @@
 package com.nexters.mytine.ui.write
 
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.nexters.mytine.R
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
-import com.nexters.mytine.utils.ResourcesProvider
+import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -19,7 +20,6 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
 internal class WriteViewModel @ViewModelInject constructor(
-    private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
 
@@ -30,6 +30,16 @@ internal class WriteViewModel @ViewModelInject constructor(
     val weekItems = MutableLiveData<List<WeekItem>>().apply {
         value = DayOfWeek.values().map { WeekItem(it) }
     }
+
+    val showErrorEmoji = createErrorCheckLiveData(emoji) { !it.isNullOrBlank() }
+    val showErrorName = createErrorCheckLiveData(name) { !it.isNullOrBlank() }
+    val showErrorWeek = createErrorCheckLiveData(weekItems) { !it.isNullOrEmpty() }
+
+    val enableMenuWrite = combineLatest(
+        showErrorEmoji,
+        showErrorName,
+        showErrorWeek
+    ) { errorEmoji, errorName, errorWeek -> !errorEmoji && !errorName && !errorWeek }
 
     private val saveClickChannel = BroadcastChannel<Unit>(1)
     private val deleteClickChannel = BroadcastChannel<Unit>(1)
@@ -64,7 +74,9 @@ internal class WriteViewModel @ViewModelInject constructor(
                     val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
 
                     if (emoji.isNullOrBlank() || name.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
-                        toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
+                        showErrorEmoji.value = emoji.isNullOrBlank()
+                        showErrorName.value = name.isNullOrBlank()
+                        showErrorWeek.value = selectedDayOfWeeks.isNullOrEmpty()
                         return@collect
                     }
 
@@ -111,5 +123,15 @@ internal class WriteViewModel @ViewModelInject constructor(
 
     fun onClickDelete() {
         viewModelScope.launch { deleteClickChannel.send(Unit) }
+    }
+
+    private fun <T> createErrorCheckLiveData(source: LiveData<T>, check: (T) -> Boolean): MediatorLiveData<Boolean> {
+        return MediatorLiveData<Boolean>().apply {
+            addSource(source) {
+                if (check(it)) {
+                    value = false
+                }
+            }
+        }
     }
 }
