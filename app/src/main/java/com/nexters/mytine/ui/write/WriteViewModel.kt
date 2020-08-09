@@ -70,7 +70,7 @@ internal class WriteViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             saveClickChannel.asFlow()
-                .flatMapLatest { navArgsChannel.asFlow() }
+                .flatMapLatest { navArgs<WriteFragmentArgs>() }
                 .collect { navArgs ->
                     val emoji = emoji.value
                     val name = name.value
@@ -89,7 +89,7 @@ internal class WriteViewModel @ViewModelInject constructor(
                         name = name,
                         goal = goal,
                         selectedDayOfWeeks = selectedDayOfWeeks,
-                        id = (navArgs as? WriteFragmentArgs)?.routineId ?: ""
+                        id = navArgs.routineId
                     )
 
                     navDirections.value = BackDirections()
