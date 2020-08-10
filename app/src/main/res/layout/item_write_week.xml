@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,25 +14,24 @@
             type="com.nexters.mytine.ui.write.WeekItem" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/bg_write_week"
+        android:gravity="center"
+        android:onClick="@{() -> viewModel.onClickWeekItem(item)}"
+        android:text="@{item.weekName()}"
+        android:textAppearance="@style/NotoWhiteBlueMedium14CenterStyle"
+        android:textColor="@drawable/text_write_week"
+        app:activated="@{!viewModel.showErrorWeek}"
+        app:layout_constraintDimensionRatio="W, 1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:selected="@{item.selected}"
+        tools:text="월" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_title"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/bg_week_item"
-            android:onClick="@{() -> viewModel.onClickWeekItem(item)}"
-            android:text="@{item.weekName()}"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:selected="@{item.selected}" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

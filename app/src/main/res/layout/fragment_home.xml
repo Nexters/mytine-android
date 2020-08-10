@@ -88,9 +88,7 @@
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_routine"

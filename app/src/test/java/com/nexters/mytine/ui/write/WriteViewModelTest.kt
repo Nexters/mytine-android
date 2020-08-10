@@ -3,11 +3,11 @@ package com.nexters.mytine.ui.write
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
+import com.google.common.truth.Truth.assertThat
 import com.nexters.mytine.MainCoroutinesRule
-import com.nexters.mytine.R
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
-import com.nexters.mytine.utils.ResourcesProvider
+import com.nexters.mytine.getValue
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -36,6 +36,9 @@ internal class WriteViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    private lateinit var isEditMode: Observer<Boolean>
+
+    @Mock
     private lateinit var emoji: Observer<String>
 
     @Mock
@@ -48,36 +51,57 @@ internal class WriteViewModelTest {
     private lateinit var weekItems: Observer<List<WeekItem>>
 
     @Mock
+    private lateinit var showErrorEmoji: Observer<Boolean>
+
+    @Mock
+    private lateinit var showErrorName: Observer<Boolean>
+
+    @Mock
+    private lateinit var showErrorWeek: Observer<Boolean>
+
+    @Mock
+    private lateinit var enableWrite: Observer<Boolean>
+
+    @Mock
+    private lateinit var showBackDialog: Observer<Unit>
+
+    @Mock
     private lateinit var navDirections: Observer<NavDirections>
-
-    @Mock
-    private lateinit var toast: Observer<String>
-
-    @Mock
-    private lateinit var resourcesProvider: ResourcesProvider
 
     @Mock
     private lateinit var mockRoutineRepository: RoutineRepository
     private lateinit var viewModel: WriteViewModel
 
-    private val emptyToastMessage = "emptyToastMessage"
-
     @Before
     fun setup() {
-        `when`(resourcesProvider.getString(R.string.write_empty_toast_message)).thenReturn(emptyToastMessage)
-        viewModel = WriteViewModel(resourcesProvider, mockRoutineRepository)
+        viewModel = WriteViewModel(mockRoutineRepository)
+        viewModel.isEditMode.observeForever(isEditMode)
         viewModel.emoji.observeForever(emoji)
         viewModel.name.observeForever(name)
         viewModel.goal.observeForever(goal)
         viewModel.weekItems.observeForever(weekItems)
+        viewModel.showErrorEmoji.observeForever(showErrorEmoji)
+        viewModel.showErrorName.observeForever(showErrorName)
+        viewModel.showErrorWeek.observeForever(showErrorWeek)
+        viewModel.enableWrite.observeForever(enableWrite)
+        viewModel.showBackDialog.observeForever(showBackDialog)
         viewModel.navDirections.observeForever(navDirections)
-        viewModel.toast.observeForever(toast)
+        viewModel.navArgs(WriteFragmentArgs())
     }
 
     @Test
     fun `쓰기 상태로 진입 시 요일들을 선택안된채로 불러오기`() {
         val defaultWeekItems = DayOfWeek.values().map { WeekItem(it) }
         verify(weekItems).onChanged(defaultWeekItems)
+        assertThat(getValue(viewModel.isEditMode)).isFalse()
+    }
+
+    @Test
+    fun `쓰기화면에서 뒤로가기 시 다이얼로그 띄우기 및 나가기 클릭 시 나가기`() {
+        viewModel.onBackPressed()
+        verify(showBackDialog).onChanged(Unit)
+        viewModel.onClickLeave()
+        verify(navDirections).onChanged(BackDirections())
     }
 
     @Test
@@ -101,6 +125,7 @@ internal class WriteViewModelTest {
 
         viewModel.navArgs(WriteFragmentArgs(routineId))
 
+        assertThat(getValue(viewModel.isEditMode)).isTrue()
         verify(emoji).onChanged(fakeEmoji)
         verify(name).onChanged(fakeName)
         verify(goal).onChanged(fakeGoal)
@@ -189,7 +214,7 @@ internal class WriteViewModelTest {
     }
 
     @Test
-    fun `이모지가 채워지지 않은 채 루틴 쓰기를 누를 시 토스트`() = runBlocking {
+    fun `이모지가 채워지지 않은 채 루틴 쓰기를 누를 시 에러표시`() = runBlocking {
         val emoji = ""
         val name = "name"
         val goal = "goal"
@@ -204,11 +229,12 @@ internal class WriteViewModelTest {
 
         verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
-        verify(toast).onChanged(emptyToastMessage)
+        verify(showErrorEmoji).onChanged(true)
+        assertThat(getValue(viewModel.enableWrite)).isFalse()
     }
 
     @Test
-    fun `루틴이름이 채워지지 않은 채 루틴 쓰기를 누를 시 토스트`() = runBlocking {
+    fun `루틴이름이 채워지지 않은 채 루틴 쓰기를 누를 시 에러표시`() = runBlocking {
         val emoji = "emoji"
         val name = ""
         val goal = "goal"
@@ -223,7 +249,8 @@ internal class WriteViewModelTest {
 
         verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
-        verify(toast).onChanged(emptyToastMessage)
+        verify(showErrorName).onChanged(true)
+        assertThat(getValue(viewModel.enableWrite)).isFalse()
     }
 
     @Test
@@ -242,6 +269,7 @@ internal class WriteViewModelTest {
 
         verify(mockRoutineRepository, never()).updateRoutine(emoji, name, goal, selectedDayOfWeeks, "")
         verify(navDirections, never()).onChanged(BackDirections())
-        verify(toast).onChanged(emptyToastMessage)
+        verify(showErrorWeek).onChanged(true)
+        assertThat(getValue(viewModel.enableWrite)).isFalse()
     }
 }
