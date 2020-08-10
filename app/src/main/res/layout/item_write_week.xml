@@ -14,7 +14,7 @@
             type="com.nexters.mytine.ui.write.WeekItem" />
     </data>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,6 +26,7 @@
         android:text="@{item.weekName()}"
         android:textAppearance="@style/NotoWhiteBlueMedium14CenterStyle"
         android:textColor="@drawable/text_write_week"
+        app:activated="@{!viewModel.showErrorWeek}"
         app:layout_constraintDimensionRatio="W, 1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

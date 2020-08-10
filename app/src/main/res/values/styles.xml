@@ -17,5 +17,12 @@
 
         <item name="android:actionMenuTextAppearance">@style/NotoBlueMedium16LeftStyle</item>
         <item name="android:actionMenuTextColor">@drawable/text_menu</item>
+
+        <item name="md_font_title">@font/noto_sans_medium_font</item>
+        <item name="md_font_body">@font/noto_sans_medium_font</item>
+        <item name="md_font_button">@font/noto_sans_medium_font</item>
+        <item name="md_color_title">@color/dusk</item>
+        <item name="md_color_content">@color/dusk</item>
+        <item name="md_color_button_text">@color/color_point_blue</item>
     </style>
 </resources>
