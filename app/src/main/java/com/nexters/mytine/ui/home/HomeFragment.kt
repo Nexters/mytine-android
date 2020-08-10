@@ -68,7 +68,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                     val item = homeAdapter.getItemByPosition(position) as HomeItems.RoutineItem
 
                     if (isLeftSwipeable(position)) {
-                        Snackbar.make(view!!, "1개의 루틴을 완료했습니다.", Snackbar.LENGTH_INDEFINITE)
+                        Snackbar.make(view!!, "1개의 루틴을 완료했습니다.", Snackbar.LENGTH_SHORT)
                             .setAction("되돌리기") {
                                 viewModel.setStatus(item.routine.realId, Routine.Status.ENABLE)
                             }.show()
@@ -86,6 +86,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 }
             })
         )
+
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
     }
