@@ -1,36 +1,41 @@
 package com.nexters.mytine.ui.home
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.RectF
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
 import androidx.recyclerview.widget.RecyclerView
 import com.nexters.mytine.R
 
+class TestCallback(private val testCallbackListener: TestCallbackListener) :
+    ItemTouchHelper.Callback() {
 
-
-internal class TestCallback(var listener: ItemTouchHelperListener) : ItemTouchHelper.Callback() {
-
-    private var buttonInstance: RectF? = null
-
-    private val background = Paint()
-
-    private var swipeBack = false
-    private var buttonShowedState = ButtonsState.GONE
-    private val buttonWidth = 300f
-
-    internal enum class ButtonsState {
+    enum class ButtonsState {
         GONE, LEFT_VISIBLE, RIGHT_VISIBLE
     }
 
+    private var c = Canvas()
+    var isCurrentlyActive = false
+    private var swipeBack = false
+    private var buttonShowedState = ButtonsState.GONE
+
+    private var buttonInstance: RectF? = null
+    private var currentItemViewHolder: RecyclerView.ViewHolder? = null
+
+    override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
+
+        Log.d("TestCallback", "convertToAbsoluteDirection() $flags ${ItemTouchHelper.START} $swipeBack $buttonShowedState")
+
+        if (swipeBack) {
+            swipeBack = buttonShowedState !== ButtonsState.GONE
+            return 0
+        }
+        return super.convertToAbsoluteDirection(flags, layoutDirection)
+    }
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         var swipeFlags = 0
@@ -40,8 +45,8 @@ internal class TestCallback(var listener: ItemTouchHelperListener) : ItemTouchHe
         val isRightSwipeable: Boolean
 
         if (position != RecyclerView.NO_POSITION) {
-            isLeftSwipeable = listener.isLeftSwipeable(position)
-            isRightSwipeable = listener.isRightSwipeable(position)
+            isLeftSwipeable = testCallbackListener.isLeftSwipeable(position)
+            isRightSwipeable = testCallbackListener.isRightSwipeable(position)
         } else {
             isLeftSwipeable = false
             isRightSwipeable = false
@@ -58,90 +63,59 @@ internal class TestCallback(var listener: ItemTouchHelperListener) : ItemTouchHe
         return makeMovementFlags(0, swipeFlags)
     }
 
-    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean = false
-
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        listener.onItemSwipe(viewHolder.adapterPosition, direction)
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        return true
     }
-
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        var mdX = dX
-        if (actionState == ACTION_STATE_SWIPE) {
-            if (buttonShowedState != ButtonsState.GONE) {
-                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) mdX = Math.max(mdX, buttonWidth)
-                if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) mdX = Math.min(mdX, -buttonWidth)
-                super.onChildDraw(c, recyclerView, viewHolder, mdX, dY, actionState, isCurrentlyActive)
+        var dx = dX
+
+        this.isCurrentlyActive = isCurrentlyActive
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            if (buttonShowedState !== ButtonsState.GONE) {
+                if (buttonShowedState === ButtonsState.LEFT_VISIBLE) dx = Math.max(dX, buttonWidth)
+                if (buttonShowedState === ButtonsState.RIGHT_VISIBLE) dx = Math.min(dX, -buttonWidth)
+                super.onChildDraw(c, recyclerView, viewHolder, dx, dY, actionState, false)
+                setTouchListener(recyclerView, viewHolder, dx, dY, actionState)
+                getDefaultUIUtil().onDraw(c, recyclerView, viewHolder.itemView, dx, dY, actionState, false)
             } else {
-                setTouchListener(c, recyclerView, viewHolder, mdX, dY, actionState, isCurrentlyActive)
+                // swipe 되는 순간은 무조건 buttonShowedState = GONE 상태
+                // setTouchListener 로 초기 설정을 해준다.
+                setTouchListener(recyclerView, viewHolder, dx, dY, actionState)
+                getDefaultUIUtil().onDraw(c, recyclerView, viewHolder.itemView, dX, dY, actionState, isCurrentlyActive)
             }
+        } else if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            // super.onChildDraw() 호출 시 itemView 전체가 움직임.
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         }
-
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-        val itemView: View = viewHolder.itemView
-        val resources = itemView.resources
-        lateinit var icon: Bitmap
-
-        when {
-            dX > 0 -> { // 오른쪽으로
-                icon = BitmapFactory.decodeResource(resources, R.drawable.card_check_back)
-                val dest = RectF(
-                    itemView.left.toFloat() + startOffset,
-                    itemView.top.toFloat() + verticalOffset,
-                    itemView.left.toFloat() + endOffset,
-                    itemView.bottom.toFloat() - verticalOffset
-                )
-                c.drawBitmap(icon, null, dest, background)
-            }
-            dX < 0 -> { // 왼쪽으로
-                icon = BitmapFactory.decodeResource(resources, R.drawable.card_check)
-                val dest = RectF(
-                    itemView.right.toFloat() - endOffset,
-                    itemView.top.toFloat() + verticalOffset,
-                    itemView.right.toFloat() - startOffset,
-                    itemView.bottom.toFloat() - verticalOffset
-                )
-
-                c.drawBitmap(icon, null, dest, background)
-            }
-        }
-
+        currentItemViewHolder = viewHolder
+        onDraw(c)
     }
-    override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
-        if (swipeBack) {
-            swipeBack = buttonShowedState != ButtonsState.GONE
-            return 0
-        }
-        return super.convertToAbsoluteDirection(flags, layoutDirection)
+
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        return
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setTouchListener(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+    private fun setTouchListener(
+        recyclerView: RecyclerView,
+        foregroundView: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int
+    ) {
         recyclerView.setOnTouchListener { _, event ->
-            swipeBack =
-                event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_UP
-            Log.e("setTouchListener - swipeback","${swipeBack}")
-
-            //스와이프 한 정도 확인
-            Log.e("setTouchListener - dX","${dX}")
+            swipeBack = event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_UP
+            // itemView 를 잡고 끌게 되는 경우 event.action = ACTION_MOVE 상태
+            // 손가락을 띄우는 순간 event.action = ACTION_UP 상태로 swipeBack 이 true 로 바뀐다.
             if (swipeBack) {
-                when {
-                    dX < -buttonWidth -> {buttonShowedState = ButtonsState.RIGHT_VISIBLE
-                        Log.e("setTouchListener - RIGHT_VISIBLE","${buttonShowedState}")
-                    }
-                    dX > buttonWidth -> {buttonShowedState = ButtonsState.LEFT_VISIBLE
-                        Log.e("setTouchListener - LEFT_VISIBLE","${buttonShowedState}")
-                    }
-                }
+                if (dX < -buttonWidth) buttonShowedState = ButtonsState.RIGHT_VISIBLE
+                else if (dX > buttonWidth) buttonShowedState = ButtonsState.LEFT_VISIBLE
 
-
-                //상태 변경 버튼 표시
-                Log.e("setTouchListener - buttonShowedState","${buttonShowedState}")
-                if (buttonShowedState != ButtonsState.GONE) {
-                    //클릭리스너 재정의
-                    Log.e("setTouchListener - buttonShowedState","${buttonShowedState}")
-                    Log.e("setTouchListener - 재정의","${"들어와따"}")
-                    setTouchDownListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                if (buttonShowedState !== ButtonsState.GONE) {
+                    // 손가락을 띄우게 되었을 때, buttonShowedState 를 보여준다.
+                    // 우측 및 좌측 버튼이 공개되어 있는 경우, setTouchDownListener 와 setItemsClickable 초기 설정.
+                    setTouchDownListener(recyclerView, foregroundView, dX, dY, actionState)
                     setItemsClickable(recyclerView, false)
                 }
             }
@@ -150,38 +124,49 @@ internal class TestCallback(var listener: ItemTouchHelperListener) : ItemTouchHe
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setTouchDownListener(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+    private fun setTouchDownListener(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int
+    ) {
         recyclerView.setOnTouchListener { _, event ->
-
+            Log.d("TestCallback", " touch down  ${event.action}")
+            // 현재 우측 및 좌측의 버튼이 공개되어 있는 상태
+            // 만약 사용자가 itemView 를 누르게 된다면 setTouchUpListener 초기 설정.
             if (event.action == MotionEvent.ACTION_DOWN) {
-                Log.e("setTouchDownListener -액션 다운!!!!! ","${event.action}")
-                setTouchUpListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                setTouchUpListener(recyclerView, viewHolder, dX, dY, actionState)
             }
             false
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setTouchUpListener(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        recyclerView.setOnTouchListener { v, event ->
-
+    private fun setTouchUpListener(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int) {
+        recyclerView.setOnTouchListener { _, event ->
+            Log.d("TestCallback", " touch up ${event.action}, $buttonShowedState")
+            // 사용자가 손가락을 띄우게 되었을 경우(ACTION_UP 상태 일 때) 작동하는 코드.
             if (event.action == MotionEvent.ACTION_UP) {
-                Log.e("setTouchUpListener -액션업!!!!! ","${event.action}")
+                super.onChildDraw(c, recyclerView, viewHolder, 0f, dY, actionState, isCurrentlyActive)
+                getDefaultUIUtil().onDraw(c, recyclerView, viewHolder.itemView, 0f, dY, actionState, isCurrentlyActive)
 
-                super@TestCallback.onChildDraw(c, recyclerView, viewHolder, 0F, dY, actionState, false)
-                recyclerView.setOnTouchListener { _, _ -> false }
+                // recyclerView 의 clickable 을 활성화하는 부분.
                 setItemsClickable(recyclerView, true)
 
-                if (buttonInstance != null && buttonInstance?.contains(event.x, event.y) == true) {
-                    when (buttonShowedState) {
-                        ButtonsState.LEFT_VISIBLE -> listener.onLeftClicked(viewHolder.adapterPosition)
-                        ButtonsState.RIGHT_VISIBLE -> listener.onRightClicked(viewHolder.adapterPosition)
-                        else -> Unit
+                swipeBack = false
+                if (buttonInstance != null && buttonInstance!!.contains(event.x, event.y)) {
+                    if (buttonShowedState === ButtonsState.LEFT_VISIBLE) {
+                        testCallbackListener.onLeftClicked(viewHolder.adapterPosition)
+                    } else if (buttonShowedState === ButtonsState.RIGHT_VISIBLE) {
+                        testCallbackListener.onRightClicked(viewHolder.adapterPosition)
                     }
                 }
 
-                swipeBack = false
                 buttonShowedState = ButtonsState.GONE
+                currentItemViewHolder = null
+            } else if (event.action == MotionEvent.ACTION_MOVE) {
+                getDefaultUIUtil().onDraw(c, recyclerView, viewHolder.itemView, dX, dY, actionState, isCurrentlyActive)
             }
             false
         }
@@ -193,9 +178,43 @@ internal class TestCallback(var listener: ItemTouchHelperListener) : ItemTouchHe
         }
     }
 
+    private fun drawButtons(c: Canvas, viewHolder: RecyclerView.ViewHolder) {
+        val itemView: View = viewHolder.itemView
+        val resources = itemView.resources
+
+        val iconL = BitmapFactory.decodeResource(resources, R.drawable.card_check_back)
+        val leftButton = RectF(
+            itemView.left.toFloat() + ItemTouchHelperCallback.startOffset,
+            itemView.top.toFloat() + ItemTouchHelperCallback.verticalOffset,
+            itemView.left.toFloat() + ItemTouchHelperCallback.endOffset,
+            itemView.bottom.toFloat() - ItemTouchHelperCallback.verticalOffset
+        )
+        c.drawBitmap(iconL, null, leftButton, null)
+
+        val iconR = BitmapFactory.decodeResource(resources, R.drawable.card_check)
+        val rightButton = RectF(
+            itemView.right.toFloat() - ItemTouchHelperCallback.endOffset,
+            itemView.top.toFloat() + ItemTouchHelperCallback.verticalOffset,
+            itemView.right.toFloat() - ItemTouchHelperCallback.startOffset,
+            itemView.bottom.toFloat() - ItemTouchHelperCallback.verticalOffset
+        )
+        c.drawBitmap(iconR, null, rightButton, null)
+
+        buttonInstance = null
+        if (buttonShowedState === ButtonsState.LEFT_VISIBLE) {
+            buttonInstance = leftButton
+        } else if (buttonShowedState === ButtonsState.RIGHT_VISIBLE) {
+            buttonInstance = rightButton
+        }
+    }
+
+    private fun onDraw(c: Canvas) {
+        if (currentItemViewHolder != null) {
+            drawButtons(c, currentItemViewHolder!!)
+        }
+    }
+
     companion object {
-        const val verticalOffset = 50f
-        const val startOffset = 80f
-        const val endOffset = 150f
+        private const val buttonWidth = 300f
     }
 }

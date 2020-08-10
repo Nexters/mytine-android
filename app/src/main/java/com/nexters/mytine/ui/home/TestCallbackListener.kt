@@ -1,7 +1,6 @@
 package com.nexters.mytine.ui.home
 
-
-interface TestCallbackListenenr {
+interface TestCallbackListener {
     fun isRightSwipeable(position: Int): Boolean
     fun isLeftSwipeable(position: Int): Boolean
 

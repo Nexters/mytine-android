@@ -87,6 +87,35 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             })
         )
 
+        /*        val itemTouchHelper = ItemTouchHelper(
+            TestCallback(object : TestCallbackListener{
+                override fun isRightSwipeable(position: Int): Boolean {
+                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.CompletedRoutineItem
+                }
+
+                override fun isLeftSwipeable(position: Int): Boolean {
+                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.EnabledRoutineItem
+                }
+
+                override fun onLeftClicked(position: Int) {
+                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), ItemTouchHelper.END)
+                }
+
+                override fun onRightClicked(position: Int) {
+                    val item = homeAdapter.getItemByPosition(position) as HomeItems.RoutineItem
+
+                    if (isLeftSwipeable(position)) {
+                        Snackbar.make(view!!, "1개의 루틴을 완료했습니다.", Snackbar.LENGTH_SHORT)
+                            .setAction("되돌리기") {
+                                viewModel.setStatus(item.routine.realId, Routine.Status.ENABLE)
+                            }.show()
+                    }
+                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), ItemTouchHelper.START)
+                }
+
+            })
+        )*/
+
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
     }
