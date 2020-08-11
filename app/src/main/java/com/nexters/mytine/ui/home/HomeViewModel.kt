@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -140,6 +141,17 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun onClickRetrospect() {
         viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RetrospectTab) }
+    }
+
+    fun getStartDate(): List<WeekOfMonth> = runBlocking {
+        val dateArray = arrayListOf<WeekOfMonth>()
+        var startDate = routineRepository.getsStartDate()
+        val now = LocalDate.now()
+        while (startDate <= now) {
+            dateArray.add(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))
+            startDate = startDate.plusWeeks(1)
+        }
+        return@runBlocking dateArray
     }
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
