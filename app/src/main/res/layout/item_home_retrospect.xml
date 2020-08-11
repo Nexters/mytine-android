@@ -44,7 +44,7 @@
             android:paddingVertical="6dp"
             android:text="@string/save_retrospect"
             android:textColor="@drawable/text_write_week"
-            app:selected="@{viewModel.isStored}"
+            app:selected="@{viewModel.isRetrospectStored}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_write" />
 

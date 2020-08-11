@@ -128,7 +128,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             viewLifecycleOwner,
             Observer {
                 viewModel.retrospect.value?.let { stored ->
-                    viewModel.isStored.value = stored.contents != it
+                    viewModel.isRetrospectStored.value = stored.contents != it
                 }
             }
         )

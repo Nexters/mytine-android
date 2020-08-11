@@ -43,7 +43,8 @@ internal class HomeViewModel @ViewModelInject constructor(
     val retrospect = MutableLiveData<Retrospect>()
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
 
-    val isStored = MutableLiveData<Boolean>().apply { value = false }
+    val isRetrospectStored = MutableLiveData<Boolean>().apply { value = false }
+    val isTabClicked = MutableLiveData<Boolean>().apply { value = true }
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
@@ -111,6 +112,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
                     when (tabBarStatus) {
                         TabBarStatus.RoutineTab -> {
+                            isTabClicked.value = true
 
                             if (icons.isNullOrEmpty())
                                 add(HomeItems.EmptyRoutineItem())
@@ -137,7 +139,10 @@ internal class HomeViewModel @ViewModelInject constructor(
                                 }
                             )
                         }
-                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
+                        TabBarStatus.RetrospectTab -> {
+                            add(HomeItems.Retrospect())
+                            isTabClicked.value = false
+                        }
                     }
                 }
             }.collect {
@@ -151,7 +156,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickRoutine() {
-        if (!isStored.value!!) {
+        if (!isRetrospectStored.value!!) {
             viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
         }
     }
@@ -168,7 +173,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun onClickWriteRetrospect() {
 
-        if (!isStored.value!!) return
+        if (!isRetrospectStored.value!!) return
 
         viewModelScope.launch {
 
