@@ -1,41 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <data>
-        <variable
-            name="viewModel"
-            type="com.nexters.mytine.ui.home.HomeViewModel" />
-        <variable
-            name="item"
-            type="com.nexters.mytine.ui.home.WeekOfMonth" />
-    </data>
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/start_date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:onClick="@{() -> viewModel.sendWeekRoutines(item.startDate)}">
+        android:textSize="16sp"
+        tools:text="8월3일"/>
 
-        <TextView
-            android:id="@+id/start_date_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="@{item.startDate.toString()}"
-            tools:text="8월3일"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text=" - "/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text=" - "/>
-
-        <TextView
-            android:id="@+id/end_date_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="@{item.endDate.toString()}"
-            tools:text="8월3일"/>
-    </LinearLayout>
-</layout>
+    <TextView
+        android:id="@+id/end_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        tools:text="8월3일"/>
+</LinearLayout>
