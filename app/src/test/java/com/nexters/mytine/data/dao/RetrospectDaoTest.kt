@@ -78,4 +78,15 @@ internal class RetrospectDaoTest {
         dao.upsert(retrospect)
         assert(dao.getRetrospectDatesByDate(now, now).first().contains(retrospect.date))
     }
+
+    @Test
+    fun `deleteRepository 테스트`() = runBlocking {
+        val now = LocalDate.now()
+        val retrospect = retrospect
+        dao.upsert(retrospect)
+        assert(dao.getRetrospectDatesByDate(now, now).first().contains(retrospect.date))
+
+        dao.deleteRetrospect(retrospect.date)
+        assertThat(dao.getFlow(LocalDate.now()).first()).isNull()
+    }
 }

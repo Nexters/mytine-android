@@ -1,6 +1,7 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +38,8 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
+
+        initObserve()
     }
 
     private fun initializeRecyclerView() {
@@ -76,5 +79,16 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         )
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
+    }
+
+    private fun initObserve() {
+        viewModel.retrospectContent.observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModel.retrospect.value?.let { stored ->
+                    viewModel.isStored.value = stored.contents != it
+                }
+            }
+        )
     }
 }

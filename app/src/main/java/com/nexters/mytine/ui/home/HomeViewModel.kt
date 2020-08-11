@@ -4,7 +4,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.nexters.mytine.R
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.entity.Retrospect
 import com.nexters.mytine.data.entity.Routine
@@ -15,6 +14,7 @@ import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.DayItem
 import com.nexters.mytine.ui.home.week.WeekItem
 import com.nexters.mytine.utils.ResourcesProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@ExperimentalCoroutinesApi
 internal class HomeViewModel @ViewModelInject constructor(
     private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository,
@@ -41,6 +42,8 @@ internal class HomeViewModel @ViewModelInject constructor(
     val homeItems = MutableLiveData<List<HomeItems>>()
     val retrospect = MutableLiveData<Retrospect>()
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
+
+    val isStored = MutableLiveData<Boolean>().apply { value = false }
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
@@ -66,7 +69,6 @@ internal class HomeViewModel @ViewModelInject constructor(
                         retrospect.value = it
                         retrospectContent.value = it.contents
                     }
-                    toast.value = "${retrospectContent.value}"
                 }
         }
 
@@ -103,6 +105,9 @@ internal class HomeViewModel @ViewModelInject constructor(
                     when (tabBarStatus) {
                         TabBarStatus.RoutineTab -> {
 
+                            if (iconGroupItems.value.isNullOrEmpty() && tabBarStatus == TabBarStatus.RoutineTab) {
+                                add(HomeItems.EmptyRoutineItem())
+                            }
                             val enableList = mutableListOf<Routine>()
                             val completedList = mutableListOf<Routine>()
 
@@ -139,7 +144,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickRoutine() {
-        if (checkDataSaved()) {
+        if (!isStored.value!!) {
             viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
         }
     }
@@ -155,20 +160,18 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWriteRetrospect() {
-        val contentValue = retrospectContent.value
 
-        if (contentValue.isNullOrBlank()) {
-            toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
-            return
-        }
-
-        if (contentValue == retrospect.value?.contents) {
-            toast.value = resourcesProvider.getString(R.string.not_change_toast_message)
-            return
-        }
+        if (!isStored.value!!) return
 
         viewModelScope.launch {
-            retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, contentValue))
+
+            if (retrospectContent.value.isNullOrEmpty()) {
+                retrospectRepository.deleteRetrospect(dayChannel.value)
+                toast.value = "삭제"
+            } else {
+                retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, retrospectContent.value!!))
+                toast.value = "저장${retrospectContent.value}"
+            }
         }
     }
 
@@ -200,15 +203,6 @@ internal class HomeViewModel @ViewModelInject constructor(
             .map { routineMap ->
                 IconGroupItem(routineMap.value.map { routine -> IconItem(routine) })
             }
-    }
-
-    private fun checkDataSaved(): Boolean {
-        if (retrospectContent.value != retrospect.value?.contents) {
-            toast.value = "변경된 내용이 있습니다. 회고 저장 후 이동 해 주세요. 다이얼로그로 바꾸기ㅣ!!!"
-            return false
-        }
-
-        return true
     }
 
     private fun setStatus(id: String, status: Routine.Status) {
