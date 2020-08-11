@@ -145,7 +145,7 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun getStartDate(): List<WeekOfMonth> = runBlocking {
         val dateArray = arrayListOf<WeekOfMonth>()
-        var startDate = routineRepository.getsStartDate()
+        var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
         val now = LocalDate.now()
         while (startDate <= now) {
             dateArray.add(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))

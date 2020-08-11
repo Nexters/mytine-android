@@ -24,7 +24,7 @@ internal class RoutineRepositoryImpl @Inject constructor(
         return routineDao.flowRoutineByDate(from, to)
     }
 
-    override suspend fun getsStartDate(): LocalDate {
+    override suspend fun getsStartDate(): LocalDate? {
         return routineDao.getStartDate()
     }
 

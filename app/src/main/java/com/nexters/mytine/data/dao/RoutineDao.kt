@@ -28,7 +28,7 @@ internal abstract class RoutineDao : BaseDao<Routine> {
     abstract suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
 
     @Query("SELECT date FROM routine ORDER BY date LIMIT 1")
-    abstract suspend fun getStartDate(): LocalDate
+    abstract suspend fun getStartDate(): LocalDate?
 
     @Query("DELETE FROM routine WHERE id = :id")
     abstract suspend fun deleteRoutinesById(id: String)
