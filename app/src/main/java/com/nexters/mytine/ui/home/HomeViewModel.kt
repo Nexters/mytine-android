@@ -88,7 +88,9 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY)) }
                 .map { convertRoutineItems(it) }
-                .collect { iconGroupItems.value = it }
+                .collect {
+                    iconGroupItems.value = it
+                }
         }
 
         viewModelScope.launch {
@@ -97,17 +99,22 @@ internal class HomeViewModel @ViewModelInject constructor(
                     .flatMapLatest {
                         routineRepository.flowRoutines(it)
                     },
-                tabBarStatusChannel.asFlow()
-            ) { dateRoutines, tabBarStatus ->
+                tabBarStatusChannel.asFlow(),
+                dayChannel.asFlow().flatMapLatest { date ->
+                    retrospectRepository
+                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
+                        .map { weekItems(date, it) }
+                }
+            ) { dateRoutines, tabBarStatus, icons ->
                 mutableListOf<HomeItems>().apply {
                     add(HomeItems.TabBarItem())
 
                     when (tabBarStatus) {
                         TabBarStatus.RoutineTab -> {
 
-                            if (iconGroupItems.value.isNullOrEmpty() && tabBarStatus == TabBarStatus.RoutineTab) {
+                            if (icons.isNullOrEmpty())
                                 add(HomeItems.EmptyRoutineItem())
-                            }
+
                             val enableList = mutableListOf<Routine>()
                             val completedList = mutableListOf<Routine>()
 
@@ -205,7 +212,7 @@ internal class HomeViewModel @ViewModelInject constructor(
             }
     }
 
-    private fun setStatus(id: String, status: Routine.Status) {
+    fun setStatus(id: String, status: Routine.Status) {
         viewModelScope.launch {
             routineRepository.updateStatus(id, status)
         }
