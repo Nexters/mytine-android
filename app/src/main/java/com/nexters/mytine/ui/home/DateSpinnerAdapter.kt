@@ -42,5 +42,4 @@ internal class DateSpinnerAdapter(
     }
 
     private fun getDateStr(date: LocalDate) = "${date.monthValue}월 ${date.dayOfMonth}일"
-
 }
