@@ -37,10 +37,8 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
 
         initializeRecyclerView()
 
-        observe(viewModel.weekItems) {
-            weekRateAdapter.submitList(it.map { item -> WeekRateItem(item.day.date) })
-            weekAdapter.submitList(it)
-        }
+        observe(viewModel.weekRateItems) { weekRateAdapter.submitList(it) }
+        observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
     }
