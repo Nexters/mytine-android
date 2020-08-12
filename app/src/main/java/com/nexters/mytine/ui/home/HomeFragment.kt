@@ -14,7 +14,6 @@ import com.nexters.mytine.databinding.FragmentHomeBinding
 import com.nexters.mytine.ui.home.icongroup.IconGroupAdapter
 import com.nexters.mytine.ui.home.week.WeekAdapter
 import com.nexters.mytine.ui.home.weekrate.WeekRateAdapter
-import com.nexters.mytine.ui.home.weekrate.WeekRateItem
 import com.nexters.mytine.utils.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
 

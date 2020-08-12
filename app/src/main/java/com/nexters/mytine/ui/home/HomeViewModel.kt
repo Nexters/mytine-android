@@ -89,8 +89,8 @@ internal class HomeViewModel @ViewModelInject constructor(
                     routineRepository
                         .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date)
                         .map { weekRateItems(date, it) }
-                    }
-                    .collect { weekRateItems.value = it }
+                }
+                .collect { weekRateItems.value = it }
         }
 
         viewModelScope.launch {
