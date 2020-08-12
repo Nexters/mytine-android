@@ -1,10 +1,10 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -40,8 +40,20 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
-
-        initObserve()
+        observe(viewModel.retrospectContent) {
+            viewModel.retrospect.value?.let { stored ->
+                viewModel.isRetrospectStored.value = stored.contents != it
+            }
+        }
+        observe(viewModel.showExitDialog) {
+            MaterialDialog(requireContext())
+                .message(R.string.exit_retrospect_write_dialog_message)
+                .positiveButton(R.string.leave) {
+                    viewModel.onClickLeave()
+                }
+                .negativeButton(R.string.cancel)
+                .show()
+        }
     }
 
     private fun initializeRecyclerView() {
@@ -121,16 +133,5 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
 
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
-    }
-
-    private fun initObserve() {
-        viewModel.retrospectContent.observe(
-            viewLifecycleOwner,
-            Observer {
-                viewModel.retrospect.value?.let { stored ->
-                    viewModel.isRetrospectStored.value = stored.contents != it
-                }
-            }
-        )
     }
 }

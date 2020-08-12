@@ -13,6 +13,7 @@ import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.DayItem
 import com.nexters.mytine.ui.home.week.WeekItem
+import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -48,6 +49,8 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
+
+    val showExitDialog = LiveEvent<Unit>()
 
     init {
         val now = LocalDate.now()
@@ -158,7 +161,14 @@ internal class HomeViewModel @ViewModelInject constructor(
     fun onClickRoutine() {
         if (!isRetrospectStored.value!!) {
             viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+        } else {
+            showExitDialog.value = Unit
         }
+    }
+
+    fun onClickLeave() {
+        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+        retrospectContent.value = retrospect.value!!.contents
     }
 
     fun onClickRetrospect() {
@@ -172,11 +182,13 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWriteRetrospect() {
-
         if (!isRetrospectStored.value!!) return
 
-        viewModelScope.launch {
+        updateRetrospect()
+    }
 
+    private fun updateRetrospect() {
+        viewModelScope.launch {
             if (retrospectContent.value.isNullOrEmpty()) {
                 retrospectRepository.deleteRetrospect(dayChannel.value)
                 toast.value = "삭제"
