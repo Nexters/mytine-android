@@ -76,7 +76,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            android:backgroundTint="@color/week_select_color" />
+                            android:backgroundTint="@color/powder_blue" />
 
                         <Button
                             android:id="@+id/btn_write"
