@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginVertical="4dp"
         android:background="@drawable/bg_routine_item"
         android:onClick="@{() -> viewModel.onClickRoutineItem(item)}">
 
@@ -38,7 +38,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_goal"
             style="@style/NotoSkyblueRegular12LeftStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="13dp"
@@ -53,10 +53,12 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/NotoBlueMedium18LeftStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="15dp"
+
             android:gravity="start"
             android:text="@{item.routine.name}"
             app:layout_constraintBottom_toBottomOf="parent"

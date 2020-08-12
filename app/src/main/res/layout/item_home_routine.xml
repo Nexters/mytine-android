@@ -14,13 +14,13 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginVertical="4dp"
         android:background="@drawable/bg_routine_item"
         android:onClick="@{() -> viewModel.onClickRoutineItem(item)}"
-        android:paddingHorizontal="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="15dp">
 
@@ -36,13 +36,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_goal"
             style="@style/NotoSkyblueRegular12LeftStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:paddingEnd="16dp"
             android:text="@{item.routine.goal}"
             app:layout_constraintBottom_toTopOf="@+id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/NotoBlueMedium18LeftStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@{item.routine.name}"
