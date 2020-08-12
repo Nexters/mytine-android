@@ -1,10 +1,10 @@
 <resources>
+    <string name="save">저장</string>
+    <string name="leave">나가기</string>
+    <string name="cancel">취소</string>
 
-    <string name="write_emoji_title">이모지*</string>
-    <string name="write_routine_title">루틴 이름*</string>
-    <string name="write_goal_title">다짐/목표</string>
-    <string name="write_week_title">수행요일*</string>
-    <string name="write_delete_button_text">지우기</string>
+    <string name="star">*</string>
+
     <string name="week_mon">Mon</string>
     <string name="week_tue">Tue</string>
     <string name="week_wed">Wed</string>
@@ -13,6 +13,19 @@
     <string name="week_sat">Sat</string>
     <string name="week_sun">Sun</string>
 
+    <string name="write_create_toolbar_title">루틴 생성하기</string>
+    <string name="write_modify_toolbar_title">루틴 수정하기</string>
+
+    <string name="write_emoji_title">루틴 이모지</string>
+    <string name="write_name_title">루틴 이름</string>
+    <string name="write_goal_title">루틴 목표</string>
+    <string name="write_week_title">수행 요일</string>
+    <string name="write_delete_button_text">삭제하기</string>
+    <string name="write_emoji_error">루틴에 사용될 이모지를 등록해주세요.</string>
+    <string name="write_name_error">루틴의 이름을 등록해주세요.</string>
+    <string name="write_week_error">1개 이상의 요일을 선택해주세요.</string>
     <string name="write_empty_toast_message">모든 내용을 다 채워넣어야 합니다</string>
+    <string name="write_back_dialog_message">이전화면으로 돌아가시겠습니까?\n나가기 선택시, 작성중인 루틴은 저장되지 않습니다.</string>
+
     <string name="not_change_toast_message">변경사항이 없습니다</string>
 </resources>

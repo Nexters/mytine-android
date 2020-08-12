@@ -15,7 +15,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
         android:background="@drawable/bg_routine_completed_item"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="46dp"
             android:text="@{item.routine.name}"
-            android:textColor="@color/routine_item_complete_text_color"
+            android:textColor="@color/dusk"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

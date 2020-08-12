@@ -1,8 +1,11 @@
 package com.nexters.mytine.ui.write
 
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -24,6 +27,21 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
 
     private val weekAdapter = WeekAdapter()
 
+    private val menuWrite: MenuItem
+        get() = binding.toolbar.menu.findItem(R.id.action_write)
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            viewModel.onBackPressed()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -32,6 +50,16 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
         initializeRecyclerView()
 
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
+        observe(viewModel.enableWrite) { menuWrite.isEnabled = it }
+        observe(viewModel.showBackDialog) {
+            MaterialDialog(requireContext())
+                .message(R.string.write_back_dialog_message)
+                .positiveButton(R.string.leave) {
+                    viewModel.onClickLeave()
+                }
+                .negativeButton(R.string.cancel)
+                .show()
+        }
     }
 
     private fun initializeToolbar() {
@@ -56,10 +84,10 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
             .setOnEmojiClickListener { _, _ ->
                 binding.root.hideKeyboard()
             }
-            .build(binding.etEmoji)
+            .build(binding.layoutEmoji.editEmoji)
 
-        binding.etEmoji.disableKeyboardInput(emojiPopup)
-        binding.etEmoji.forceSingleEmoji()
+        binding.layoutEmoji.editEmoji.disableKeyboardInput(emojiPopup)
+        binding.layoutEmoji.editEmoji.forceSingleEmoji()
     }
 
     private fun initializeRecyclerView() {

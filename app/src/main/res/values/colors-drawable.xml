@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <drawable name="bg_week_item_unselected">@color/edit_back_color</drawable>
-    <drawable name="bg_week_item_selected">@color/week_select_color</drawable>
-</resources>

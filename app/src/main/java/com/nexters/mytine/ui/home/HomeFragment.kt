@@ -61,15 +61,24 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         binding.rvRoutine.run {
             layoutManager = LinearLayoutManager(context)
             adapter = homeAdapter
-
-            ItemTouchHelper(
-                ItemTouchHelperCallback(object : ItemTouchHelperListener {
-                    override fun onItemSwipe(position: Int) {
-                        viewModel.successRoutine(position)
-                    }
-                })
-            ).attachToRecyclerView(this)
         }
+
+        val itemTouchHelper = ItemTouchHelper(
+            ItemTouchHelperCallback(object : ItemTouchHelperListener {
+                override fun onItemSwipe(position: Int, direction: Int) {
+                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), direction)
+                }
+
+                override fun isRightSwipeable(position: Int): Boolean {
+                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.CompletedRoutineItem
+                }
+
+                override fun isLeftSwipeable(position: Int): Boolean {
+                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.EnabledRoutineItem
+                }
+            })
+        )
+        itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
     }
 }

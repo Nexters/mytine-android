@@ -1,13 +1,15 @@
 package com.nexters.mytine.ui.write
 
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.nexters.mytine.R
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
-import com.nexters.mytine.utils.ResourcesProvider
+import com.nexters.mytine.utils.LiveEvent
+import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -19,7 +21,6 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
 internal class WriteViewModel @ViewModelInject constructor(
-    private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
 
@@ -31,6 +32,19 @@ internal class WriteViewModel @ViewModelInject constructor(
         value = DayOfWeek.values().map { WeekItem(it) }
     }
 
+    val showErrorEmoji = createErrorCheckLiveData(emoji) { !it.isNullOrBlank() }
+    val showErrorName = createErrorCheckLiveData(name) { !it.isNullOrBlank() }
+    val showErrorWeek = createErrorCheckLiveData(weekItems) { !it.isNullOrEmpty() }
+
+    val enableWrite = combineLatest(
+        showErrorEmoji,
+        showErrorName,
+        showErrorWeek
+    ) { errorEmoji, errorName, errorWeek -> !errorEmoji && !errorName && !errorWeek }
+
+    val showBackDialog = LiveEvent<Unit>()
+
+    private val backPressedChannel = BroadcastChannel<Unit>(1)
     private val saveClickChannel = BroadcastChannel<Unit>(1)
     private val deleteClickChannel = BroadcastChannel<Unit>(1)
 
@@ -56,7 +70,7 @@ internal class WriteViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             saveClickChannel.asFlow()
-                .flatMapLatest { navArgsChannel.asFlow() }
+                .flatMapLatest { navArgs<WriteFragmentArgs>() }
                 .collect { navArgs ->
                     val emoji = emoji.value
                     val name = name.value
@@ -64,7 +78,9 @@ internal class WriteViewModel @ViewModelInject constructor(
                     val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
 
                     if (emoji.isNullOrBlank() || name.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
-                        toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
+                        showErrorEmoji.value = emoji.isNullOrBlank()
+                        showErrorName.value = name.isNullOrBlank()
+                        showErrorWeek.value = selectedDayOfWeeks.isNullOrEmpty()
                         return@collect
                     }
 
@@ -73,7 +89,7 @@ internal class WriteViewModel @ViewModelInject constructor(
                         name = name,
                         goal = goal,
                         selectedDayOfWeeks = selectedDayOfWeeks,
-                        id = (navArgs as? WriteFragmentArgs)?.routineId ?: ""
+                        id = navArgs.routineId
                     )
 
                     navDirections.value = BackDirections()
@@ -90,6 +106,22 @@ internal class WriteViewModel @ViewModelInject constructor(
                     navDirections.value = BackDirections()
                 }
         }
+
+        viewModelScope.launch {
+            backPressedChannel.asFlow()
+                .flatMapLatest { navArgs<WriteFragmentArgs>().map { it.routineId } }
+                .collect { routineId ->
+                    if (routineId.isBlank()) {
+                        showBackDialog.value = Unit
+                    } else {
+                        navDirections.value = BackDirections()
+                    }
+                }
+        }
+    }
+
+    fun onBackPressed() {
+        viewModelScope.launch { backPressedChannel.send(Unit) }
     }
 
     fun onClickWeekItem(weekItem: WeekItem) {
@@ -111,5 +143,19 @@ internal class WriteViewModel @ViewModelInject constructor(
 
     fun onClickDelete() {
         viewModelScope.launch { deleteClickChannel.send(Unit) }
+    }
+
+    fun onClickLeave() {
+        navDirections.value = BackDirections()
+    }
+
+    private fun <T> createErrorCheckLiveData(source: LiveData<T>, check: (T) -> Boolean): MediatorLiveData<Boolean> {
+        return MediatorLiveData<Boolean>().apply {
+            addSource(source) {
+                if (check(it)) {
+                    value = false
+                }
+            }
+        }
     }
 }
