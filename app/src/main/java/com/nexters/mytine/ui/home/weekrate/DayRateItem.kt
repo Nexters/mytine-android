@@ -12,7 +12,7 @@ data class DayRateItem(
         private const val NORMAL = 0.5
     }
 
-    fun isVisible()= date <= LocalDate.now()
+    fun isVisible() = date <= LocalDate.now()
 
     fun getRateColor() = when {
         rate >= HIGH -> R.color.minty_green

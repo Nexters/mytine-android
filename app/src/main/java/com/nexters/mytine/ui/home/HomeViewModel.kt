@@ -85,10 +85,10 @@ internal class HomeViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             dayChannel.asFlow()
-                    .flatMapLatest { date ->
-                        routineRepository
-                            .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date)
-                            .map { weekRateItems(date, it) }
+                .flatMapLatest { date ->
+                    routineRepository
+                        .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date)
+                        .map { weekRateItems(date, it) }
                     }
                     .collect { weekRateItems.value = it }
         }
@@ -203,15 +203,15 @@ internal class HomeViewModel @ViewModelInject constructor(
     private fun weekRateItems(date: LocalDate, routineList: List<Routine>): List<WeekRateItem> {
         val routineMap = routineList.groupBy { it.date }
         return DayOfWeek.values()
-                .map { dayOfWeek ->
-                    val day = date.with(dayOfWeek)
-                    var rate = 0f
-                    routineMap[day]?.let { list ->
-                        rate = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
-                            .div(list.count())
-                    }
-                    WeekRateItem(DayRateItem(day, rate))
+            .map { dayOfWeek ->
+                val day = date.with(dayOfWeek)
+                var rate = 0f
+                routineMap[day]?.let { list ->
+                    rate = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
+                        .div(list.count())
                 }
+                WeekRateItem(DayRateItem(day, rate))
+            }
     }
 
     private fun weekItems(date: LocalDate, retrospectSet: List<LocalDate>): List<WeekItem> {
