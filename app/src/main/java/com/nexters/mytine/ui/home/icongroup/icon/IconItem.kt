@@ -5,7 +5,7 @@ import com.nexters.mytine.data.entity.Routine
 
 internal data class IconItem(val routine: Routine, override val itemId: String = routine.realId) : BaseItem {
     fun visibility(): Boolean = when (routine.status) {
-        Routine.Status.ENABLE, Routine.Status.SUCCESS -> true
+        Routine.Status.SUCCESS -> true
         else -> false
     }
 }

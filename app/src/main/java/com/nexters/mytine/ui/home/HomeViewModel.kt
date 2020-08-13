@@ -219,8 +219,9 @@ internal class HomeViewModel @ViewModelInject constructor(
                 val day = date.with(dayOfWeek)
                 var rate = 0f
                 routineMap[day]?.let { list ->
-                    rate = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
-                        .div(list.count())
+                    val successCnt = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
+                    val totalCnt = list.filter { it.status == Routine.Status.ENABLE }.count().toFloat()
+                    rate = successCnt.div(totalCnt)
                 }
                 WeekRateItem(DayRateItem(day, rate))
             }
