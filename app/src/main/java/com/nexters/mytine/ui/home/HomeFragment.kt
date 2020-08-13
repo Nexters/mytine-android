@@ -46,7 +46,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         binding.spinner.run {
             adapter = DateSpinnerAdapter(context, viewModel)
         }
-      
+        
         binding.rvWeekRate.run {
             layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.NOWRAP).apply {
                 justifyContent = JustifyContent.SPACE_BETWEEN
