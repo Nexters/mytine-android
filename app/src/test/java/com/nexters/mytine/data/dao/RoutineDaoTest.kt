@@ -107,6 +107,14 @@ internal class RoutineDaoTest {
     }
 
     @Test
+    fun `getStartDate 테스트`() = runBlocking {
+        assertThat(dao.getStartDate()).isNull()
+        val routine = routine
+        dao.upsert(routine)
+        assertThat(dao.getStartDate()).isEqualTo(routine.date)
+    }
+
+    @Test
     fun `deleteAndUpdate 테스트`() = runBlocking {
         val routineMon = routine.copy(date = routine.date.with(DayOfWeek.MONDAY))
         val routineTue = routine.copy(date = routine.date.with(DayOfWeek.TUESDAY))
