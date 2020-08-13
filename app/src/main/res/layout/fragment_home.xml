@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -64,11 +65,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+                        <Spinner
+                            android:id="@+id/spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:overlapAnchor="false"
+                            android:dropDownWidth="wrap_content"
+                            android:dropDownVerticalOffset="16dp"
+                            android:popupBackground="@drawable/bg_round_rectangle_white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:backgroundTint="@color/powder_blue" />
+
                         <Button
                             android:id="@+id/btn_write"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
                             android:onClick="@{() -> viewModel.onClickWrite()}"
                             android:text="쓰기"
                             app:layout_constraintEnd_toEndOf="parent"
