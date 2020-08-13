@@ -13,6 +13,7 @@ import com.nexters.mytine.base.fragment.BaseFragment
 import com.nexters.mytine.databinding.FragmentHomeBinding
 import com.nexters.mytine.ui.home.icongroup.IconGroupAdapter
 import com.nexters.mytine.ui.home.week.WeekAdapter
+import com.nexters.mytine.ui.home.weekrate.WeekRateAdapter
 import com.nexters.mytine.utils.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,6 +26,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     override val layoutResId = R.layout.fragment_home
     override val viewModelClass = HomeViewModel::class
 
+    private val weekRateAdapter = WeekRateAdapter()
     private val weekAdapter = WeekAdapter()
     private val iconGroupAdapter = IconGroupAdapter()
     private val homeAdapter = HomeAdapter()
@@ -34,6 +36,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
 
         initializeRecyclerView()
 
+        observe(viewModel.weekRateItems) { weekRateAdapter.submitList(it) }
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
@@ -42,6 +45,13 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private fun initializeRecyclerView() {
         binding.spinner.run {
             adapter = DateSpinnerAdapter(context, viewModel)
+        }
+
+        binding.rvWeekRate.run {
+            layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.NOWRAP).apply {
+                justifyContent = JustifyContent.SPACE_BETWEEN
+            }
+            adapter = weekRateAdapter
         }
 
         binding.rvWeek.run {

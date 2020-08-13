@@ -14,6 +14,8 @@ import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.DayItem
 import com.nexters.mytine.ui.home.week.WeekItem
+import com.nexters.mytine.ui.home.weekrate.DayRateItem
+import com.nexters.mytine.ui.home.weekrate.WeekRateItem
 import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -38,6 +40,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     val weekItems = MutableLiveData<List<WeekItem>>()
+    val weekRateItems = MutableLiveData<List<WeekRateItem>>()
     val iconGroupItems = MutableLiveData<List<IconGroupItem>>()
     val homeItems = MutableLiveData<List<HomeItems>>()
     val retrospect = MutableLiveData<Retrospect>()
@@ -75,18 +78,28 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { date ->
                     retrospectRepository
-                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
+                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date)
                         .map { weekItems(date, it) }
                 }
-                .collect {
-                    weekItems.value = it
+                .collect { weekItems.value = it }
+        }
+
+        viewModelScope.launch {
+            dayChannel.asFlow()
+                .flatMapLatest { date ->
+                    routineRepository
+                        .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date)
+                        .map { weekRateItems(date, it) }
                 }
+                .collect { weekRateItems.value = it }
         }
 
         viewModelScope.launch {
             dayChannel.asFlow()
                 .flatMapLatest { routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY)) }
-                .map { convertRoutineItems(it) }
+                .map { list ->
+                    list.groupBy { it.date }.map { IconGroupItem(it.value.map { routine -> IconItem(routine) }) }
+                }
                 .collect { iconGroupItems.value = it }
         }
 
@@ -199,18 +212,25 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
     }
 
+    private fun weekRateItems(date: LocalDate, routineList: List<Routine>): List<WeekRateItem> {
+        val routineMap = routineList.groupBy { it.date }
+        return DayOfWeek.values()
+            .map { dayOfWeek ->
+                val day = date.with(dayOfWeek)
+                var rate = 0f
+                routineMap[day]?.let { list ->
+                    rate = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
+                        .div(list.count())
+                }
+                WeekRateItem(DayRateItem(day, rate))
+            }
+    }
+
     private fun weekItems(date: LocalDate, retrospectSet: List<LocalDate>): List<WeekItem> {
         return DayOfWeek.values()
             .map {
                 val day = date.with(it)
                 WeekItem(DayItem(day, retrospectSet.contains(day)))
-            }
-    }
-
-    private fun convertRoutineItems(list: List<Routine>): List<IconGroupItem> {
-        return list.groupBy { it.date }
-            .map { routineMap ->
-                IconGroupItem(routineMap.value.map { routine -> IconItem(routine) })
             }
     }
 
