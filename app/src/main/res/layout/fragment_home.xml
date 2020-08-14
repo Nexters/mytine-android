@@ -32,7 +32,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="146dp"
+                    android:paddingTop="175dp"
                     app:layout_collapseMode="parallax">
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -64,28 +64,39 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <Spinner
-                            android:id="@+id/spinner"
-                            android:layout_width="wrap_content"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/top_layout"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:overlapAnchor="false"
-                            android:dropDownWidth="wrap_content"
-                            android:dropDownVerticalOffset="16dp"
-                            android:popupBackground="@drawable/bg_round_rectangle_white"
+                            android:padding="16dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:backgroundTint="@color/powder_blue"
-                            android:theme="@style/NotoBlueMedium16Center"/>
+                            app:layout_constraintEnd_toEndOf="parent">
+                            <Spinner
+                                android:id="@+id/spinner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:overlapAnchor="false"
+                                android:dropDownWidth="wrap_content"
+                                android:dropDownVerticalOffset="16dp"
+                                android:popupBackground="@drawable/bg_round_rectangle_white"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:backgroundTint="@color/powder_blue"
+                                android:theme="@style/NotoBlueMedium16Center"/>
 
-                        <Button
-                            android:id="@+id/btn_write"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.onClickWrite()}"
-                            android:background="@drawable/add"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            <Button
+                                android:id="@+id/btn_write"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:onClick="@{() -> viewModel.onClickWrite()}"
+                                android:background="@drawable/add"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_week_rate"
@@ -94,7 +105,7 @@
                             android:background="@color/white"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/btn_write" />
+                            app:layout_constraintTop_toBottomOf="@+id/top_layout" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_week"
