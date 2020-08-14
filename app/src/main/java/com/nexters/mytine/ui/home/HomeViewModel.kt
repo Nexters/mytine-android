@@ -174,8 +174,10 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
-        viewModelScope.launch {
-            dayChannel.send(selectedDay)
+        if(selectedDay <= LocalDate.now()) {
+            viewModelScope.launch {
+                dayChannel.send(selectedDay)
+            }
         }
     }
 
