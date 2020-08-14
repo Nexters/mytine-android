@@ -233,7 +233,7 @@ internal class HomeViewModel @ViewModelInject constructor(
         return DayOfWeek.values()
             .map {
                 val day = date.with(it)
-                WeekItem(DayItem(day, retrospectSet.contains(day)))
+                WeekItem(DayItem(day, retrospectSet.contains(day), day == date))
             }
     }
 

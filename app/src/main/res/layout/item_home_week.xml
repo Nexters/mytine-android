@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -18,41 +19,51 @@
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.sendWeekRoutines(item.day.date)}">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/day_of_week_tv"
-            style="@style/NotoSkyblueRegular14CenterStyle"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@{item.day.weekName}"
+            android:background="@drawable/bg_home_week"
+            app:selected="@{item.day.selected}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <TextView
+                android:id="@+id/day_of_week_tv"
+                style="@style/NotoSkyblueRegular14CenterStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.day.weekName}"
+                android:textColor="@drawable/text_home_week_day_of_week"
+                app:selected="@{item.day.selected}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="금"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/retrospect_check_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@{String.valueOf(item.day.retrospectWrite)}"
-            android:textSize="6sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/day_of_week_tv" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{item.day.retrospectWrite}"
+                android:background="@drawable/dot_home_retrospect"
+                app:selected="@{item.day.selected}"
+                app:layout_constraintStart_toEndOf="@id/day_of_month_tv"
+                app:layout_constraintTop_toTopOf="@id/day_of_month_tv"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/day_of_month_tv"
-            style="@style/MonsGreyblueRegular16LeftStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="2dp"
-            android:text="@{String.valueOf(item.day.date.dayOfMonth)}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/retrospect_check_tv" />
-
+            <TextView
+                android:id="@+id/day_of_month_tv"
+                style="@style/MonsGreyblueRegular16LeftStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{String.valueOf(item.day.date.dayOfMonth)}"
+                android:textColor="@drawable/text_home_week_day_of_month"
+                app:selected="@{item.day.selected}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/day_of_week_tv"
+                tools:text="31" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
