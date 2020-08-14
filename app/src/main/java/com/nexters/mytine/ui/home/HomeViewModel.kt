@@ -78,7 +78,7 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { date ->
                     retrospectRepository
-                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date)
+                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
                         .map { weekItems(date, it) }
                 }
                 .collect { weekItems.value = it }
@@ -88,7 +88,7 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { date ->
                     routineRepository
-                        .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date)
+                        .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
                         .map { weekRateItems(date, it) }
                 }
                 .collect { weekRateItems.value = it }
