@@ -9,8 +9,8 @@ import java.time.LocalDate
 
 @Dao
 internal abstract class RoutineDao : BaseDao<Routine> {
-    @Query("SELECT * FROM routine WHERE id = :id")
-    abstract fun flowRoutinesById(id: String): Flow<List<Routine>>
+    @Query("SELECT * FROM routine WHERE id = :id AND date >= :startDate")
+    abstract fun flowRoutinesById(id: String, startDate: LocalDate): Flow<List<Routine>>
 
     @Query("SELECT * FROM routine WHERE date = :date")
     abstract fun flowRoutines(date: LocalDate): Flow<List<Routine>>

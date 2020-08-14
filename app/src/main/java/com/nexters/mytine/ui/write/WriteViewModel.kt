@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 internal class WriteViewModel @ViewModelInject constructor(
     private val routineRepository: RoutineRepository
@@ -53,7 +54,7 @@ internal class WriteViewModel @ViewModelInject constructor(
             navArgs<WriteFragmentArgs>()
                 .map { it.routineId }
                 .filter { it.isNotEmpty() }
-                .flatMapLatest { routineRepository.flowRoutinesById(it) }
+                .flatMapLatest { routineRepository.flowRoutinesById(it, LocalDate.now().with(DayOfWeek.MONDAY)) }
                 .filter { it.isNotEmpty() }
                 .collect { routines ->
                     isEditMode.value = true
