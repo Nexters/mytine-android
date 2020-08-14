@@ -49,7 +49,6 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorAccent"
                     android:contentInsetStart="0dp"
                     android:contentInsetLeft="0dp"
                     android:contentInsetEnd="0dp"
@@ -76,14 +75,15 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            android:backgroundTint="@color/powder_blue" />
+                            android:backgroundTint="@color/powder_blue"
+                            android:theme="@style/NotoBlueMedium16Center"/>
 
                         <Button
                             android:id="@+id/btn_write"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:onClick="@{() -> viewModel.onClickWrite()}"
-                            android:text="쓰기"
+                            android:background="@drawable/add"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,6 +91,7 @@
                             android:id="@+id/rv_week_rate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/btn_write" />
@@ -99,6 +100,7 @@
                             android:id="@+id/rv_week"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:background="@color/white"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/rv_week_rate" />
