@@ -62,7 +62,7 @@ internal class RoutineRepositoryImpl @Inject constructor(
         }
 
         if (isUpdate) {
-            routineDao.deleteAndUpdate(id, routines)
+            routineDao.deleteAndUpdate(id, now.with(DayOfWeek.MONDAY), routines)
         } else {
             routineDao.upserts(routines)
         }
@@ -77,6 +77,6 @@ internal class RoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteRoutinesById(id: String) {
-        return routineDao.deleteRoutinesById(id)
+        return routineDao.deleteRoutinesById(id, LocalDate.now().with(DayOfWeek.MONDAY))
     }
 }
