@@ -155,7 +155,11 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWrite() {
-        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()
+        if (!isRetrospectStored.value!!) {
+            navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()
+        } else {
+            showExitDialog.value = Unit
+        }
     }
 
     fun onClickRoutine() {
@@ -167,7 +171,16 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickLeave() {
+        // 루틴탭 눌렀을 때
         viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+
+/*        //회고탭에서 날짜 변경되었을 때
+
+        //루틴탭 눌렀을 때
+        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+        //작성하기 버튼 눌렀을 때
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()*/
+
         retrospectContent.value = retrospect.value!!.contents
     }
 
