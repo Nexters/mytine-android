@@ -121,7 +121,7 @@ internal class RoutineRepositoryTest {
         }
 
         verify(routineDao).getsById(id)
-        verify(routineDao).deleteAndUpdate(id, newRoutines)
+        verify(routineDao).deleteAndUpdate(id, now.with(DayOfWeek.MONDAY), newRoutines)
         assertThat(routineDao.getsByDate(now.with(DayOfWeek.MONDAY), now.with(DayOfWeek.SUNDAY))).isEqualTo(newRoutines)
     }
 }

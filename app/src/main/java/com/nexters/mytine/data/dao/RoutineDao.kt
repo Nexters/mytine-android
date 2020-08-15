@@ -30,15 +30,15 @@ internal abstract class RoutineDao : BaseDao<Routine> {
     @Query("SELECT date FROM routine ORDER BY date LIMIT 1")
     abstract suspend fun getStartDate(): LocalDate?
 
-    @Query("DELETE FROM routine WHERE id = :id")
-    abstract suspend fun deleteRoutinesById(id: String)
+    @Query("DELETE FROM routine WHERE id = :id AND date >= :startDate")
+    abstract suspend fun deleteRoutinesById(id: String, startDate: LocalDate)
 
     @Query("UPDATE routine SET status = :status WHERE realId = :id")
     abstract suspend fun updateStatus(id: String, status: Routine.Status)
 
     @Transaction
-    open suspend fun deleteAndUpdate(id: String, entities: List<Routine>) {
-        deleteRoutinesById(id)
+    open suspend fun deleteAndUpdate(id: String, startDate: LocalDate, entities: List<Routine>) {
+        deleteRoutinesById(id, startDate)
         upserts(entities)
     }
 }

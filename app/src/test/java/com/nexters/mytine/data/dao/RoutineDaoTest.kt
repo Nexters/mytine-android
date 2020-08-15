@@ -134,7 +134,7 @@ internal class RoutineDaoTest {
             routine.copy(status = Routine.Status.values()[index % Routine.Status.values().size])
         }
 
-        dao.deleteAndUpdate(routine.id, newRoutines)
+        dao.deleteAndUpdate(routine.id, LocalDate.now().with(DayOfWeek.MONDAY), newRoutines)
         assertThat(dao.gets()).isEqualTo(newRoutines)
     }
 }

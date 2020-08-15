@@ -248,7 +248,9 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickRoutineItem(item: HomeItems.RoutineItem) {
-        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
+        if (item.routine.date >= LocalDate.now().with(DayOfWeek.MONDAY)) {
+            navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
+        }
     }
 
     fun swipeRoutine(item: HomeItems, direction: Int) {
