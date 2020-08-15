@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.nexters.mytine.R
 import java.time.LocalDate
@@ -14,6 +15,7 @@ internal class DateSpinnerAdapter(
     val onClickListener: (Int, WeekOfMonth) -> Unit
 ) : ArrayAdapter<WeekOfMonth>(context, R.layout.item_home_week_of_month) {
     private val inflater = LayoutInflater.from(context)
+    private var selectedView: View? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: inflater.inflate(R.layout.item_home_week_of_month, parent, false)
@@ -32,8 +34,11 @@ internal class DateSpinnerAdapter(
 
     private fun setItem(view: View, item: WeekOfMonth) {
         view.run {
+            selectedView?.isSelected = false
             findViewById<TextView>(R.id.start_date_tv).text = getDateStr(item.startDate)
             findViewById<TextView>(R.id.end_date_tv).text = getDateStr(item.endDate)
+            selectedView = findViewById<LinearLayout>(R.id.layout)
+            selectedView?.isSelected = true
         }
     }
 
