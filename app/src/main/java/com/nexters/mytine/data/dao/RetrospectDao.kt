@@ -18,5 +18,5 @@ internal abstract class RetrospectDao : BaseDao<Retrospect> {
     abstract fun getFlow(date: LocalDate): Flow<Retrospect?>
 
     @Query("DELETE FROM retrospect WHERE date=:date")
-    abstract fun deleteRetrospect(date: LocalDate)
+    abstract suspend fun deleteRetrospect(date: LocalDate)
 }
