@@ -11,10 +11,10 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        app:paddingBottomSystemWindowInsets="@{true}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimary"
+        app:paddingBottomSystemWindowInsets="@{true}">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -130,6 +130,7 @@
             android:id="@+id/rv_routine"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/color_point_skyblue"
             android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:paddingBottomSystemWindowInsets="@{true}" />

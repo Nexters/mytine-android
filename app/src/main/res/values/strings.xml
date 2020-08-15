@@ -31,4 +31,10 @@
     <string name="write_delete_dialog_message">루틴을 삭제하시겠습니까?</string>
 
     <string name="not_change_toast_message">변경사항이 없습니다</string>
+    <string name="intro_text">상단에 추가버튼을 눌러\n 새로운 루틴을 생성해보세요!</string>
+    <string name="save_retrospect">저장</string>
+
+    <string name="routine_tab">루틴</string>
+    <string name="retrospect_tab">회고</string>
+    <string name="exit_retrospect_write_dialog_message">작성중인 회고를 취소하시겠습니까?\n나가기 선택시, 작성중인 회고는 저장되지 않습니다.</string>
 </resources>

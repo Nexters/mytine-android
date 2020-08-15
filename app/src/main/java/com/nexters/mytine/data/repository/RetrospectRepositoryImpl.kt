@@ -20,4 +20,8 @@ internal class RetrospectRepositoryImpl @Inject constructor(
     override suspend fun updateRetrospect(retrospect: Retrospect) {
         roomDatabase.retrospectDao().upsert(retrospect)
     }
+
+    override suspend fun deleteRetrospect(date: LocalDate) {
+        roomDatabase.retrospectDao().deleteRetrospect(date)
+    }
 }

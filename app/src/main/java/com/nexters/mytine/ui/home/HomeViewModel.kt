@@ -4,7 +4,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.nexters.mytine.R
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.data.entity.Retrospect
 import com.nexters.mytine.data.entity.Routine
@@ -16,7 +15,9 @@ import com.nexters.mytine.ui.home.week.DayItem
 import com.nexters.mytine.ui.home.week.WeekItem
 import com.nexters.mytine.ui.home.weekrate.DayRateItem
 import com.nexters.mytine.ui.home.weekrate.WeekRateItem
+import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.ResourcesProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -28,6 +29,7 @@ import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@ExperimentalCoroutinesApi
 internal class HomeViewModel @ViewModelInject constructor(
     private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository,
@@ -47,8 +49,13 @@ internal class HomeViewModel @ViewModelInject constructor(
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
     val isExpanded = MutableLiveData<Unit>()
 
+    val isRetrospectStored = MutableLiveData<Boolean>().apply { value = false }
+    val isTabClicked = MutableLiveData<Boolean>().apply { value = true }
+
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
+
+    val showExitDialog = LiveEvent<Unit>()
 
     init {
         val now = LocalDate.now()
@@ -71,7 +78,6 @@ internal class HomeViewModel @ViewModelInject constructor(
                         retrospect.value = it
                         retrospectContent.value = it.contents
                     }
-                    toast.value = "${retrospectContent.value}"
                 }
         }
 
@@ -110,13 +116,22 @@ internal class HomeViewModel @ViewModelInject constructor(
                     .flatMapLatest {
                         routineRepository.flowRoutines(it)
                     },
-                tabBarStatusChannel.asFlow()
-            ) { dateRoutines, tabBarStatus ->
+                tabBarStatusChannel.asFlow(),
+                dayChannel.asFlow().flatMapLatest { date ->
+                    retrospectRepository
+                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
+                        .map { weekItems(date, it) }
+                }
+            ) { dateRoutines, tabBarStatus, icons ->
                 mutableListOf<HomeItems>().apply {
                     add(HomeItems.TabBarItem())
 
                     when (tabBarStatus) {
                         TabBarStatus.RoutineTab -> {
+                            isTabClicked.value = true
+
+                            if (icons.isNullOrEmpty())
+                                add(HomeItems.EmptyRoutineItem())
 
                             val enableList = mutableListOf<Routine>()
                             val completedList = mutableListOf<Routine>()
@@ -140,7 +155,10 @@ internal class HomeViewModel @ViewModelInject constructor(
                                 }
                             )
                         }
-                        TabBarStatus.RetrospectTab -> add(HomeItems.Retrospect())
+                        TabBarStatus.RetrospectTab -> {
+                            add(HomeItems.Retrospect())
+                            isTabClicked.value = false
+                        }
                     }
                 }
             }.collect {
@@ -150,13 +168,33 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWrite() {
-        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()
+        if (!isRetrospectStored.value!!) {
+            navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()
+        } else {
+            showExitDialog.value = Unit
+        }
     }
 
     fun onClickRoutine() {
-        if (checkDataSaved()) {
+        if (!isRetrospectStored.value!!) {
             viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+        } else {
+            showExitDialog.value = Unit
         }
+    }
+
+    fun onClickLeave() {
+        // 루틴탭 눌렀을 때
+        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+
+/*        //회고탭에서 날짜 변경되었을 때
+
+        //루틴탭 눌렀을 때
+        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+        //작성하기 버튼 눌렀을 때
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()*/
+
+        retrospectContent.value = retrospect.value!!.contents
     }
 
     fun onClickRetrospect() {
@@ -187,20 +225,20 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickWriteRetrospect() {
-        val contentValue = retrospectContent.value
+        if (!isRetrospectStored.value!!) return
 
-        if (contentValue.isNullOrBlank()) {
-            toast.value = resourcesProvider.getString(R.string.write_empty_toast_message)
-            return
-        }
+        updateRetrospect()
+    }
 
-        if (contentValue == retrospect.value?.contents) {
-            toast.value = resourcesProvider.getString(R.string.not_change_toast_message)
-            return
-        }
-
+    private fun updateRetrospect() {
         viewModelScope.launch {
-            retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, contentValue))
+            if (retrospectContent.value.isNullOrEmpty()) {
+                retrospectRepository.deleteRetrospect(dayChannel.value)
+                toast.value = "삭제"
+            } else {
+                retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, retrospectContent.value!!))
+                toast.value = "저장${retrospectContent.value}"
+            }
         }
     }
 
@@ -240,15 +278,6 @@ internal class HomeViewModel @ViewModelInject constructor(
                 val day = date.with(it)
                 WeekItem(DayItem(day, retrospectSet.contains(day), day == date))
             }
-    }
-
-    private fun checkDataSaved(): Boolean {
-        if (retrospectContent.value != retrospect.value?.contents) {
-            toast.value = "변경된 내용이 있습니다. 회고 저장 후 이동 해 주세요. 다이얼로그로 바꾸기ㅣ!!!"
-            return false
-        }
-
-        return true
     }
 
     fun setStatus(id: String, status: Routine.Status) {

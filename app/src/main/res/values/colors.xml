@@ -15,6 +15,7 @@
     <color name="minty_green">#00ed75</color>
     <color name="warm_pink">#ff4775</color>
     <color name="pale_grey">#f4f4f8</color>
+    <color name="color_empty">#e3e8f2</color>
 
     <color name="routine_item_complete_text_color">#bebebe</color>
 
