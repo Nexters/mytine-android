@@ -45,6 +45,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     val homeItems = MutableLiveData<List<HomeItems>>()
     val retrospect = MutableLiveData<Retrospect>()
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
+    val isExpanded = MutableLiveData<Unit>()
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
@@ -160,6 +161,10 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun onClickRetrospect() {
         viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RetrospectTab) }
+    }
+
+    fun onClickTabBar() {
+        isExpanded.value = Unit
     }
 
     fun getStartDate(): List<WeekOfMonth> = runBlocking {
