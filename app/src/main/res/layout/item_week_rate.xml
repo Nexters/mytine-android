@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="androidx.core.content.ContextCompat"/>
+        <variable
+            name="item"
+            type="com.nexters.mytine.ui.home.weekrate.WeekRateItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@{ContextCompat.getColor(context, item.dayRate.rateColor)}"
+            android:visibility="@{item.dayRate.isVisible}"
+            app:layout_constraintWidth_percent="0.3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

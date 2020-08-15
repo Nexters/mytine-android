@@ -121,7 +121,7 @@ internal class WriteViewModelTest {
         val weekRoutines = listOf(routineMon, routineTues, routineWed, routineThur, routineFri, routineSat, routineSun)
         val routineId = routineMon.id
 
-        `when`(mockRoutineRepository.flowRoutinesById(routineId)).thenReturn(flow { emit(weekRoutines) })
+        `when`(mockRoutineRepository.flowRoutinesById(routineId, LocalDate.now().with(DayOfWeek.MONDAY))).thenReturn(flow { emit(weekRoutines) })
 
         viewModel.navArgs(WriteFragmentArgs(routineId))
 

@@ -47,7 +47,7 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:id="@+id/ll_write"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -73,6 +73,7 @@
                     layout="@layout/view_write_edit"
                     app:errorMessage="@{@string/write_name_error}"
                     app:showError="@{viewModel.showErrorName}"
+                    app:showNecessary="@{true}"
                     app:text="@={viewModel.name}"
                     app:title="@{@string/write_name_title}" />
 
@@ -84,7 +85,7 @@
                     layout="@layout/view_write_edit"
                     app:text="@={viewModel.goal}"
                     app:title="@{@string/write_goal_title}" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_week_title"
@@ -134,7 +135,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_week" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 style="@style/NotoBlueMedium16Center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
