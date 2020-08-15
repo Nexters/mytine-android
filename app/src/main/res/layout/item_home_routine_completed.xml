@@ -25,7 +25,7 @@
             android:id="@+id/tv_emoji"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:layout_marginStart="16dp"
+            android:layout_margin="16dp"
             android:background="@drawable/bg_routine_emoji"
             android:gravity="center"
             android:text="@{item.routine.emoji}"
@@ -43,7 +43,11 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="13dp"
             android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="2"
             android:text="@{item.routine.goal}"
+            app:isVisible="@{item.visibleGoal}"
             app:layout_constraintBottom_toTopOf="@+id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -58,14 +62,17 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="15dp"
-
+            android:ellipsize="end"
             android:gravity="start"
+            android:maxLines="2"
             android:text="@{item.routine.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/tv_emoji"
-            app:layout_constraintTop_toBottomOf="@+id/tv_goal" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_goal"
+            app:layout_goneMarginBottom="15dp"
+            app:layout_goneMarginTop="13dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"

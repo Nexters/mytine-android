@@ -14,13 +14,13 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
         android:background="@drawable/bg_routine_item"
         android:onClick="@{() -> viewModel.onClickRoutineItem(item)}"
+        android:paddingHorizontal="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="15dp">
 
@@ -42,8 +42,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="2"
             android:paddingEnd="16dp"
             android:text="@{item.routine.goal}"
+            app:isVisible="@{item.visibleGoal}"
             app:layout_constraintBottom_toTopOf="@+id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -57,6 +61,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="2"
             android:text="@{item.routine.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

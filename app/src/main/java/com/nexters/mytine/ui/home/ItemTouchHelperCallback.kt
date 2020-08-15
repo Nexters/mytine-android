@@ -47,27 +47,28 @@ internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : 
         val itemView: View = viewHolder.itemView
         val resources = itemView.resources
         lateinit var icon: Bitmap
-
-        var line = if (viewHolder.itemView.height == defaultItemHeight) default else viewHolder.itemView.height / dividing
+        var heightOffset = 0
 
         when {
             dX > 0 -> { // 오른쪽으로
                 icon = BitmapFactory.decodeResource(resources, R.drawable.card_check_back)
+                heightOffset = (itemView.height - icon.height) / 2
                 val dest = RectF(
-                    itemView.left.toFloat() + startOffset,
-                    itemView.top.toFloat() + verticalOffset * line,
-                    itemView.left.toFloat() + endOffset,
-                    itemView.bottom.toFloat() - verticalOffset * line
+                    itemView.left.toFloat() + icon.width,
+                    itemView.top.toFloat() + heightOffset,
+                    itemView.left.toFloat() + 2 * icon.width,
+                    itemView.bottom.toFloat() - heightOffset
                 )
                 c.drawBitmap(icon, null, dest, null)
             }
             dX < 0 -> { // 왼쪽으로
                 icon = BitmapFactory.decodeResource(resources, R.drawable.card_check)
+                heightOffset = (itemView.height - icon.height) / 2
                 val dest = RectF(
-                    itemView.right.toFloat() - endOffset,
-                    itemView.top.toFloat() + verticalOffset * line,
-                    itemView.right.toFloat() - startOffset,
-                    itemView.bottom.toFloat() - verticalOffset * line
+                    itemView.right.toFloat() - 2 * icon.width,
+                    itemView.top.toFloat() + heightOffset,
+                    itemView.right.toFloat() - icon.width,
+                    itemView.bottom.toFloat() - heightOffset
                 )
 
                 c.drawBitmap(icon, null, dest, null)
@@ -80,9 +81,5 @@ internal class ItemTouchHelperCallback(var listener: ItemTouchHelperListener) : 
         const val verticalOffset = 60f
         const val startOffset = 80f
         const val endOffset = 150f
-
-        const val defaultItemHeight = 190
-        const val default = 1f
-        const val dividing = 160f
     }
 }

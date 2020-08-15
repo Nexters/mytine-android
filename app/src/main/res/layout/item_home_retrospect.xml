@@ -24,6 +24,7 @@
             style="@style/NotoBlueMedium14LeftStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="108dp"
             android:layout_margin="16dp"
             android:background="@drawable/bg_retrospect_contents"
             android:padding="16dp"
