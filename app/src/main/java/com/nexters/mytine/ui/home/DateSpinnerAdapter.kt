@@ -11,13 +11,9 @@ import java.time.LocalDate
 
 internal class DateSpinnerAdapter(
     context: Context,
-    val viewModel: HomeViewModel
+    val onClickListener: (Int, WeekOfMonth) -> Unit
 ) : ArrayAdapter<WeekOfMonth>(context, R.layout.item_home_week_of_month) {
     private val inflater = LayoutInflater.from(context)
-
-    init {
-        addAll(viewModel.getStartDate())
-    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: inflater.inflate(R.layout.item_home_week_of_month, parent, false)
@@ -29,7 +25,7 @@ internal class DateSpinnerAdapter(
         val view = convertView ?: inflater.inflate(R.layout.item_home_week_of_month, parent, false)
         getItem(position)?.let {
             setItem(view, it)
-            view.setOnClickListener { _ -> viewModel.sendWeekRoutines(it.startDate) }
+            view.setOnClickListener { _ -> onClickListener(position, it) }
         }
         return view
     }

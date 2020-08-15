@@ -73,20 +73,39 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent">
-                            <Spinner
-                                android:id="@+id/spinner"
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:overlapAnchor="false"
-                                android:dropDownWidth="wrap_content"
-                                android:dropDownVerticalOffset="16dp"
-                                android:popupBackground="@drawable/bg_round_rectangle_white"
+                                android:gravity="center_vertical"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                android:backgroundTint="@color/powder_blue"
-                                android:theme="@style/NotoBlueMedium16Center"/>
+                                app:layout_constraintEnd_toEndOf="parent">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:background="@drawable/dropdown"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@id/spinner"/>
+
+                                <Spinner
+                                    android:id="@+id/spinner"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingEnd="32dp"
+                                    android:overlapAnchor="false"
+                                    android:dropDownWidth="wrap_content"
+                                    android:dropDownVerticalOffset="16dp"
+                                    android:popupBackground="@drawable/bg_round_rectangle_white"
+                                    android:theme="@style/NotoBlueMedium16Center"
+                                    android:background="@null"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"/>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <Button
                                 android:id="@+id/btn_write"

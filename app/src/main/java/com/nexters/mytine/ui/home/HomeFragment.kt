@@ -1,6 +1,7 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
+import android.widget.Spinner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.nexters.mytine.ui.home.week.WeekAdapter
 import com.nexters.mytine.ui.home.weekrate.WeekRateAdapter
 import com.nexters.mytine.utils.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Method
 
 @AndroidEntryPoint
 internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
@@ -34,6 +36,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private val weekAdapter = WeekAdapter()
     private val iconGroupAdapter = IconGroupAdapter()
     private val homeAdapter = HomeAdapter()
+    private var dateSpinnerAdapter: DateSpinnerAdapter? = null
     private var isExpanded = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -62,12 +65,29 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 isExpanded = !isExpanded
                 binding.appbar.setExpanded(isExpanded, true)
             }
+            observe(viewModel.weekOfMonth) {
+                dateSpinnerAdapter?.run {
+                    clear()
+                    addAll(it)
+                    binding.spinner.setSelection(count - 1)
+                }
+            }
+            observe(viewModel.isExpanded) {
+                isExpanded = !isExpanded
+                binding.appbar.setExpanded(isExpanded, true)
+            }
         }
     }
 
     private fun initializeRecyclerView() {
         binding.spinner.run {
-            adapter = DateSpinnerAdapter(context, viewModel)
+            dateSpinnerAdapter = DateSpinnerAdapter(context) { pos: Int, item: WeekOfMonth ->
+                viewModel.sendWeekRoutines(item.startDate)
+                setSelection(pos)
+                hideSpinnerDropDown(this)
+            }
+            adapter = dateSpinnerAdapter
+            viewModel.getStartDate()
         }
 
         binding.rvWeekRate.run {
@@ -122,35 +142,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             })
         )
 
-        /*        val itemTouchHelper = ItemTouchHelper(
-            TestCallback(object : TestCallbackListener{
-                override fun isRightSwipeable(position: Int): Boolean {
-                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.CompletedRoutineItem
-                }
-
-                override fun isLeftSwipeable(position: Int): Boolean {
-                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.EnabledRoutineItem
-                }
-
-                override fun onLeftClicked(position: Int) {
-                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), ItemTouchHelper.END)
-                }
-
-                override fun onRightClicked(position: Int) {
-                    val item = homeAdapter.getItemByPosition(position) as HomeItems.RoutineItem
-
-                    if (isLeftSwipeable(position)) {
-                        Snackbar.make(view!!, "1개의 루틴을 완료했습니다.", Snackbar.LENGTH_SHORT)
-                            .setAction("되돌리기") {
-                                viewModel.setStatus(item.routine.realId, Routine.Status.ENABLE)
-                            }.show()
-                    }
-                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), ItemTouchHelper.START)
-                }
-
-            })
-        )*/
-
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
 
@@ -159,5 +150,11 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 isExpanded = (verticalOffset == 0)
             }
         )
+    }
+
+    private fun hideSpinnerDropDown(spinner: Spinner?) {
+        val method: Method = Spinner::class.java.getDeclaredMethod("onDetachedFromWindow")
+        method.isAccessible = true
+        method.invoke(spinner)
     }
 }
