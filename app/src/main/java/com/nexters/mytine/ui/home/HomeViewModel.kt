@@ -109,7 +109,9 @@ internal class HomeViewModel @ViewModelInject constructor(
                 .map { list ->
                     list.groupBy { it.date }.map { IconGroupItem(it.value.map { routine -> IconItem(routine) }) }
                 }
-                .collect { iconGroupItems.value = it }
+                .collect {
+                    iconGroupItems.value = it
+                }
         }
 
         viewModelScope.launch {
@@ -123,8 +125,10 @@ internal class HomeViewModel @ViewModelInject constructor(
                     retrospectRepository
                         .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
                         .map { weekItems(date, it) }
-                }
-            ) { dateRoutines, tabBarStatus, icons ->
+                },
+                dayChannel.asFlow()
+                    .flatMapLatest { routineRepository.flowRoutinesByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY)) }
+            ) { dateRoutines, tabBarStatus, icons, weekRoutine ->
                 mutableListOf<HomeItems>().apply {
                     add(HomeItems.TabBarItem())
 
@@ -132,7 +136,7 @@ internal class HomeViewModel @ViewModelInject constructor(
                         TabBarStatus.RoutineTab -> {
                             isTabClicked.value = true
 
-                            if (icons.isNullOrEmpty())
+                            if (weekRoutine.isNullOrEmpty())
                                 add(HomeItems.EmptyRoutineItem())
 
                             val enableList = mutableListOf<Routine>()
