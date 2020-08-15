@@ -50,11 +50,11 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 viewModel.isRetrospectStored.value = stored.contents != it
             }
         }
-        observe(viewModel.showExitDialog) {
+        observe(viewModel.showExitDialog) { status ->
             MaterialDialog(requireContext())
                 .message(R.string.exit_retrospect_write_dialog_message)
                 .positiveButton(R.string.leave) {
-                    viewModel.onClickLeave()
+                    viewModel.onClickLeave(status)
                 }
                 .negativeButton(R.string.cancel)
                 .show()

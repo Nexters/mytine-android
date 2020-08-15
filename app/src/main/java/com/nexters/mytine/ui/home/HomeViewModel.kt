@@ -55,7 +55,9 @@ internal class HomeViewModel @ViewModelInject constructor(
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
 
-    val showExitDialog = LiveEvent<Unit>()
+    val showExitDialog = LiveEvent<ExitRetrospectEnum>()
+
+    lateinit var selectedDay: LocalDate
 
     init {
         val now = LocalDate.now()
@@ -171,7 +173,7 @@ internal class HomeViewModel @ViewModelInject constructor(
         if (!isRetrospectStored.value!!) {
             navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()
         } else {
-            showExitDialog.value = Unit
+            showExitDialog.value = ExitRetrospectEnum.Write
         }
     }
 
@@ -179,21 +181,20 @@ internal class HomeViewModel @ViewModelInject constructor(
         if (!isRetrospectStored.value!!) {
             viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
         } else {
-            showExitDialog.value = Unit
+            showExitDialog.value = ExitRetrospectEnum.Routine
         }
     }
 
-    fun onClickLeave() {
-        // 루틴탭 눌렀을 때
-        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
-
-/*        //회고탭에서 날짜 변경되었을 때
-
-        //루틴탭 눌렀을 때
-        viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
-        //작성하기 버튼 눌렀을 때
-        navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()*/
-
+    fun onClickLeave(status: ExitRetrospectEnum) {
+        when (status) {
+            ExitRetrospectEnum.Write -> navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment()
+            ExitRetrospectEnum.Routine -> {
+                viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
+            }
+            ExitRetrospectEnum.Week -> {
+                viewModelScope.launch { dayChannel.send(selectedDay) }
+            }
+        }
         retrospectContent.value = retrospect.value!!.contents
     }
 
@@ -218,15 +219,19 @@ internal class HomeViewModel @ViewModelInject constructor(
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
         if (selectedDay <= LocalDate.now()) {
-            viewModelScope.launch {
-                dayChannel.send(selectedDay)
+            if (isRetrospectStored.value!!) {
+                showExitDialog.value = ExitRetrospectEnum.Week
+                this.selectedDay = selectedDay
+            } else {
+                viewModelScope.launch {
+                    dayChannel.send(selectedDay)
+                }
             }
         }
     }
 
     fun onClickWriteRetrospect() {
         if (!isRetrospectStored.value!!) return
-
         updateRetrospect()
     }
 
@@ -284,5 +289,11 @@ internal class HomeViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             routineRepository.updateStatus(id, status)
         }
+    }
+
+    enum class ExitRetrospectEnum {
+        Routine,
+        Week,
+        Write
     }
 }
