@@ -24,9 +24,10 @@
             style="@style/NotoBlueMedium14LeftStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:minHeight="108dp"
             android:layout_margin="16dp"
             android:background="@drawable/bg_retrospect_contents"
+            android:gravity="top"
+            android:minHeight="108dp"
             android:padding="16dp"
             android:text="@={viewModel.retrospectContent}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,9 +46,9 @@
             android:paddingVertical="6dp"
             android:text="@string/save_retrospect"
             android:textColor="@drawable/text_write_week"
-            app:selected="@{viewModel.isRetrospectStored}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_write" />
+            app:layout_constraintTop_toBottomOf="@+id/et_write"
+            app:selected="@{viewModel.isRetrospectStored}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

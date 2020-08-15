@@ -243,10 +243,8 @@ internal class HomeViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             if (retrospectContent.value.isNullOrEmpty()) {
                 retrospectRepository.deleteRetrospect(dayChannel.value)
-                toast.value = "삭제"
             } else {
                 retrospectRepository.updateRetrospect(Retrospect(dayChannel.value, retrospectContent.value!!))
-                toast.value = "저장${retrospectContent.value}"
             }
         }
     }
