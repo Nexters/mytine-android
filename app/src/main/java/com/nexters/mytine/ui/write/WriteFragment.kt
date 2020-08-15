@@ -3,7 +3,6 @@ package com.nexters.mytine.ui.write
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.flexbox.FlexDirection
@@ -60,10 +59,21 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
                 .negativeButton(R.string.cancel)
                 .show()
         }
+        observe(viewModel.showDeleteDialog) {
+            MaterialDialog(requireContext())
+                .message(R.string.write_delete_dialog_message)
+                .positiveButton(R.string.yes) {
+                    viewModel.onClickDeleteDialogPositiveButton()
+                }
+                .negativeButton(R.string.no)
+                .show()
+        }
     }
 
     private fun initializeToolbar() {
-        binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.setNavigationOnClickListener {
+            viewModel.onBackPressed()
+        }
         binding.toolbar.run {
             setOnMenuItemClickListener {
                 when (it.itemId) {

@@ -66,6 +66,9 @@ internal class WriteViewModelTest {
     private lateinit var showBackDialog: Observer<Unit>
 
     @Mock
+    private lateinit var showDeleteDialog: Observer<Unit>
+
+    @Mock
     private lateinit var navDirections: Observer<NavDirections>
 
     @Mock
@@ -85,6 +88,7 @@ internal class WriteViewModelTest {
         viewModel.showErrorWeek.observeForever(showErrorWeek)
         viewModel.enableWrite.observeForever(enableWrite)
         viewModel.showBackDialog.observeForever(showBackDialog)
+        viewModel.showDeleteDialog.observeForever(showDeleteDialog)
         viewModel.navDirections.observeForever(navDirections)
         viewModel.navArgs(WriteFragmentArgs())
     }
@@ -121,7 +125,7 @@ internal class WriteViewModelTest {
         val weekRoutines = listOf(routineMon, routineTues, routineWed, routineThur, routineFri, routineSat, routineSun)
         val routineId = routineMon.id
 
-        `when`(mockRoutineRepository.flowRoutinesById(routineId)).thenReturn(flow { emit(weekRoutines) })
+        `when`(mockRoutineRepository.flowRoutinesById(routineId, LocalDate.now().with(DayOfWeek.MONDAY))).thenReturn(flow { emit(weekRoutines) })
 
         viewModel.navArgs(WriteFragmentArgs(routineId))
 
@@ -204,10 +208,14 @@ internal class WriteViewModelTest {
     }
 
     @Test
-    fun `삭제 클릭 시 루틴 삭제 및 뒤로가기`() = runBlocking {
+    fun `삭제 클릭 시 루틴 삭제 다이얼로그 띄우고 확인 누를 시 뒤로가기`() = runBlocking {
         `편집 상태로 진입 시 루틴 불러오기`()
 
         viewModel.onClickDelete()
+
+        verify(showDeleteDialog).onChanged(Unit)
+
+        viewModel.onClickDeleteDialogPositiveButton()
 
         verify(mockRoutineRepository).deleteRoutinesById(anyString())
         verify(navDirections).onChanged(BackDirections())

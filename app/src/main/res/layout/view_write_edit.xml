@@ -10,6 +10,10 @@
             type="String" />
 
         <variable
+            name="showNecessary"
+            type="boolean" />
+
+        <variable
             name="showError"
             type="boolean" />
 
@@ -43,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="@string/star"
+            app:isVisible="@{showNecessary}"
             app:layout_constraintStart_toEndOf="@+id/tv_title"
             app:layout_constraintTop_toTopOf="@+id/tv_title" />
 
