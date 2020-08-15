@@ -59,6 +59,15 @@ internal class WriteFragment : BaseFragment<FragmentWriteBinding, WriteViewModel
                 .negativeButton(R.string.cancel)
                 .show()
         }
+        observe(viewModel.showDeleteDialog) {
+            MaterialDialog(requireContext())
+                .message(R.string.write_delete_dialog_message)
+                .positiveButton(R.string.yes) {
+                    viewModel.onClickDeleteDialogPositiveButton()
+                }
+                .negativeButton(R.string.no)
+                .show()
+        }
     }
 
     private fun initializeToolbar() {

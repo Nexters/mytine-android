@@ -44,10 +44,12 @@ internal class WriteViewModel @ViewModelInject constructor(
     ) { errorEmoji, errorName, errorWeek -> !errorEmoji && !errorName && !errorWeek }
 
     val showBackDialog = LiveEvent<Unit>()
+    val showDeleteDialog = LiveEvent<Unit>()
 
     private val backPressedChannel = BroadcastChannel<Unit>(1)
     private val saveClickChannel = BroadcastChannel<Unit>(1)
     private val deleteClickChannel = BroadcastChannel<Unit>(1)
+    private val deleteDialogPositiveClickChannel = BroadcastChannel<Unit>(1)
 
     init {
         viewModelScope.launch {
@@ -99,12 +101,8 @@ internal class WriteViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             deleteClickChannel.asFlow()
-                .flatMapLatest { navArgs<WriteFragmentArgs>() }
-                .map { it.routineId }
                 .collect {
-                    routineRepository.deleteRoutinesById(it)
-
-                    navDirections.value = BackDirections()
+                    showDeleteDialog.value = Unit
                 }
         }
 
@@ -117,6 +115,17 @@ internal class WriteViewModel @ViewModelInject constructor(
                     } else {
                         navDirections.value = BackDirections()
                     }
+                }
+        }
+
+        viewModelScope.launch {
+            deleteDialogPositiveClickChannel.asFlow()
+                .flatMapLatest { navArgs<WriteFragmentArgs>() }
+                .map { it.routineId }
+                .collect {
+                    routineRepository.deleteRoutinesById(it)
+
+                    navDirections.value = BackDirections()
                 }
         }
     }
@@ -144,6 +153,10 @@ internal class WriteViewModel @ViewModelInject constructor(
 
     fun onClickDelete() {
         viewModelScope.launch { deleteClickChannel.send(Unit) }
+    }
+
+    fun onClickDeleteDialogPositiveButton() {
+        viewModelScope.launch { deleteDialogPositiveClickChannel.send(Unit) }
     }
 
     fun onClickLeave() {
