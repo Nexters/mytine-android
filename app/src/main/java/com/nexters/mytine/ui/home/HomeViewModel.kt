@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -45,6 +44,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     val homeItems = MutableLiveData<List<HomeItems>>()
     val retrospect = MutableLiveData<Retrospect>()
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
+    val weekOfMonth = MutableLiveData<List<WeekOfMonth>>()
     val isExpanded = MutableLiveData<Unit>()
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
@@ -167,15 +167,17 @@ internal class HomeViewModel @ViewModelInject constructor(
         isExpanded.value = Unit
     }
 
-    fun getStartDate(): List<WeekOfMonth> = runBlocking {
-        val dateArray = arrayListOf<WeekOfMonth>()
-        var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
-        val now = LocalDate.now()
-        while (startDate <= now) {
-            dateArray.add(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))
-            startDate = startDate.plusWeeks(1)
+    fun getStartDate() {
+        viewModelScope.launch {
+            val dateArray = arrayListOf<WeekOfMonth>()
+            var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
+            val now = LocalDate.now()
+            while (startDate <= now) {
+                dateArray.add(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))
+                startDate = startDate.plusWeeks(1)
+            }
+            weekOfMonth.value = dateArray
         }
-        return@runBlocking dateArray
     }
 
     fun sendWeekRoutines(selectedDay: LocalDate) {

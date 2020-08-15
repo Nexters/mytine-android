@@ -1,6 +1,7 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
+import android.widget.Spinner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.nexters.mytine.ui.home.week.WeekAdapter
 import com.nexters.mytine.ui.home.weekrate.WeekRateAdapter
 import com.nexters.mytine.utils.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Method
 
 @AndroidEntryPoint
 internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
@@ -31,6 +33,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private val weekAdapter = WeekAdapter()
     private val iconGroupAdapter = IconGroupAdapter()
     private val homeAdapter = HomeAdapter()
+    private var dateSpinnerAdapter: DateSpinnerAdapter? = null
     private var isExpanded = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -42,6 +45,13 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
+        observe(viewModel.weekOfMonth) {
+            dateSpinnerAdapter?.run {
+                clear()
+                addAll(it)
+                binding.spinner.setSelection(count - 1)
+            }
+        }
         observe(viewModel.isExpanded) {
             isExpanded = !isExpanded
             binding.appbar.setExpanded(isExpanded, true)
@@ -50,7 +60,12 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
 
     private fun initializeRecyclerView() {
         binding.spinner.run {
-            adapter = DateSpinnerAdapter(context, viewModel)
+            dateSpinnerAdapter = DateSpinnerAdapter(context) { pos: Int, item: WeekOfMonth ->
+                viewModel.sendWeekRoutines(item.startDate)
+                setSelection(pos)
+                hideSpinnerDropDown(this)
+            }.apply { viewModel.getStartDate() }
+            adapter = dateSpinnerAdapter
         }
 
         binding.rvWeekRate.run {
@@ -102,5 +117,11 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 isExpanded = (verticalOffset == 0)
             }
         )
+    }
+
+    private fun hideSpinnerDropDown(spinner: Spinner?) {
+        val method: Method = Spinner::class.java.getDeclaredMethod("onDetachedFromWindow")
+        method.isAccessible = true
+        method.invoke(spinner)
     }
 }
