@@ -8,6 +8,7 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.appbar.AppBarLayout
 import com.nexters.mytine.R
 import com.nexters.mytine.base.fragment.BaseFragment
 import com.nexters.mytine.databinding.FragmentHomeBinding
@@ -30,6 +31,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private val weekAdapter = WeekAdapter()
     private val iconGroupAdapter = IconGroupAdapter()
     private val homeAdapter = HomeAdapter()
+    private var isExpanded = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -40,6 +42,10 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
+        observe(viewModel.isExpanded) {
+            isExpanded = !isExpanded
+            binding.appbar.setExpanded(isExpanded, true)
+        }
     }
 
     private fun initializeRecyclerView() {
@@ -90,5 +96,11 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         )
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
+
+        binding.appbar.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                isExpanded = (verticalOffset == 0)
+            }
+        )
     }
 }

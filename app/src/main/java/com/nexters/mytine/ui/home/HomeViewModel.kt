@@ -45,6 +45,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     val homeItems = MutableLiveData<List<HomeItems>>()
     val retrospect = MutableLiveData<Retrospect>()
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
+    val isExpanded = MutableLiveData<Unit>()
 
     private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
     private val tabBarStatusChannel = ConflatedBroadcastChannel<TabBarStatus>()
@@ -78,7 +79,7 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { date ->
                     retrospectRepository
-                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date)
+                        .getRetrospectDatesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
                         .map { weekItems(date, it) }
                 }
                 .collect { weekItems.value = it }
@@ -88,7 +89,7 @@ internal class HomeViewModel @ViewModelInject constructor(
             dayChannel.asFlow()
                 .flatMapLatest { date ->
                     routineRepository
-                        .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date)
+                        .flowRoutinesByDate(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY))
                         .map { weekRateItems(date, it) }
                 }
                 .collect { weekRateItems.value = it }
@@ -162,6 +163,10 @@ internal class HomeViewModel @ViewModelInject constructor(
         viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RetrospectTab) }
     }
 
+    fun onClickTabBar() {
+        isExpanded.value = Unit
+    }
+
     fun getStartDate(): List<WeekOfMonth> = runBlocking {
         val dateArray = arrayListOf<WeekOfMonth>()
         var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
@@ -174,8 +179,10 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
-        viewModelScope.launch {
-            dayChannel.send(selectedDay)
+        if (selectedDay <= LocalDate.now()) {
+            viewModelScope.launch {
+                dayChannel.send(selectedDay)
+            }
         }
     }
 
@@ -219,8 +226,9 @@ internal class HomeViewModel @ViewModelInject constructor(
                 val day = date.with(dayOfWeek)
                 var rate = 0f
                 routineMap[day]?.let { list ->
-                    rate = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
-                        .div(list.count())
+                    val successCnt = list.filter { it.status == Routine.Status.SUCCESS }.count().toFloat()
+                    val totalCnt = list.filter { it.status == Routine.Status.ENABLE }.count() + successCnt
+                    rate = successCnt.div(totalCnt)
                 }
                 WeekRateItem(DayRateItem(day, rate))
             }
@@ -230,7 +238,7 @@ internal class HomeViewModel @ViewModelInject constructor(
         return DayOfWeek.values()
             .map {
                 val day = date.with(it)
-                WeekItem(DayItem(day, retrospectSet.contains(day)))
+                WeekItem(DayItem(day, retrospectSet.contains(day), day == date))
             }
     }
 
