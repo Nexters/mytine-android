@@ -50,7 +50,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
     val weekOfMonth = MutableLiveData<List<WeekOfMonthItem>>()
     val currentWeek = MutableLiveData<WeekOfMonth>()
-    val isExpanded = MutableLiveData<Unit>()
+    val expandClickEvent = MutableLiveData<Unit>()
     var itemSelectedListener: (LocalDate) -> Unit = {}
 
     val isRetrospectStored = MutableLiveData<Boolean>().apply { value = false }
@@ -229,7 +229,7 @@ internal class HomeViewModel @ViewModelInject constructor(
             val dateArray = arrayListOf<WeekOfMonthItem>()
             var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
             val now = LocalDate.now()
-            while (startDate <= now.with(DayOfWeek.SUNDAY)) {
+            while (startDate.with(DayOfWeek.SUNDAY) <= now.with(DayOfWeek.SUNDAY)) {
                 val item = WeekOfMonthItem(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))
                 dateArray.add(item)
                 startDate = startDate.plusWeeks(1)

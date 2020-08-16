@@ -93,6 +93,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 justifyContent = JustifyContent.SPACE_BETWEEN
             }
             adapter = weekRateAdapter
+            itemAnimator = null
         }
 
         binding.rvWeek.run {
@@ -100,12 +101,14 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 justifyContent = JustifyContent.SPACE_BETWEEN
             }
             adapter = weekAdapter
+            itemAnimator = null
         }
         weekAdapter.setViewHolderViewModel(viewModel)
 
         binding.rvIconGroup.run {
             layoutManager = GridLayoutManager(context, SPAN_SIZE)
             adapter = iconGroupAdapter
+            itemAnimator = null
         }
         iconGroupAdapter.setViewHolderViewModel(viewModel)
 
