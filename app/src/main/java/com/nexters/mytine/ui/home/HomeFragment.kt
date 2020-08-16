@@ -3,7 +3,6 @@ package com.nexters.mytine.ui.home
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.Spinner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +23,6 @@ import com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthMenu
 import com.nexters.mytine.ui.home.weekrate.WeekRateAdapter
 import com.nexters.mytine.utils.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Method
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -59,22 +57,20 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             viewModel.retrospect.value?.let { stored ->
                 viewModel.isRetrospectStored.value = stored.contents != it
             }
-            observe(viewModel.weekOfMonth) {
-                weekOfMonthMenu?.submitList(it)
-            }
-            observe(viewModel.showExitDialog) { status ->
-                MaterialDialog(requireContext())
-                    .message(R.string.exit_retrospect_write_dialog_message)
-                    .positiveButton(R.string.leave) {
-                        viewModel.onClickLeave(status)
-                    }
-                    .negativeButton(R.string.cancel)
-                    .show()
-            }
-            observe(viewModel.isExpanded) {
-                isExpanded = !isExpanded
-                binding.appbar.setExpanded(isExpanded, true)
-            }
+        }
+        observe(viewModel.weekOfMonth) { weekOfMonthMenu?.submitList(it) }
+        observe(viewModel.showExitDialog) { status ->
+            MaterialDialog(requireContext())
+                .message(R.string.exit_retrospect_write_dialog_message)
+                .positiveButton(R.string.leave) {
+                    viewModel.onClickLeave(status)
+                }
+                .negativeButton(R.string.cancel)
+                .show()
+        }
+        observe(viewModel.isExpanded) {
+            isExpanded = !isExpanded
+            binding.appbar.setExpanded(isExpanded, true)
         }
     }
 
@@ -156,13 +152,5 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         }
     }
 
-    private fun getPxFromDp(dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
-    }
-
-    private fun hideSpinnerDropDown(spinner: Spinner?) {
-        val method: Method = Spinner::class.java.getDeclaredMethod("onDetachedFromWindow")
-        method.isAccessible = true
-        method.invoke(spinner)
-    }
+    private fun getPxFromDp(dp: Int) = (dp * resources.displayMetrics.density).toInt()
 }
