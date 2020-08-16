@@ -66,7 +66,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 .negativeButton(R.string.cancel)
                 .show()
         }
-        observe(viewModel.isExpanded) {
+        observe(viewModel.expandClickEvent) {
             isExpanded = !isExpanded
             binding.appbar.setExpanded(isExpanded, true)
         }

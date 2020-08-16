@@ -215,7 +215,7 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickTabBar() {
-        isExpanded.value = Unit
+        expandClickEvent.value = Unit
     }
 
     fun updateEmptyRoutines() {
