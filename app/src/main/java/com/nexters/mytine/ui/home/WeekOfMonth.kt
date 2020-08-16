@@ -14,4 +14,6 @@ data class WeekOfMonth(
     fun endDateStr(): String {
         return "${endDate.monthValue}월 ${endDate.dayOfMonth}일"
     }
+
+    fun isSelectedWeek(currentWeek: WeekOfMonth) = (startDate == currentWeek.startDate)
 }
