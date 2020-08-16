@@ -147,6 +147,10 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     implementation "androidx.annotation:annotation:$annotation_version"
     implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.viewpager2:viewpager2:$viewpager2_version"
+    implementation "com.airbnb.android:lottie:$lottie_version"
+    implementation "me.relex:circleindicator:$circle_indicator_version"
+
 
     kapt "androidx.databinding:databinding-compiler:$android_gradle_version"
 
