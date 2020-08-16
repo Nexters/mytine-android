@@ -1,7 +1,6 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -29,7 +28,7 @@ import java.time.LocalDate
 internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     companion object {
         const val SPAN_SIZE = 7
-        const val WEEK_OF_MONTH_OFFSET_X = 0
+        const val WEEK_OF_MONTH_OFFSET_X = -5
         const val WEEK_OF_MONTH_OFFSET_Y = 16
     }
 
@@ -143,7 +142,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         viewModel.getStartDate()
         context?.let {
             weekOfMonthMenu = WeekOfMonthMenu(it, viewModel).apply {
-                showAsDropDown(v, WEEK_OF_MONTH_OFFSET_X, getPxFromDp(WEEK_OF_MONTH_OFFSET_Y), Gravity.CENTER_HORIZONTAL)
+                showAsDropDown(v, getPxFromDp(WEEK_OF_MONTH_OFFSET_X), getPxFromDp(WEEK_OF_MONTH_OFFSET_Y))
                 viewModel.itemSelectedListener = { item: LocalDate ->
                     viewModel.sendWeekRoutines(item)
                     dismiss()
