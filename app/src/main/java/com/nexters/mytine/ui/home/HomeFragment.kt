@@ -1,7 +1,6 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,7 +72,20 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     }
 
     private fun initializeRecyclerView() {
-        binding.spinnerLayout.setOnClickListener { showWeekOfMonthSpinner(it) }
+        binding.spinnerLayout.run {
+            viewModel.getStartDate()
+            weekOfMonthMenu = WeekOfMonthMenu(context, viewModel).apply {
+                setOnClickListener {
+                    binding.spinnerArrow.isSelected = true
+                    showAsDropDown(it, getPxFromDp(WEEK_OF_MONTH_OFFSET_X), getPxFromDp(WEEK_OF_MONTH_OFFSET_Y))
+                }
+                setOnDismissListener { binding.spinnerArrow.isSelected = false }
+                viewModel.itemSelectedListener = { item: LocalDate ->
+                    viewModel.sendWeekRoutines(item)
+                    dismiss()
+                }
+            }
+        }
 
         binding.rvWeekRate.run {
             layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.NOWRAP).apply {
@@ -135,19 +147,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 isExpanded = (verticalOffset == 0)
             }
         )
-    }
-
-    private fun showWeekOfMonthSpinner(v: View) {
-        viewModel.getStartDate()
-        context?.let {
-            weekOfMonthMenu = WeekOfMonthMenu(it, viewModel).apply {
-                showAsDropDown(v, getPxFromDp(WEEK_OF_MONTH_OFFSET_X), getPxFromDp(WEEK_OF_MONTH_OFFSET_Y))
-                viewModel.itemSelectedListener = { item: LocalDate ->
-                    viewModel.sendWeekRoutines(item)
-                    dismiss()
-                }
-            }
-        }
     }
 
     private fun getPxFromDp(dp: Int) = (dp * resources.displayMetrics.density).toInt()
