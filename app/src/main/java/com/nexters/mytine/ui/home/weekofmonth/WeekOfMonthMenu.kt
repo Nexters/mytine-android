@@ -34,8 +34,6 @@ internal class WeekOfMonthMenu(val context: Context, private val vm: HomeViewMod
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = weekOfMonthAdapter.apply { setViewHolderViewModel(vm) }
         }
-//        dropdownAdapter = CategoryDropdownAdapter(Category.generateCategoryList())
-//        rvCategory.setAdapter(dropdownAdapter)
         contentView = view
     }
 }

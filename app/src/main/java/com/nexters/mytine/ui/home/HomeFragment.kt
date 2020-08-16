@@ -40,7 +40,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private val iconGroupAdapter = IconGroupAdapter()
     private val homeAdapter = HomeAdapter()
     private var weekOfMonthMenu: WeekOfMonthMenu? = null
-    private var dateSpinnerAdapter: DateSpinnerAdapter? = null
     private var isExpanded = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
