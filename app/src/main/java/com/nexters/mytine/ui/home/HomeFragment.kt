@@ -44,6 +44,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewModel.updateEmptyRoutines()
         initializeRecyclerView()
 
         observe(viewModel.weekRateItems) { weekRateAdapter.submitList(it) }

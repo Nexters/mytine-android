@@ -218,6 +218,12 @@ internal class HomeViewModel @ViewModelInject constructor(
         isExpanded.value = Unit
     }
 
+    fun updateEmptyRoutines() {
+        viewModelScope.launch {
+            routineRepository.updateEmptyRoutines()
+        }
+    }
+
     fun getStartDate() {
         viewModelScope.launch {
             val dateArray = arrayListOf<WeekOfMonthItem>()

@@ -79,4 +79,8 @@ internal class RoutineRepositoryImpl @Inject constructor(
     override suspend fun deleteRoutinesById(id: String) {
         return routineDao.deleteRoutinesById(id, LocalDate.now().with(DayOfWeek.MONDAY))
     }
+
+    override suspend fun updateEmptyRoutines() {
+        routineDao.updateEmptyRoutines()
+    }
 }
