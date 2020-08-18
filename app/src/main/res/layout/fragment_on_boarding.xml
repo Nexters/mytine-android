@@ -17,7 +17,8 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
+            android:layout_height="400dp"
+            android:layout_marginTop="144dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,16 +33,30 @@
             app:layout_constraintTop_toBottomOf="@+id/view_pager" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="264dp"
-            android:layout_height="40dp"
+            android:id="@+id/btn_next"
+            style="@style/NotoWhiteMedium14CenterStyle"
+            android:layout_width="328dp"
+            android:layout_height="50dp"
             android:background="@drawable/bg_onboarding"
             android:gravity="center"
-            android:text="건너뛰기"
-            android:textColor="@drawable/text_tab"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@{viewModel.skipContents}"
+            app:layout_constraintBottom_toTopOf="@id/btn_skip"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/indicator"
-            app:selected="@{viewModel.isLast()}" />
+            app:layout_constraintTop_toBottomOf="@+id/indicator" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_skip"
+            style="@style/NotoBlueMedium16LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingHorizontal="120dp"
+            android:paddingVertical="10dp"
+            android:text="@string/skip"
+            app:isVisible="@{!viewModel.isLast}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_next" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,7 +5,6 @@ import com.nexters.mytine.R
 import com.nexters.mytine.base.fragment.BaseFragment
 import com.nexters.mytine.databinding.FragmentOnBoardingBinding
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 internal class OnBoardingFragment : BaseFragment<FragmentOnBoardingBinding, OnBoardingViewModel>() {
@@ -23,18 +22,17 @@ internal class OnBoardingFragment : BaseFragment<FragmentOnBoardingBinding, OnBo
 
     private fun initViewPager() {
         val list = arrayListOf<OnBoardingItem>(
-            OnBoardingItem.OnBoarding(Guide("", "첫번째")),
-            OnBoardingItem.OnBoarding(Guide("", "두번째")),
-            OnBoardingItem.OnBoarding(Guide("", "세번째"))
+            OnBoardingItem.OnBoarding(Guide("", "루틴 생성하기", "원하는 이모지로\n나만의 루틴을 만들어보세요!")),
+            OnBoardingItem.OnBoarding(Guide("", "루틴 완료하기", "좌우 스와이프로 루틴을\n완료, 취소해보세요!")),
+            OnBoardingItem.OnBoarding(Guide("", "월간회고 확인하기", "좌우 스와이프로 루틴을\n완료, 취소해보세요!"))
         )
         adapter.submitList(list)
 
         binding.viewPager.adapter = adapter
 
-        binding.viewPager.setPageTransformer { page, position ->
-            Timber.e("position $position")
-            Timber.e("position $page")
-            viewModel.isLast.value = position.toInt() == 2
+        binding.viewPager.setPageTransformer { _, _ ->
+            viewModel.isLast.value = binding.viewPager.currentItem == 2
+            viewModel.setSkipContentsValue()
         }
 
         binding.indicator.apply {

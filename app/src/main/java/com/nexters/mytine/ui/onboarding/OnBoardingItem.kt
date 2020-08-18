@@ -8,5 +8,6 @@ internal sealed class OnBoardingItem(override val itemId: String) : BaseItem {
 
 data class Guide(
     var guideImage: String,
-    var guideText: String
+    var guideText: String,
+    val guideDescription: String
 )

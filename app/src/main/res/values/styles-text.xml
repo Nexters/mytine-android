@@ -146,4 +146,13 @@
         <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textColor">@color/light_grey_blue</item>
     </style>
+
+    <style name="NotoDuskBold26CenterStyle">
+        <item name="android:fontFamily">@font/noto_sans_regular_font</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:lineSpacingExtra">-2.7sp</item>
+        <item name="android:textColor">@color/dusk</item>
+    </style>
 </resources>
