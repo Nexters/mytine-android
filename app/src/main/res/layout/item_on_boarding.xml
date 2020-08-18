@@ -21,12 +21,14 @@
             android:id="@+id/iv_guide_img"
             android:layout_width="328dp"
             android:layout_height="240dp"
-            android:background="@color/color_point_blue"
-            android:src="@{item.guide.guideImage}"
+            app:setLottieAnimation="@{item.guide.guideImage}"
+            app:lottie_imageAssetsFolder="images"
             app:layout_constraintBottom_toTopOf="@id/tv_guide_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_guide_text"

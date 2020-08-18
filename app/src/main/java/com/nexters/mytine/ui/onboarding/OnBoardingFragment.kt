@@ -21,10 +21,11 @@ internal class OnBoardingFragment : BaseFragment<FragmentOnBoardingBinding, OnBo
     }
 
     private fun initViewPager() {
+
         val list = arrayListOf<OnBoardingItem>(
-            OnBoardingItem.OnBoarding(Guide("", "루틴 생성하기", "원하는 이모지로\n나만의 루틴을 만들어보세요!")),
-            OnBoardingItem.OnBoarding(Guide("", "루틴 완료하기", "좌우 스와이프로 루틴을\n완료, 취소해보세요!")),
-            OnBoardingItem.OnBoarding(Guide("", "월간회고 확인하기", "좌우 스와이프로 루틴을\n완료, 취소해보세요!"))
+            OnBoardingItem.OnBoarding(Guide("data01.json", "루틴 생성하기", "원하는 이모지로\n나만의 루틴을 만들어보세요!")),
+            OnBoardingItem.OnBoarding(Guide("data02.json", "루틴 완료하기", "좌우 스와이프로 루틴을\n완료, 취소해보세요!")),
+            OnBoardingItem.OnBoarding(Guide("data03.json", "월간회고 확인하기", "좌우 스와이프로 루틴을\n완료, 취소해보세요!"))
         )
         adapter.submitList(list)
 
