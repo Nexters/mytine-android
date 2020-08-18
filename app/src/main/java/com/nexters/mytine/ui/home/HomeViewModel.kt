@@ -18,7 +18,6 @@ import com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthItem
 import com.nexters.mytine.ui.home.weekrate.DayRateItem
 import com.nexters.mytine.ui.home.weekrate.WeekRateItem
 import com.nexters.mytine.utils.LiveEvent
-import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -32,7 +31,6 @@ import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
 internal class HomeViewModel @ViewModelInject constructor(
-    private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository,
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
