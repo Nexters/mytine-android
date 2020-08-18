@@ -37,4 +37,5 @@
     <string name="routine_tab">루틴</string>
     <string name="retrospect_tab">회고</string>
     <string name="exit_retrospect_write_dialog_message">작성중인 회고를 취소하시겠습니까?\n나가기 선택시, 작성중인 회고는 저장되지 않습니다.</string>
+    <string name="report_toolbar_title">월간회고</string>
 </resources>

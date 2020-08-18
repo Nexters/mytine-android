@@ -68,21 +68,21 @@
                             android:id="@+id/top_layout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:padding="12dp"
                             android:background="@color/white"
-                            app:layout_constraintTop_toTopOf="parent"
+                            android:padding="12dp"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent">
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <LinearLayout
                                 android:id="@+id/spinner_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
-                                app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent">
+                                app:layout_constraintTop_toTopOf="parent">
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -90,42 +90,53 @@
                                     android:layout_marginEnd="8dp">
 
                                     <TextView
+                                        style="@style/NotoBlueMedium16Center"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        style="@style/NotoBlueMedium16Center"
                                         android:text="@{viewModel.currentWeek.startDateStr}"
                                         tools:text="8월 3일" />
 
                                     <TextView
+                                        style="@style/NotoBlueMedium16Center"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        style="@style/NotoBlueMedium16Center"
                                         android:text=" - " />
 
                                     <TextView
+                                        style="@style/NotoBlueMedium16Center"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        style="@style/NotoBlueMedium16Center"
                                         android:text="@{viewModel.currentWeek.endDateStr}"
-                                        tools:text="8월 9일"/>
+                                        tools:text="8월 9일" />
                                 </LinearLayout>
 
                                 <ImageView
                                     android:id="@+id/spinner_arrow"
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
-                                    android:background="@drawable/dropdown"/>
+                                    android:background="@drawable/dropdown" />
                             </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_report"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="12dp"
+                                android:background="@drawable/ic_report"
+                                android:onClick="@{() -> viewModel.onClickReport()}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/btn_write"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <Button
                                 android:id="@+id/btn_write"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:onClick="@{() -> viewModel.onClickWrite()}"
                                 android:background="@drawable/add"
+                                android:onClick="@{() -> viewModel.onClickWrite()}"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"/>
+                                app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -158,9 +169,9 @@
             android:id="@+id/rv_routine"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never"
             android:background="@color/color_point_skyblue"
             android:clipToPadding="false"
+            android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:paddingBottomSystemWindowInsets="@{true}" />
 

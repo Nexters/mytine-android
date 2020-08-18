@@ -187,6 +187,10 @@ internal class HomeViewModel @ViewModelInject constructor(
         }
     }
 
+    fun onClickReport() {
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToReportFragment()
+    }
+
     fun onClickRoutine() {
         if (!isRetrospectStored.value!!) {
             viewModelScope.launch { tabBarStatusChannel.send(TabBarStatus.RoutineTab) }
