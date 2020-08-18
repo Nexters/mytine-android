@@ -155,6 +155,7 @@ dependencies {
 
     // Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+    implementation "com.github.akarnokd:kotlin-flow-extensions:$flow_extensions_version"
 
     // DI
     implementation "com.google.dagger:dagger:$dagger_version"
