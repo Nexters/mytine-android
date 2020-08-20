@@ -11,6 +11,7 @@ internal interface RoutineRepository {
     fun flowRoutinesByDate(from: LocalDate, to: LocalDate): Flow<List<Routine>>
     suspend fun updateRoutine(emoji: String, name: String, goal: String?, selectedDayOfWeeks: List<DayOfWeek>, id: String = "")
     suspend fun updateStatus(realId: String, status: Routine.Status)
+    suspend fun updateEmptyRoutines()
     suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
     suspend fun getsStartDate(): LocalDate?
     suspend fun deleteRoutinesById(id: String)

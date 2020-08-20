@@ -68,35 +68,75 @@
                             android:id="@+id/top_layout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:padding="12dp"
                             android:background="@color/white"
-                            app:layout_constraintTop_toTopOf="parent"
+                            android:padding="12dp"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent">
-                            <Spinner
-                                android:id="@+id/spinner"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <LinearLayout
+                                android:id="@+id/spinner_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:overlapAnchor="false"
-                                android:dropDownWidth="wrap_content"
-                                android:dropDownVerticalOffset="16dp"
-                                android:popupBackground="@drawable/bg_round_rectangle_white"
-                                app:layout_constraintTop_toTopOf="parent"
+                                android:gravity="center_vertical"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                android:backgroundTint="@color/powder_blue"
-                                android:theme="@style/NotoBlueMedium16Center"/>
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp">
+
+                                    <TextView
+                                        style="@style/NotoBlueMedium16Center"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@{viewModel.currentWeek.startDateStr}"
+                                        tools:text="8월 3일" />
+
+                                    <TextView
+                                        style="@style/NotoBlueMedium16Center"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text=" - " />
+
+                                    <TextView
+                                        style="@style/NotoBlueMedium16Center"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@{viewModel.currentWeek.endDateStr}"
+                                        tools:text="8월 9일" />
+                                </LinearLayout>
+
+                                <ImageView
+                                    android:id="@+id/spinner_arrow"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:background="@drawable/dropdown" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_report"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="12dp"
+                                android:background="@drawable/ic_report"
+                                android:onClick="@{() -> viewModel.onClickReport()}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/btn_write"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <Button
                                 android:id="@+id/btn_write"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:onClick="@{() -> viewModel.onClickWrite()}"
                                 android:background="@drawable/add"
+                                android:onClick="@{() -> viewModel.onClickWrite()}"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"/>
+                                app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -131,6 +171,7 @@
             android:layout_height="match_parent"
             android:background="@color/color_point_skyblue"
             android:clipToPadding="false"
+            android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:paddingBottomSystemWindowInsets="@{true}" />
 

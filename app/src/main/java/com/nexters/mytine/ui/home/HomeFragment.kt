@@ -17,14 +17,18 @@ import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.databinding.FragmentHomeBinding
 import com.nexters.mytine.ui.home.icongroup.IconGroupAdapter
 import com.nexters.mytine.ui.home.week.WeekAdapter
+import com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthMenu
 import com.nexters.mytine.ui.home.weekrate.WeekRateAdapter
 import com.nexters.mytine.utils.extensions.observe
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDate
 
 @AndroidEntryPoint
 internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     companion object {
         const val SPAN_SIZE = 7
+        const val WEEK_OF_MONTH_OFFSET_X = -5
+        const val WEEK_OF_MONTH_OFFSET_Y = 16
     }
 
     override val layoutResId = R.layout.fragment_home
@@ -34,11 +38,13 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private val weekAdapter = WeekAdapter()
     private val iconGroupAdapter = IconGroupAdapter()
     private val homeAdapter = HomeAdapter()
+    private var weekOfMonthMenu: WeekOfMonthMenu? = null
     private var isExpanded = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewModel.updateEmptyRoutines()
         initializeRecyclerView()
 
         observe(viewModel.weekRateItems) { weekRateAdapter.submitList(it) }
@@ -50,6 +56,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 viewModel.isRetrospectStored.value = stored.contents != it
             }
         }
+        observe(viewModel.weekOfMonth) { weekOfMonthMenu?.submitList(it) }
         observe(viewModel.showExitDialog) { status ->
             MaterialDialog(requireContext())
                 .message(R.string.exit_retrospect_write_dialog_message)
@@ -58,16 +65,27 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 }
                 .negativeButton(R.string.cancel)
                 .show()
-            observe(viewModel.isExpanded) {
-                isExpanded = !isExpanded
-                binding.appbar.setExpanded(isExpanded, true)
-            }
+        }
+        observe(viewModel.expandClickEvent) {
+            isExpanded = !isExpanded
+            binding.appbar.setExpanded(isExpanded, true)
         }
     }
 
     private fun initializeRecyclerView() {
-        binding.spinner.run {
-            adapter = DateSpinnerAdapter(context, viewModel)
+        binding.spinnerLayout.run {
+            viewModel.getStartDate()
+            weekOfMonthMenu = WeekOfMonthMenu(context, viewModel).apply {
+                setOnClickListener {
+                    binding.spinnerArrow.isSelected = true
+                    showAsDropDown(it, getPxFromDp(WEEK_OF_MONTH_OFFSET_X), getPxFromDp(WEEK_OF_MONTH_OFFSET_Y))
+                }
+                setOnDismissListener { binding.spinnerArrow.isSelected = false }
+                viewModel.itemSelectedListener = { item: LocalDate ->
+                    viewModel.sendWeekRoutines(item)
+                    dismiss()
+                }
+            }
         }
 
         binding.rvWeekRate.run {
@@ -75,6 +93,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 justifyContent = JustifyContent.SPACE_BETWEEN
             }
             adapter = weekRateAdapter
+            itemAnimator = null
         }
 
         binding.rvWeek.run {
@@ -82,12 +101,14 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
                 justifyContent = JustifyContent.SPACE_BETWEEN
             }
             adapter = weekAdapter
+            itemAnimator = null
         }
         weekAdapter.setViewHolderViewModel(viewModel)
 
         binding.rvIconGroup.run {
             layoutManager = GridLayoutManager(context, SPAN_SIZE)
             adapter = iconGroupAdapter
+            itemAnimator = null
         }
         iconGroupAdapter.setViewHolderViewModel(viewModel)
 
@@ -122,35 +143,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             })
         )
 
-        /*        val itemTouchHelper = ItemTouchHelper(
-            TestCallback(object : TestCallbackListener{
-                override fun isRightSwipeable(position: Int): Boolean {
-                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.CompletedRoutineItem
-                }
-
-                override fun isLeftSwipeable(position: Int): Boolean {
-                    return homeAdapter.getItemByPosition(position) is HomeItems.RoutineItem.EnabledRoutineItem
-                }
-
-                override fun onLeftClicked(position: Int) {
-                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), ItemTouchHelper.END)
-                }
-
-                override fun onRightClicked(position: Int) {
-                    val item = homeAdapter.getItemByPosition(position) as HomeItems.RoutineItem
-
-                    if (isLeftSwipeable(position)) {
-                        Snackbar.make(view!!, "1개의 루틴을 완료했습니다.", Snackbar.LENGTH_SHORT)
-                            .setAction("되돌리기") {
-                                viewModel.setStatus(item.routine.realId, Routine.Status.ENABLE)
-                            }.show()
-                    }
-                    viewModel.swipeRoutine(homeAdapter.getItemByPosition(position), ItemTouchHelper.START)
-                }
-
-            })
-        )*/
-
         itemTouchHelper.attachToRecyclerView(binding.rvRoutine)
         homeAdapter.setViewHolderViewModel(viewModel)
 
@@ -160,4 +152,6 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
             }
         )
     }
+
+    private fun getPxFromDp(dp: Int) = (dp * resources.displayMetrics.density).toInt()
 }

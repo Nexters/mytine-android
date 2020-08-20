@@ -1,28 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="8dp"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/start_date_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        tools:text="8월3일"/>
+    <data>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text=" - "/>
+        <variable
+            name="viewModel"
+            type="com.nexters.mytine.ui.home.HomeViewModel" />
+        <variable
+            name="item"
+            type="com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthItem" />
+    </data>
 
-    <TextView
-        android:id="@+id/end_date_tv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        tools:text="8월3일"/>
-</LinearLayout>
+        android:padding="8dp"
+        android:background="@drawable/bg_home_week_of_month"
+        android:onClick="@{viewModel.onClickWeekOfMonth(item.weekOfMonth.startDate)}"
+        app:selected="@{(item.weekOfMonth.isSelectedWeek(viewModel.currentWeek))}">
+
+        <TextView
+            android:id="@+id/start_date_tv"
+            style="@style/NotoBlueMedium16LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@{item.weekOfMonth.startDateStr}"
+            tools:text="8월3일"/>
+
+        <TextView
+            style="@style/NotoBlueMedium16LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text=" - "/>
+
+        <TextView
+            android:id="@+id/end_date_tv"
+            style="@style/NotoBlueMedium16LeftStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@{item.weekOfMonth.endDateStr}"
+            tools:text="8월3일"/>
+    </LinearLayout>
+</layout>

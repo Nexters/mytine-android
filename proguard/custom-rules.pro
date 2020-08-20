@@ -1,1 +1,2 @@
 -keep class com.nexters.mytine.data** { *; }
+-keep class androidx.navigation.fragment.NavHostFragment** { *; }

@@ -11,8 +11,7 @@ import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.flow.asFlow
+import hu.akarnokd.kotlin.flow.PublishSubject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
@@ -46,10 +45,10 @@ internal class WriteViewModel @ViewModelInject constructor(
     val showBackDialog = LiveEvent<Unit>()
     val showDeleteDialog = LiveEvent<Unit>()
 
-    private val backPressedChannel = BroadcastChannel<Unit>(1)
-    private val saveClickChannel = BroadcastChannel<Unit>(1)
-    private val deleteClickChannel = BroadcastChannel<Unit>(1)
-    private val deleteDialogPositiveClickChannel = BroadcastChannel<Unit>(1)
+    private val backPressedChannel = PublishSubject<Unit>()
+    private val saveClickChannel = PublishSubject<Unit>()
+    private val deleteClickChannel = PublishSubject<Unit>()
+    private val deleteDialogPositiveClickChannel = PublishSubject<Unit>()
 
     init {
         viewModelScope.launch {
@@ -72,7 +71,7 @@ internal class WriteViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            saveClickChannel.asFlow()
+            saveClickChannel
                 .flatMapLatest { navArgs<WriteFragmentArgs>() }
                 .collect { navArgs ->
                     val emoji = emoji.value
@@ -100,14 +99,14 @@ internal class WriteViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            deleteClickChannel.asFlow()
+            deleteClickChannel
                 .collect {
                     showDeleteDialog.value = Unit
                 }
         }
 
         viewModelScope.launch {
-            backPressedChannel.asFlow()
+            backPressedChannel
                 .flatMapLatest { navArgs<WriteFragmentArgs>().map { it.routineId } }
                 .collect { routineId ->
                     if (routineId.isBlank()) {
@@ -119,7 +118,7 @@ internal class WriteViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch {
-            deleteDialogPositiveClickChannel.asFlow()
+            deleteDialogPositiveClickChannel
                 .flatMapLatest { navArgs<WriteFragmentArgs>() }
                 .map { it.routineId }
                 .collect {
@@ -131,7 +130,7 @@ internal class WriteViewModel @ViewModelInject constructor(
     }
 
     fun onBackPressed() {
-        viewModelScope.launch { backPressedChannel.send(Unit) }
+        viewModelScope.launch { backPressedChannel.emit(Unit) }
     }
 
     fun onClickWeekItem(weekItem: WeekItem) {
@@ -148,15 +147,15 @@ internal class WriteViewModel @ViewModelInject constructor(
     }
 
     fun onClickSave() {
-        viewModelScope.launch { saveClickChannel.send(Unit) }
+        viewModelScope.launch { saveClickChannel.emit(Unit) }
     }
 
     fun onClickDelete() {
-        viewModelScope.launch { deleteClickChannel.send(Unit) }
+        viewModelScope.launch { deleteClickChannel.emit(Unit) }
     }
 
     fun onClickDeleteDialogPositiveButton() {
-        viewModelScope.launch { deleteDialogPositiveClickChannel.send(Unit) }
+        viewModelScope.launch { deleteDialogPositiveClickChannel.emit(Unit) }
     }
 
     fun onClickLeave() {

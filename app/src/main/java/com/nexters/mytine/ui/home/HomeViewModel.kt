@@ -1,5 +1,6 @@
 package com.nexters.mytine.ui.home
 
+import android.view.View
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -13,10 +14,10 @@ import com.nexters.mytine.ui.home.icongroup.IconGroupItem
 import com.nexters.mytine.ui.home.icongroup.icon.IconItem
 import com.nexters.mytine.ui.home.week.DayItem
 import com.nexters.mytine.ui.home.week.WeekItem
+import com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthItem
 import com.nexters.mytine.ui.home.weekrate.DayRateItem
 import com.nexters.mytine.ui.home.weekrate.WeekRateItem
 import com.nexters.mytine.utils.LiveEvent
-import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -25,13 +26,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
 internal class HomeViewModel @ViewModelInject constructor(
-    private val resourcesProvider: ResourcesProvider,
     private val routineRepository: RoutineRepository,
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {
@@ -47,7 +46,10 @@ internal class HomeViewModel @ViewModelInject constructor(
     val homeItems = MutableLiveData<List<HomeItems>>()
     val retrospect = MutableLiveData<Retrospect>()
     val retrospectContent = MutableLiveData<String>().apply { value = "" }
-    val isExpanded = MutableLiveData<Unit>()
+    val weekOfMonth = MutableLiveData<List<WeekOfMonthItem>>()
+    val currentWeek = MutableLiveData<WeekOfMonth>()
+    val expandClickEvent = MutableLiveData<Unit>()
+    var itemSelectedListener: (LocalDate) -> Unit = {}
 
     val isRetrospectStored = MutableLiveData<Boolean>().apply { value = false }
     val isTabClicked = MutableLiveData<Boolean>().apply { value = true }
@@ -171,6 +173,10 @@ internal class HomeViewModel @ViewModelInject constructor(
                 homeItems.value = it
             }
         }
+
+        viewModelScope.launch {
+            dayChannel.asFlow().collect { currentWeek.value = WeekOfMonth(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY)) }
+        }
     }
 
     fun onClickWrite() {
@@ -179,6 +185,10 @@ internal class HomeViewModel @ViewModelInject constructor(
         } else {
             showExitDialog.value = ExitRetrospectEnum.Write
         }
+    }
+
+    fun onClickReport() {
+        navDirections.value = HomeFragmentDirections.actionHomeFragmentToReportFragment()
     }
 
     fun onClickRoutine() {
@@ -207,18 +217,27 @@ internal class HomeViewModel @ViewModelInject constructor(
     }
 
     fun onClickTabBar() {
-        isExpanded.value = Unit
+        expandClickEvent.value = Unit
     }
 
-    fun getStartDate(): List<WeekOfMonth> = runBlocking {
-        val dateArray = arrayListOf<WeekOfMonth>()
-        var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
-        val now = LocalDate.now()
-        while (startDate <= now) {
-            dateArray.add(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))
-            startDate = startDate.plusWeeks(1)
+    fun updateEmptyRoutines() {
+        viewModelScope.launch {
+            routineRepository.updateEmptyRoutines()
         }
-        return@runBlocking dateArray
+    }
+
+    fun getStartDate() {
+        viewModelScope.launch {
+            val dateArray = arrayListOf<WeekOfMonthItem>()
+            var startDate = routineRepository.getsStartDate() ?: LocalDate.now()
+            val now = LocalDate.now()
+            while (startDate.with(DayOfWeek.SUNDAY) <= now.with(DayOfWeek.SUNDAY)) {
+                val item = WeekOfMonthItem(WeekOfMonth(startDate.with(DayOfWeek.MONDAY), startDate.with(DayOfWeek.SUNDAY)))
+                dateArray.add(item)
+                startDate = startDate.plusWeeks(1)
+            }
+            weekOfMonth.value = dateArray
+        }
     }
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
@@ -254,6 +273,8 @@ internal class HomeViewModel @ViewModelInject constructor(
             navDirections.value = HomeFragmentDirections.actionHomeFragmentToWriteFragment(item.routine.id)
         }
     }
+
+    fun onClickWeekOfMonth(date: LocalDate) = View.OnClickListener { itemSelectedListener(date) }
 
     fun swipeRoutine(item: HomeItems, direction: Int) {
         if (item !is HomeItems.RoutineItem) {

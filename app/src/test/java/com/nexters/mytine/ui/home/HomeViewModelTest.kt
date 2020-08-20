@@ -9,13 +9,10 @@ import com.nexters.mytine.data.entity.Retrospect
 import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RetrospectRepository
 import com.nexters.mytine.data.repository.RoutineRepository
-import com.nexters.mytine.getValue
-import com.nexters.mytine.utils.ResourcesProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +21,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
-@Ignore
 @RunWith(MockitoJUnitRunner::class)
 internal class HomeViewModelTest {
     @ExperimentalCoroutinesApi
@@ -52,9 +48,6 @@ internal class HomeViewModelTest {
     @Mock
     private lateinit var mockRetrospect: Retrospect
 
-    @Mock
-    private lateinit var resourcesProvider: ResourcesProvider
-
     private lateinit var viewModel: HomeViewModel
 
     @Before
@@ -65,7 +58,7 @@ internal class HomeViewModelTest {
         `when`(mockRoutine.realId).thenReturn("realId")
         `when`(mockRetrospect.contents).thenReturn("")
         `when`(mockRetrospectRepository.getRetrospect(anyObj())).thenReturn(flow { emit(mockRetrospect) })
-        viewModel = HomeViewModel(resourcesProvider, mockRoutineRepository, mockRetrospectRepository)
+        viewModel = HomeViewModel(mockRoutineRepository, mockRetrospectRepository)
         viewModel.navDirections.observeForever(navDirections)
         viewModel.homeItems.observeForever(homeItems)
     }
@@ -75,6 +68,13 @@ internal class HomeViewModelTest {
         viewModel.onClickWrite()
 
         verify(navDirections).onChanged(HomeFragmentDirections.actionHomeFragmentToWriteFragment())
+    }
+
+    @Test
+    fun `월간회고 버튼 클릭 시 월간회고 화면으로 이동`() {
+        viewModel.onClickReport()
+
+        verify(navDirections).onChanged(HomeFragmentDirections.actionHomeFragmentToReportFragment())
     }
 
     @Test
