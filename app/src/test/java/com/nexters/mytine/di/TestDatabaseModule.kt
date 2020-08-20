@@ -1,5 +1,8 @@
 package com.nexters.mytine.di
 
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.nexters.mytine.data.MyTineRoomDatabase
@@ -29,4 +32,8 @@ internal class TestDatabaseModule {
     @Provides
     @Singleton
     fun provideRoutineDao(roomDatabase: MyTineRoomDatabase): RoutineDao = roomDatabase.routineDao()
+
+    @Provides
+    @Singleton
+    fun provideSharedPreference(app: Application): SharedPreferences = app.getSharedPreferences("is_visited", Context.MODE_PRIVATE)
 }
