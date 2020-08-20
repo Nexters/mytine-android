@@ -40,4 +40,5 @@
     <string name="exit_retrospect_write_dialog_message">작성중인 회고를 취소하시겠습니까?\n나가기 선택시, 작성중인 회고는 저장되지 않습니다.</string>
     <string name="report_toolbar_title">월간회고</string>
     <string name="splash_message">당신의 더 나은 내일을 위하여!</string>
+    <string name="report_empty_message">이번달 말 10개 이상의 루틴 수행 시,\n루틴 순위를 확인할 수 있어요!</string>
 </resources>
