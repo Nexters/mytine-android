@@ -182,7 +182,7 @@ class TestCallback(private val testCallbackListener: TestCallbackListener) :
         val itemView: View = viewHolder.itemView
         val resources = itemView.resources
 
-        val iconL = BitmapFactory.decodeResource(resources, R.drawable.card_check_back)
+        val iconL = BitmapFactory.decodeResource(resources, R.drawable.ic_card_check_back)
         val leftButton = RectF(
             itemView.left.toFloat() + ItemTouchHelperCallback.startOffset,
             itemView.top.toFloat() + ItemTouchHelperCallback.verticalOffset,
@@ -191,7 +191,7 @@ class TestCallback(private val testCallbackListener: TestCallbackListener) :
         )
         c.drawBitmap(iconL, null, leftButton, null)
 
-        val iconR = BitmapFactory.decodeResource(resources, R.drawable.card_check)
+        val iconR = BitmapFactory.decodeResource(resources, R.drawable.ic_card_check_back)
         val rightButton = RectF(
             itemView.right.toFloat() - ItemTouchHelperCallback.endOffset,
             itemView.top.toFloat() + ItemTouchHelperCallback.verticalOffset,
