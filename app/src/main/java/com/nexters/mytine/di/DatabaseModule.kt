@@ -1,6 +1,8 @@
 package com.nexters.mytine.di
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.nexters.mytine.data.MyTineRoomDatabase
 import com.nexters.mytine.data.dao.RoutineDao
@@ -17,6 +19,7 @@ import javax.inject.Singleton
 internal class DatabaseModule {
     companion object {
         private const val DB_NAME = "mytine_db"
+        private const val PREFERENCES_KEY = "is_visited"
     }
 
     @Provides
@@ -31,4 +34,8 @@ internal class DatabaseModule {
     @Provides
     @Singleton
     fun provideRoutineDao(roomDatabase: MyTineRoomDatabase): RoutineDao = roomDatabase.routineDao()
+
+    @Provides
+    @Singleton
+    fun provideSharedPreference(app: Application): SharedPreferences = app.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE)
 }
