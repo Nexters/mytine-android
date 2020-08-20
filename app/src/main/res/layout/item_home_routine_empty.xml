@@ -21,10 +21,10 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_intro"
-            android:layout_width="127dp"
-            android:layout_height="169dp"
+            android:layout_width="161dp"
+            android:layout_height="161dp"
+            android:background="@drawable/home_null_image"
             android:layout_marginBottom="20dp"
-            android:background="@color/routine_item_complete_text_color"
             app:layout_constraintBottom_toTopOf="@+id/tv_intro_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
