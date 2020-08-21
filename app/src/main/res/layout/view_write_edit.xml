@@ -51,7 +51,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_title"
             app:layout_constraintTop_toTopOf="@+id/tv_title" />
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_write"
             android:layout_width="0dp"
             android:layout_height="51dp"
@@ -59,8 +59,12 @@
             android:layout_marginTop="9dp"
             android:background="@drawable/bg_write_edit"
             android:gravity="center_vertical|start"
+            android:inputType="text"
+            android:maxLines="1"
             android:paddingStart="16dp"
+            android:paddingTop="8dp"
             android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
             android:text="@={text}"
             app:activated="@{!showError}"
             app:layout_constraintEnd_toEndOf="parent"

@@ -11,10 +11,12 @@ import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
+import hu.akarnokd.kotlin.flow.BehaviorSubject
 import hu.akarnokd.kotlin.flow.PublishSubject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -32,23 +34,39 @@ internal class WriteViewModel @ViewModelInject constructor(
         value = DayOfWeek.values().map { WeekItem(it) }
     }
 
+    val isChangedEdit = combineLatest(
+        emoji,
+        name,
+        goal,
+        weekItems
+    ) { _, _, _, _ ->
+        if (isEditMode.value == true) {
+            routineChanged(routinesChannel.value)
+        } else {
+            true
+        }
+    }
+
     val showErrorEmoji = createErrorCheckLiveData(emoji) { !it.isNullOrBlank() }
     val showErrorName = createErrorCheckLiveData(name) { !it.isNullOrBlank() }
+
     val showErrorWeek = createErrorCheckLiveData(weekItems) { !it.isNullOrEmpty() }
 
     val enableWrite = combineLatest(
         showErrorEmoji,
         showErrorName,
-        showErrorWeek
-    ) { errorEmoji, errorName, errorWeek -> !errorEmoji && !errorName && !errorWeek }
-
+        showErrorWeek,
+        isChangedEdit
+    ) { errorEmoji, errorName, errorWeek, isChangedEdit -> !errorEmoji && !errorName && !errorWeek && isChangedEdit }
     val showBackDialog = LiveEvent<Unit>()
+
     val showDeleteDialog = LiveEvent<Unit>()
 
     private val backPressedChannel = PublishSubject<Unit>()
     private val saveClickChannel = PublishSubject<Unit>()
     private val deleteClickChannel = PublishSubject<Unit>()
     private val deleteDialogPositiveClickChannel = PublishSubject<Unit>()
+    private val routinesChannel = BehaviorSubject<List<Routine>>()
 
     init {
         viewModelScope.launch {
@@ -59,6 +77,7 @@ internal class WriteViewModel @ViewModelInject constructor(
                 .filter { it.isNotEmpty() }
                 .collect { routines ->
                     isEditMode.value = true
+                    routinesChannel.emit(routines)
 
                     routines.first().let {
                         emoji.value = it.emoji
@@ -107,9 +126,18 @@ internal class WriteViewModel @ViewModelInject constructor(
 
         viewModelScope.launch {
             backPressedChannel
-                .flatMapLatest { navArgs<WriteFragmentArgs>().map { it.routineId } }
-                .collect { routineId ->
-                    if (routineId.isBlank()) {
+                .flatMapLatest { navArgs<WriteFragmentArgs>() }
+                .map { it.routineId }
+                .flatMapLatest {
+                    if (it.isBlank()) {
+                        flow { emit(true) }
+                    } else {
+                        routinesChannel
+                            .map { routines -> routineChanged(routines) }
+                    }
+                }
+                .collect {
+                    if (it) {
                         showBackDialog.value = Unit
                     } else {
                         navDirections.value = BackDirections()
@@ -127,6 +155,13 @@ internal class WriteViewModel @ViewModelInject constructor(
                     navDirections.value = BackDirections()
                 }
         }
+    }
+
+    private fun routineChanged(routines: List<Routine>): Boolean {
+        val contentChanged = routines.first().let { emoji.value != it.emoji || name.value != it.name || goal.value != it.goal }
+        val weekItemChanged = weekItems.value != routines.map { WeekItem(it.date.dayOfWeek, it.status != Routine.Status.DISABLE) }
+
+        return contentChanged || weekItemChanged
     }
 
     fun onBackPressed() {

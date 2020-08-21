@@ -60,6 +60,7 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
 
             return
         }
+
         findNavController().navigate(navDirections)
     }
 }

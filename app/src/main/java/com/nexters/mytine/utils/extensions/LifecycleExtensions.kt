@@ -60,3 +60,30 @@ internal fun <T1, T2, T3, R> combineLatest(
 
     return mediator
 }
+
+internal fun <T1, T2, T3, T4, R> combineLatest(
+    source1: LiveData<T1>,
+    source2: LiveData<T2>,
+    source3: LiveData<T3>,
+    source4: LiveData<T4>,
+    combiner: (T1, T2, T3, T4) -> R
+): LiveData<R> {
+    val mediator = MediatorLiveData<R>()
+
+    val combinerFunction = {
+        val source1Value = source1.value
+        val source2Value = source2.value
+        val source3Value = source3.value
+        val source4Value = source4.value
+        if (source1Value != null && source2Value != null && source3Value != null && source4Value != null) {
+            mediator.value = combiner.invoke(source1Value, source2Value, source3Value, source4Value)
+        }
+    }
+
+    mediator.addSource(source1) { combinerFunction() }
+    mediator.addSource(source2) { combinerFunction() }
+    mediator.addSource(source3) { combinerFunction() }
+    mediator.addSource(source4) { combinerFunction() }
+
+    return mediator
+}
