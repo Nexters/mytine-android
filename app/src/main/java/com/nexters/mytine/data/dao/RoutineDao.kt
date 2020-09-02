@@ -5,7 +5,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.nexters.mytine.data.entity.Routine
 import kotlinx.coroutines.flow.Flow
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Dao
