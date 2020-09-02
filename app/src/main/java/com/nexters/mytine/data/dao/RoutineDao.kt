@@ -45,29 +45,4 @@ internal abstract class RoutineDao : BaseDao<Routine> {
         deleteRoutinesById(id, startDate)
         upserts(entities)
     }
-
-    @Transaction
-    open suspend fun updateEmptyRoutines() {
-        getLastDate()?.let {
-            val now = LocalDate.now()
-            val list = getsByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
-            var copyDate = it.plusWeeks(1)
-            while (copyDate.with(DayOfWeek.MONDAY) <= now.with(DayOfWeek.MONDAY)) {
-                upserts(
-                    list.map { routine ->
-                        routine.run {
-                            copy(
-                                date = copyDate.with(date.dayOfWeek),
-                                status = when (status) {
-                                    Routine.Status.SUCCESS, Routine.Status.ENABLE -> Routine.Status.ENABLE
-                                    else -> Routine.Status.DISABLE
-                                }
-                            )
-                        }
-                    }
-                )
-                copyDate = copyDate.plusWeeks(1)
-            }
-        }
-    }
 }

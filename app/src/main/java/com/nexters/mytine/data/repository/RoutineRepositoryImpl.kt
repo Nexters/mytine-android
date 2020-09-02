@@ -1,14 +1,17 @@
 package com.nexters.mytine.data.repository
 
+import android.content.SharedPreferences
 import com.nexters.mytine.data.dao.RoutineDao
 import com.nexters.mytine.data.entity.Routine
 import kotlinx.coroutines.flow.Flow
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 internal class RoutineRepositoryImpl @Inject constructor(
-    private val routineDao: RoutineDao
+    private val routineDao: RoutineDao,
+    private val sharedPreferences: SharedPreferences
 
 ) : RoutineRepository {
 
@@ -81,6 +84,33 @@ internal class RoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateEmptyRoutines() {
-        routineDao.updateEmptyRoutines()
+        val now = LocalDate.now()
+        val lastUpdatedDate = LocalDate.parse(sharedPreferences.getString(KEY_LAST_UPDATED_DATE, DateTimeFormatter.ISO_LOCAL_DATE.format(now)))
+
+        routineDao.getLastDate()?.let {
+            val list = getsByDate(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
+            var copyDate = it.plusWeeks(1)
+            while (copyDate.with(DayOfWeek.MONDAY) <= now.with(DayOfWeek.MONDAY) && lastUpdatedDate <= copyDate) {
+                routineDao.upserts(
+                    list.map { routine ->
+                        routine.run {
+                            copy(
+                                date = copyDate.with(date.dayOfWeek),
+                                status = when (status) {
+                                    Routine.Status.SUCCESS, Routine.Status.ENABLE -> Routine.Status.ENABLE
+                                    else -> Routine.Status.DISABLE
+                                }
+                            )
+                        }
+                    }
+                )
+                copyDate = copyDate.plusWeeks(1)
+            }
+            sharedPreferences.edit().putString(KEY_LAST_UPDATED_DATE, DateTimeFormatter.ISO_LOCAL_DATE.format(copyDate)).commit()
+        }
+    }
+
+    companion object {
+        const val KEY_LAST_UPDATED_DATE = "keyLastUpdatedDate"
     }
 }
