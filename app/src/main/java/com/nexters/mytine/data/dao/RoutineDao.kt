@@ -44,4 +44,7 @@ internal abstract class RoutineDao : BaseDao<Routine> {
         deleteRoutinesById(id, startDate)
         upserts(entities)
     }
+
+    @Query("SELECT * FROM routine WHERE :to <= date AND date <= :from AND status = :status")
+    abstract suspend fun getRoutinesByStatus(to: LocalDate, from: LocalDate, status: Routine.Status): List<Routine>
 }

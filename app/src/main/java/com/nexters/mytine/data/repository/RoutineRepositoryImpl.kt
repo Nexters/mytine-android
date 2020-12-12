@@ -110,6 +110,10 @@ internal class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getRoutinesByStatus(to: LocalDate, from: LocalDate, status: Routine.Status): List<Routine> {
+        return routineDao.getRoutinesByStatus(to, from, status)
+    }
+
     companion object {
         const val KEY_LAST_UPDATED_DATE = "keyLastUpdatedDate"
     }
