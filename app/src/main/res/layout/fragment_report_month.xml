@@ -37,18 +37,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/report_toolbar_title" />
+                    tools:text="12" />
+
+                <TextView
+                    style="@style/NotoBlueMedium16Center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/report_month_message" />
+
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_report"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:paddingBottomSystemWindowInsets="@{true}"
-            tools:listitem="@layout/item_report_month"/>
+        <include layout="@layout/item_report_month" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
