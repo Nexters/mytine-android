@@ -34,6 +34,10 @@ internal class ReportViewModel @ViewModelInject constructor(
         navDirections.value = BackDirections()
     }
 
+    fun onClickDetail(date: LocalDate) {
+        navDirections.value = ReportFragmentDirections.actionReportFragmentToReportMonthFragment(date.year, date.monthValue)
+    }
+
     private suspend fun loadRoutineByStatus(to: LocalDate, from: LocalDate, status: Routine.Status) =
         routineRepository.getRoutinesByStatus(to, from, status)
             .groupBy {
