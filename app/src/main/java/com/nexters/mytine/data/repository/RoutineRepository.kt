@@ -15,4 +15,5 @@ internal interface RoutineRepository {
     suspend fun getsByDate(from: LocalDate, to: LocalDate): List<Routine>
     suspend fun getsStartDate(): LocalDate?
     suspend fun deleteRoutinesById(id: String)
+    suspend fun getRoutinesByStatus(to: LocalDate, from: LocalDate, status: Routine.Status): List<Routine>
 }

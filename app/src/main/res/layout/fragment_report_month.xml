@@ -7,12 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.nexters.mytine.ui.report.ReportViewModel" />
+            type="com.nexters.mytine.ui.report.month.ReportMonthViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@color/pale_grey">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -38,18 +39,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/report_toolbar_title" />
+                    android:text="@{Integer.toString(viewModel.date.monthValue)}"
+                    tools:text="12" />
+
+                <TextView
+                    style="@style/NotoBlueMedium16Center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/report_month_message" />
+
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_report"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:paddingBottomSystemWindowInsets="@{true}"
-            tools:listitem="@layout/item_report_all"/>
+        <include
+            android:id="@+id/max_achieve_routine_report_layout"
+            app:title="@{@string/report_max_achieve_routine_message}"
+            layout="@layout/item_report_month"/>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <include
+            android:id="@+id/min_achieve_routine_report_layout"
+            app:title="@{@string/report_min_achieve_routine_message}"
+            layout="@layout/item_report_month"/>
+
+    </LinearLayout>
 </layout>

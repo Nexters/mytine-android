@@ -154,4 +154,13 @@
         <item name="android:lineSpacingExtra">-2.7sp</item>
         <item name="android:textColor">@color/dusk</item>
     </style>
+
+    <style name="NotoPointblueMedium12Style">
+        <item name="android:fontFamily">@font/noto_sans_medium_font</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">6.6sp</item>
+        <item name="android:textColor">@color/color_point_blue</item>
+    </style>
+
 </resources>
