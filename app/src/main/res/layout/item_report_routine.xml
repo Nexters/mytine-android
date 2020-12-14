@@ -6,11 +6,7 @@
 
         <variable
             name="item"
-            type="com.nexters.mytine.ui.report.ReportItems.EmptyItems" />
-
-        <variable
-            name="viewModel"
-            type="com.nexters.mytine.ui.report.ReportViewModel" />
+            type="com.nexters.mytine.ui.report.routine.ReportRoutineItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,19 +20,22 @@
             android:id="@+id/grade_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                style="@style/NotoPointblueMedium12Style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/NotoPointblueMedium12Style"
+                android:text="@{Integer.toString(item.rank)}"
                 tools:text="1" />
+
             <TextView
+                style="@style/NotoPointblueMedium12Style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/NotoPointblueMedium12Style"
                 android:text="위" />
         </LinearLayout>
 
@@ -45,14 +44,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="11dp"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
             android:background="@drawable/bg_report_item_icon"
+            android:gravity="center"
+            android:text="@{item.routine.emoji}"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/grade_layout"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="☕️"/>
+            tools:text="☕️" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -60,24 +60,30 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="24dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/emoji_tv"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
+                style="@style/NotoSkyblueRegular12LeftStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                style="@style/NotoSkyblueRegular12LeftStyle"
-                tools:text="위장보호"/>
+                android:text="@{item.routine.goal}"
+                app:isVisible="@{item.routine.goal.length() > 0}"
+                tools:text="위장보호" />
+
             <TextView
+                style="@style/NotoBlueMedium16LeftStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:layout_marginTop="4dp"
-                style="@style/NotoBlueMedium18LeftStyle"
-                tools:text="나의 귀중한 위 보호를 위해서 카페인을 절제하려고"/>
+                android:text="@{item.routine.name}"
+                android:lineSpacingExtra="-5dp"
+                tools:text="나의 귀중한 위 보호를 위해서\n 카페인을 절제하려고" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
