@@ -60,7 +60,15 @@
         android:id="@+id/reportFragment"
         android:name="com.nexters.mytine.ui.report.ReportFragment"
         android:label="ReportFragment"
-        tools:layout="@layout/fragment_report" />
+        tools:layout="@layout/fragment_report">
+        <action
+            android:id="@+id/action_reportFragment_to_reportMonthFragment"
+            app:destination="@id/reportMonthFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/onBoardingFragment"
@@ -76,6 +84,18 @@
             app:popExitAnim="@anim/fade_out"
             app:popUpTo="@id/onBoardingFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/reportMonthFragment"
+        android:name="com.nexters.mytine.ui.report.month.ReportMonthFragment"
+        android:label="ReportMonthFragment"
+        tools:layout="@layout/fragment_report_month">
+        <argument
+            android:name="year"
+            app:argType="integer" />
+        <argument
+            android:name="month"
+            app:argType="integer" />
     </fragment>
 
 </navigation>
