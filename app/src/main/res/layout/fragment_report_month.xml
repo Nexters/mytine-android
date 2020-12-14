@@ -7,12 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.nexters.mytine.ui.report.ReportViewModel" />
+            type="com.nexters.mytine.ui.report.month.ReportMonthViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@color/pale_grey">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -30,13 +31,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_marginTopSystemWindowInsets="@{true}"
-                app:navigationIcon="@drawable/ic_back">
+                app:navigationIcon="@drawable/ic_back"
+                app:navigationOnClickListener="@{() -> viewModel.onClickBack()}">
 
                 <TextView
                     style="@style/NotoBlueMedium16Center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:text="@{Integer.toString(viewModel.date.monthValue)}"
                     tools:text="12" />
 
                 <TextView
@@ -50,7 +53,15 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include layout="@layout/item_report_month" />
+        <include
+            android:id="@+id/max_achieve_routine_report_layout"
+            app:title="@{@string/report_max_achieve_routine_message}"
+            layout="@layout/item_report_month"/>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <include
+            android:id="@+id/min_achieve_routine_report_layout"
+            app:title="@{@string/report_min_achieve_routine_message}"
+            layout="@layout/item_report_month"/>
+
+    </LinearLayout>
 </layout>
