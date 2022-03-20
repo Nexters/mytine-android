@@ -8,9 +8,9 @@ import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.report.routine.ReportRoutineItem
 import com.nexters.mytine.utils.navigation.BackDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 internal class ReportViewModel @Inject constructor(

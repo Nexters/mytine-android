@@ -3,9 +3,9 @@ package com.nexters.mytine.ui.splash
 import androidx.lifecycle.viewModelScope
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 internal class SplashViewModel @Inject constructor() : BaseViewModel() {
