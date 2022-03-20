@@ -94,19 +94,6 @@ android {
             testCoverageEnabled jacocoEnabled.toBoolean()
         }
 
-        beta {
-            signingConfig signingConfigs.ide
-            applicationIdSuffix ".beta"
-
-            debuggable true
-            zipAlignEnabled true
-            minifyEnabled true
-            shrinkResources true
-            crunchPngs true
-
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            proguardFiles file('../proguard').listFiles()
-        }
         release {
             signingConfig null
 
@@ -192,7 +179,8 @@ dependencies {
 
     // Firebase
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
-    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation "com.google.firebase:firebase-firestore-ktx"
+    implementation "com.firebaseui:firebase-ui-auth:$firebase_ui_auth"
 
     // Debug
     implementation "com.jakewharton.timber:timber:$timber_version"

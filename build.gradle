@@ -26,6 +26,7 @@ buildscript {
         circle_indicator_version = '2.1.4'
 
         firebase_bom_version = '29.0.0'
+        firebase_ui_auth = '7.2.0'
 
         dagger_version = '2.40.5'
         emoji_version = '0.7.0'
