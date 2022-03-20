@@ -190,6 +190,10 @@ dependencies {
     // Dialog
     implementation "com.afollestad.material-dialogs:core:$material_dialog_version"
 
+    // Firebase
+    implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+
     // Debug
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "com.facebook.stetho:stetho:$stetho_version"
