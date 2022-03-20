@@ -1,7 +1,6 @@
 package com.nexters.mytine.ui.home
 
 import android.view.View
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,19 +17,21 @@ import com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthItem
 import com.nexters.mytine.ui.home.weekrate.DayRateItem
 import com.nexters.mytine.ui.home.weekrate.WeekRateItem
 import com.nexters.mytine.utils.LiveEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.DayOfWeek
+import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
-import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
-internal class HomeViewModel @ViewModelInject constructor(
+@HiltViewModel
+internal class HomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository,
     private val retrospectRepository: RetrospectRepository
 ) : BaseViewModel() {

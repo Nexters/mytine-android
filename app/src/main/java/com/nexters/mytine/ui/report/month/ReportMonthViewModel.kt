@@ -1,6 +1,5 @@
 package com.nexters.mytine.ui.report.month
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nexters.mytine.base.viewmodel.BaseViewModel
@@ -8,12 +7,14 @@ import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.report.routine.ReportRoutineItem
 import com.nexters.mytine.utils.navigation.BackDirections
-import kotlinx.coroutines.flow.collect
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
-internal class ReportMonthViewModel @ViewModelInject constructor(
+@HiltViewModel
+internal class ReportMonthViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
     val date = MutableLiveData<LocalDate>()

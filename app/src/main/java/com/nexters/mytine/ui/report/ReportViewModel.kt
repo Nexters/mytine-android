@@ -1,6 +1,5 @@
 package com.nexters.mytine.ui.report
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nexters.mytine.base.viewmodel.BaseViewModel
@@ -8,10 +7,13 @@ import com.nexters.mytine.data.entity.Routine
 import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.ui.report.routine.ReportRoutineItem
 import com.nexters.mytine.utils.navigation.BackDirections
-import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-internal class ReportViewModel @ViewModelInject constructor(
+@HiltViewModel
+internal class ReportViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
     val reportItems = MutableLiveData<List<ReportItems>>()
@@ -21,8 +23,13 @@ internal class ReportViewModel @ViewModelInject constructor(
             val preMonthValue = 1L
             routineRepository.getsStartDate()?.let { startDate ->
                 val preMonthDate = LocalDate.now().minusMonths(preMonthValue)
-                val preMonthDateLastDayOfMonth = preMonthDate.withDayOfMonth(preMonthDate.lengthOfMonth())
-                val routineList = loadRoutineByStatus(startDate, preMonthDateLastDayOfMonth, Routine.Status.SUCCESS)
+                val preMonthDateLastDayOfMonth =
+                    preMonthDate.withDayOfMonth(preMonthDate.lengthOfMonth())
+                val routineList = loadRoutineByStatus(
+                    startDate,
+                    preMonthDateLastDayOfMonth,
+                    Routine.Status.SUCCESS
+                )
                 reportItems.value =
                     if (!routineList.isNullOrEmpty()) routineList
                     else listOf(ReportItems.EmptyItems())
@@ -35,10 +42,17 @@ internal class ReportViewModel @ViewModelInject constructor(
     }
 
     fun onClickDetail(date: LocalDate) {
-        navDirections.value = ReportFragmentDirections.actionReportFragmentToReportMonthFragment(date.year, date.monthValue)
+        navDirections.value = ReportFragmentDirections.actionReportFragmentToReportMonthFragment(
+            date.year,
+            date.monthValue
+        )
     }
 
-    private suspend fun loadRoutineByStatus(to: LocalDate, from: LocalDate, status: Routine.Status) =
+    private suspend fun loadRoutineByStatus(
+        to: LocalDate,
+        from: LocalDate,
+        status: Routine.Status
+    ) =
         routineRepository.getRoutinesByStatus(to, from, status)
             .groupBy {
                 val startDayOfMonth = 1

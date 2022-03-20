@@ -1,12 +1,14 @@
 package com.nexters.mytine.ui.onboarding
 
 import android.content.SharedPreferences
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import com.nexters.mytine.base.viewmodel.BaseViewModel
 import com.nexters.mytine.utils.LiveEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-internal class OnBoardingViewModel @ViewModelInject constructor(
+@HiltViewModel
+internal class OnBoardingViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : BaseViewModel() {
     var isLast = MutableLiveData<Boolean>().apply { value = false }

@@ -1,6 +1,5 @@
 package com.nexters.mytine.ui.write
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,18 +10,20 @@ import com.nexters.mytine.data.repository.RoutineRepository
 import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
+import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.akarnokd.kotlin.flow.BehaviorSubject
 import hu.akarnokd.kotlin.flow.PublishSubject
-import kotlinx.coroutines.flow.collect
+import java.time.DayOfWeek
+import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
-import java.time.LocalDate
 
-internal class WriteViewModel @ViewModelInject constructor(
+@HiltViewModel
+internal class WriteViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : BaseViewModel() {
 

@@ -1,6 +1,8 @@
 package com.nexters.mytine.ui
 
-import androidx.hilt.lifecycle.ViewModelInject
 import com.nexters.mytine.base.viewmodel.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-internal class MainActivityViewModel @ViewModelInject constructor() : BaseViewModel()
+@HiltViewModel
+internal class MainActivityViewModel @Inject constructor() : BaseViewModel()
