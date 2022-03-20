@@ -14,14 +14,13 @@ import com.nexters.mytine.ui.home.week.WeekItem
 import com.nexters.mytine.ui.home.weekofmonth.WeekOfMonthItem
 import com.nexters.mytine.ui.home.weekrate.DayRateItem
 import com.nexters.mytine.ui.home.weekrate.WeekRateItem
-import com.nexters.mytine.utils.LiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -42,22 +41,17 @@ internal class HomeViewModel @Inject constructor(
     val expandClickEvent = MutableLiveData<Unit>()
     var itemSelectedListener: (LocalDate) -> Unit = {}
 
-    private val dayChannel = ConflatedBroadcastChannel<LocalDate>()
+    private val dayChannel = MutableStateFlow<LocalDate>(LocalDate.now())
 
     init {
-        val now = LocalDate.now()
 
         viewModelScope.launch {
-            dayChannel.send(now)
+            dayChannel
+                .collectLatest { weekItems.value = weekItems(it) }
         }
 
         viewModelScope.launch {
-            dayChannel.asFlow()
-                .collect { weekItems.value = weekItems(it) }
-        }
-
-        viewModelScope.launch {
-            dayChannel.asFlow()
+            dayChannel
                 .flatMapLatest { date ->
                     routineRepository
                         .flowRoutinesByDate(
@@ -66,11 +60,11 @@ internal class HomeViewModel @Inject constructor(
                         )
                         .map { weekRateItems(date, it) }
                 }
-                .collect { weekRateItems.value = it }
+                .collectLatest { weekRateItems.value = it }
         }
 
         viewModelScope.launch {
-            dayChannel.asFlow()
+            dayChannel
                 .flatMapLatest {
                     routineRepository.flowRoutinesByDate(
                         it.with(DayOfWeek.MONDAY),
@@ -81,18 +75,18 @@ internal class HomeViewModel @Inject constructor(
                     list.groupBy { it.date }
                         .map { IconGroupItem(it.value.map { routine -> IconItem(routine) }) }
                 }
-                .collect {
+                .collectLatest {
                     iconGroupItems.value = it
                 }
         }
 
         viewModelScope.launch {
             combine(
-                dayChannel.asFlow()
+                dayChannel
                     .flatMapLatest {
                         routineRepository.flowRoutines(it)
                     },
-                dayChannel.asFlow()
+                dayChannel
                     .flatMapLatest {
                         routineRepository.flowRoutinesByDate(
                             it.with(DayOfWeek.MONDAY),
@@ -119,16 +113,17 @@ internal class HomeViewModel @Inject constructor(
                     addAll(enableList.map { HomeItems.RoutineItem.EnabledRoutineItem(it) })
                     addAll(completedList.map { HomeItems.RoutineItem.CompletedRoutineItem(it) })
                 }
-            }.collect {
+            }.collectLatest {
                 homeItems.value = it
             }
         }
 
         viewModelScope.launch {
-            dayChannel.asFlow().collect {
-                currentWeek.value =
-                    WeekOfMonth(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
-            }
+            dayChannel
+                .collectLatest {
+                    currentWeek.value =
+                        WeekOfMonth(it.with(DayOfWeek.MONDAY), it.with(DayOfWeek.SUNDAY))
+                }
         }
     }
 
@@ -171,9 +166,7 @@ internal class HomeViewModel @Inject constructor(
 
     fun sendWeekRoutines(selectedDay: LocalDate) {
         if (selectedDay <= LocalDate.now()) {
-            viewModelScope.launch {
-                dayChannel.send(selectedDay)
-            }
+            dayChannel.value = selectedDay
         }
     }
 

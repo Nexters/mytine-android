@@ -11,11 +11,11 @@ import com.nexters.mytine.utils.LiveEvent
 import com.nexters.mytine.utils.extensions.combineLatest
 import com.nexters.mytine.utils.navigation.BackDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hu.akarnokd.kotlin.flow.BehaviorSubject
-import hu.akarnokd.kotlin.flow.PublishSubject
 import java.time.DayOfWeek
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -63,30 +63,40 @@ internal class WriteViewModel @Inject constructor(
 
     val showDeleteDialog = LiveEvent<Unit>()
 
-    private val backPressedChannel = PublishSubject<Unit>()
-    private val saveClickChannel = PublishSubject<Unit>()
-    private val deleteClickChannel = PublishSubject<Unit>()
-    private val deleteDialogPositiveClickChannel = PublishSubject<Unit>()
-    private val routinesChannel = BehaviorSubject<List<Routine>>()
+    private val backPressedChannel = MutableSharedFlow<Unit>()
+    private val saveClickChannel = MutableSharedFlow<Unit>()
+    private val deleteClickChannel = MutableSharedFlow<Unit>()
+    private val deleteDialogPositiveClickChannel = MutableSharedFlow<Unit>()
+    private val routinesChannel = MutableStateFlow<List<Routine>>(emptyList())
 
     init {
         viewModelScope.launch {
             navArgs<WriteFragmentArgs>()
                 .map { it.routineId }
                 .filter { it.isNotEmpty() }
-                .flatMapLatest { routineRepository.flowRoutinesById(it, LocalDate.now().with(DayOfWeek.MONDAY)) }
+                .flatMapLatest {
+                    routineRepository.flowRoutinesById(
+                        it,
+                        LocalDate.now().with(DayOfWeek.MONDAY)
+                    )
+                }
                 .filter { it.isNotEmpty() }
                 .collect { routines ->
                     isEditMode.value = true
                     routinesChannel.emit(routines)
 
-                    routines.first().let {
-                        emoji.value = it.emoji
-                        name.value = it.name
-                        goal.value = it.goal
+                    routines.first().let { routine ->
+                        emoji.value = routine.emoji
+                        name.value = routine.name
+                        routine.goal?.let { goal.value = it }
                     }
 
-                    weekItems.value = routines.map { WeekItem(it.date.dayOfWeek, it.status != Routine.Status.DISABLE) }
+                    weekItems.value = routines.map {
+                        WeekItem(
+                            it.date.dayOfWeek,
+                            it.status != Routine.Status.DISABLE
+                        )
+                    }
                 }
         }
 
@@ -97,7 +107,8 @@ internal class WriteViewModel @Inject constructor(
                     val emoji = emoji.value
                     val name = name.value
                     val goal = goal.value
-                    val selectedDayOfWeeks = weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
+                    val selectedDayOfWeeks =
+                        weekItems.value?.filter { it.selected }?.map { it.dayOfWeek }
 
                     if (emoji.isNullOrBlank() || name.isNullOrBlank() || selectedDayOfWeeks.isNullOrEmpty()) {
                         showErrorEmoji.value = emoji.isNullOrBlank()
@@ -159,8 +170,14 @@ internal class WriteViewModel @Inject constructor(
     }
 
     private fun routineChanged(routines: List<Routine>): Boolean {
-        val contentChanged = routines.first().let { emoji.value != it.emoji || name.value != it.name || goal.value != it.goal }
-        val weekItemChanged = weekItems.value != routines.map { WeekItem(it.date.dayOfWeek, it.status != Routine.Status.DISABLE) }
+        val contentChanged = routines.first()
+            .let { emoji.value != it.emoji || name.value != it.name || goal.value != it.goal }
+        val weekItemChanged = weekItems.value != routines.map {
+            WeekItem(
+                it.date.dayOfWeek,
+                it.status != Routine.Status.DISABLE
+            )
+        }
 
         return contentChanged || weekItemChanged
     }
@@ -198,7 +215,10 @@ internal class WriteViewModel @Inject constructor(
         navDirections.value = BackDirections()
     }
 
-    private fun <T> createErrorCheckLiveData(source: LiveData<T>, check: (T) -> Boolean): MediatorLiveData<Boolean> {
+    private fun <T> createErrorCheckLiveData(
+        source: LiveData<T>,
+        check: (T) -> Boolean
+    ): MediatorLiveData<Boolean> {
         return MediatorLiveData<Boolean>().apply {
             addSource(source) {
                 if (check(it)) {

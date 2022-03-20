@@ -150,14 +150,12 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:$viewpager2_version"
     implementation "com.airbnb.android:lottie:$lottie_version"
     implementation "me.relex:circleindicator:$circle_indicator_version"
-//    kapt "androidx.databinding:databinding-compiler:$android_gradle_version"
 
     // Ktx
     implementation "androidx.core:core-ktx:$ktx_version"
 
     // Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
-    implementation "com.github.akarnokd:kotlin-flow-extensions:$flow_extensions_version"
 
     // DI
     implementation "com.google.dagger:hilt-android:$dagger_version"
