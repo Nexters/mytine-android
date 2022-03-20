@@ -11,7 +11,6 @@ internal class HomeAdapter : BaseListAdapter<HomeItems>() {
             is HomeItems.EmptyRoutineItem -> R.layout.item_home_routine_empty
             is HomeItems.RoutineItem.EnabledRoutineItem -> R.layout.item_home_routine
             is HomeItems.RoutineItem.CompletedRoutineItem -> R.layout.item_home_routine_completed
-            is HomeItems.Retrospect -> R.layout.item_home_retrospect
         }
     }
 

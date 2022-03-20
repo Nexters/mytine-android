@@ -5,9 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
 import com.nexters.mytine.MainCoroutinesRule
 import com.nexters.mytine.anyObj
-import com.nexters.mytine.data.entity.Retrospect
 import com.nexters.mytine.data.entity.Routine
-import com.nexters.mytine.data.repository.RetrospectRepository
 import com.nexters.mytine.data.repository.RoutineRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -42,12 +40,6 @@ internal class HomeViewModelTest {
     @Mock
     private lateinit var mockRoutine: Routine
 
-    @Mock
-    private lateinit var mockRetrospectRepository: RetrospectRepository
-
-    @Mock
-    private lateinit var mockRetrospect: Retrospect
-
     private lateinit var viewModel: HomeViewModel
 
     @Before
@@ -56,9 +48,7 @@ internal class HomeViewModelTest {
 
         `when`(mockRoutine.id).thenReturn("id")
         `when`(mockRoutine.realId).thenReturn("realId")
-        `when`(mockRetrospect.contents).thenReturn("")
-        `when`(mockRetrospectRepository.getRetrospect(anyObj())).thenReturn(flow { emit(mockRetrospect) })
-        viewModel = HomeViewModel(mockRoutineRepository, mockRetrospectRepository)
+        viewModel = HomeViewModel(mockRoutineRepository)
         viewModel.navDirections.observeForever(navDirections)
         viewModel.homeItems.observeForever(homeItems)
     }
@@ -75,36 +65,5 @@ internal class HomeViewModelTest {
         viewModel.onClickReport()
 
         verify(navDirections).onChanged(HomeFragmentDirections.actionHomeFragmentToReportFragment())
-    }
-
-    @Test
-    fun `(Given) 해당 날짜에 작성한 회고가 있을 경우 (When) 회고 버튼 클릭 시 (Then) 내용 불러오기`() {
-    }
-
-    @Test
-    fun `(Given) 변경된 내용이 없을 때 (When) 회고 작성 버튼 클릭 시 (Then) 토스트`() {
-    }
-
-    @Test
-    fun `(Given) 회고를 작성하지 않은 채 (When) 회고 작성 버튼 클릭 시 (Then) 토스트`() {
-    }
-
-    @Test
-    fun `(Given) 회고 작성 후 (When) 회고 작성 버튼 클릭 시 (Then) 회고 저장`() {
-    }
-
-    @Test
-    fun `(Given) 회고 작성 중 (When) 루틴 탭으로 이동 할 경우 (Then) 토스트`() {
-    }
-
-    @Test
-    fun `루틴 탭 터치 시 루틴 탭으로 이동`() {
-    }
-
-    @Test
-    fun `회고 탭 터치 시 회고 탭으로 이동`() {}
-
-    @Test
-    fun `날짜에 해당하는 주간날짜 리스트 로드`() {
     }
 }

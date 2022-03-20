@@ -6,7 +6,6 @@ import java.util.Locale
 
 data class DayItem(
     val date: LocalDate,
-    val isRetrospectWrite: Boolean,
     val isSelected: Boolean
 ) {
     fun weekName(): String {

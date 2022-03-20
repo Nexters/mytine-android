@@ -1,10 +1,10 @@
 package com.nexters.mytine.ui.home
 
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -41,8 +41,8 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
     private var weekOfMonthMenu: WeekOfMonthMenu? = null
     private var isExpanded = true
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.updateEmptyRoutines()
         initializeRecyclerView()
@@ -51,21 +51,7 @@ internal class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>()
         observe(viewModel.weekItems) { weekAdapter.submitList(it) }
         observe(viewModel.iconGroupItems) { iconGroupAdapter.submitList(it) }
         observe(viewModel.homeItems) { homeAdapter.submitList(it) }
-        observe(viewModel.retrospectContent) {
-            viewModel.retrospect.value?.let { stored ->
-                viewModel.isRetrospectStored.value = stored.contents != it
-            }
-        }
         observe(viewModel.weekOfMonth) { weekOfMonthMenu?.submitList(it) }
-        observe(viewModel.showExitDialog) { status ->
-            MaterialDialog(requireContext())
-                .message(R.string.exit_retrospect_write_dialog_message)
-                .positiveButton(R.string.leave) {
-                    viewModel.onClickLeave(status)
-                }
-                .negativeButton(R.string.cancel)
-                .show()
-        }
         observe(viewModel.expandClickEvent) {
             isExpanded = !isExpanded
             binding.appbar.setExpanded(isExpanded, true)

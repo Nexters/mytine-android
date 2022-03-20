@@ -6,8 +6,6 @@ import com.nexters.mytine.data.entity.Routine
 internal sealed class HomeItems(override val itemId: String) : BaseItem {
     class TabBarItem : HomeItems("tabBar")
 
-    class Retrospect : HomeItems("retrospect")
-
     class EmptyRoutineItem : HomeItems("intro")
 
     sealed class RoutineItem(open val routine: Routine) : HomeItems(routine.id) {

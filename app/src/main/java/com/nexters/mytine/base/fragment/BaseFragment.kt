@@ -27,12 +27,16 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
     lateinit var binding: VB
 
     protected val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(viewModelStore, defaultViewModelProviderFactory).get(viewModelClass.java)
+        ViewModelProvider(viewModelStore, defaultViewModelProviderFactory)[viewModelClass.java]
     }
 
     protected open val navArgs: NavArgs = EmptyNavArgs
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -41,8 +45,8 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         observe(viewModel.navDirections) { navigate(it) }
         observe(viewModel.toast) { toast(it) }
@@ -53,7 +57,10 @@ internal abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> :
     private fun navigate(navDirections: NavDirections) {
         if (navDirections is BackDirections) {
             if (navDirections.destinationId != -1) {
-                findNavController().popBackStack(navDirections.destinationId, navDirections.inclusive)
+                findNavController().popBackStack(
+                    navDirections.destinationId,
+                    navDirections.inclusive
+                )
             } else {
                 findNavController().popBackStack()
             }
